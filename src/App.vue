@@ -35,7 +35,7 @@
         </li>
       </div>
     </nav>
-    <el-container>
+    <el-container v-if="currentUser">
       <el-aside width="300px" style="padding: 20px">
         <el-tabs class="tabs-wrapper" v-model="name" :tab-position="'left'" @tab-click="switchTabs">
           <el-tab-pane :label="item" :name="item" v-for="item in tabs" :key="item">
@@ -46,15 +46,15 @@
         <router-view />
       </el-main>
     </el-container>
+    <el-container v-else>
+      <router-view />
+    </el-container>
   </div>
 </template>
 
 <script>
-import Home from './views/Home.vue';
 export default {
-  components: {
-    Home
-  },
+  components: {},
   computed: {
     currentUser() {
       return this.$store.state.auth.user;
