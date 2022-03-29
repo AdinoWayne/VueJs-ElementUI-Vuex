@@ -1,26 +1,46 @@
 <template>
   <el-container>
-    <el-aside width="300px" style="padding: 20px">
-      <el-button type="primary" icon="el-icon-connection" plain>Connection</el-button>
-    </el-aside>
     <el-main>
-      <el-card class="box-card">
-        <div slot="header" class="clearfix">
-          <span>Information Cloud</span>
-        </div>
-        <div class="text item">
-          name: <span>HUMAX-ABC</span>
-        </div>
-        <div class="text item">
-          status: <span>connection</span>
-        </div>
-      </el-card>
+      <el-button type="primary" icon="el-icon-connection" plain>Connection</el-button>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <div class="grid-content bg-purple">
+            <el-card class="box-card">
+              <div slot="header" class="clearfix">
+                <span>Information Cloud</span>
+              </div>
+              <div class="text item">
+                name: <span>HUMAX-ABC</span>
+              </div>
+              <div class="text item">
+                status: <span>connection</span>
+              </div>
+            </el-card>
+          </div>
+          </el-col>
+        <el-col :span="12">
+          <div class="grid-content bg-purple">
+            <el-card class="box-card">
+              <div slot="header" class="clearfix">
+                <span>Information HGJ310v4</span>
+              </div>
+              <div class="text item">
+                name: <span>HUMAX-ABC</span>
+              </div>
+              <div class="text item">
+                status: <span>connection</span>
+              </div>
+            </el-card>
+          </div>
+        </el-col>
+      </el-row>
+      <D3 />
     </el-main>
   </el-container>
 </template>
 
 <script>
-import PostService from '../services/post.service';
+import D3 from './components/D3.vue';
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
@@ -29,6 +49,9 @@ export default {
     return {
       content: ''
     };
+  },
+  components: {
+    D3
   },
   computed: {
     ...mapGetters('post' ,["posts"])
@@ -42,9 +65,7 @@ export default {
   },
   methods: {
     ...mapActions('post', ['getPosts']),
-    initData() {
-      console.log(this.posts);
-    }
+    initData() {}
   }
 };
 </script>
@@ -68,9 +89,5 @@ export default {
 }
 .clearfix:after {
   clear: both
-}
-
-.box-card {
-  width: 480px;
 }
 </style>

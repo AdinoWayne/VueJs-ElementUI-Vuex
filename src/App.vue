@@ -36,12 +36,6 @@
       </div>
     </nav>
     <el-container>
-      <el-aside width="300px" style="padding: 20px">
-        <el-tabs class="tabs-wrapper" v-model="name" :tab-position="'left'" @tab-click="switchTabs">
-          <el-tab-pane :label="item" :name="item" v-for="item in tabs" :key="item">
-          </el-tab-pane>
-        </el-tabs>
-      </el-aside>
       <el-main>
         <router-view />
       </el-main>
@@ -50,11 +44,7 @@
 </template>
 
 <script>
-import Home from './views/Home.vue';
 export default {
-  components: {
-    Home
-  },
   computed: {
     currentUser() {
       return this.$store.state.auth.user;
@@ -70,6 +60,7 @@ export default {
     };
   },
   methods: {
+    // eslint-disable-next-line no-unused-vars
     switchTabs(tab, _event) {
       var switchObject = {
         'Status': () => {
