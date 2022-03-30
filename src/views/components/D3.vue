@@ -21,10 +21,10 @@ export default {
   name: 'D3',
   data() {
     return {
-      activeNum: "0",
+      activeNum: 0,
       svg: null,
-      steps: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
-      stepErrors: ['10', '11', '12', '13', '14', '15', '16', '17', '18'],
+      steps: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+      stepErrors: [9, 10, 11, 12, 13, 14, 15, 16],
       allSteps: [],
       arrText: [
             'Scan',
@@ -50,23 +50,62 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('post' ,["posts"]),
+    ...mapGetters('pi' ,['pi', 'nextAction']),
     colors() {
-        return { green: '#4DC87F', lightGreen: '#D9F0E3', white: '#FFFFFF', black: '#000000' };
+        return { green: '#4DC87F', lightGreen: '#D9F0E3', white: '#FFFFFF', black: '#000000', red: '#E74C3C' };
     }
   },
   created() {
       this.allSteps = [...this.steps, ...this.stepErrors];
   },
   mounted() {
-    if (!this.posts || this.posts.length  === 0) {
-    //   this.getPosts().then(() => this.initData());
-    }
-    this.initStep();
+    this.getReworkStates().finally(() => {
+        this.initData();
+        this.initStep();
+    })
   },
   methods: {
-    ...mapActions('post', ['getPosts']),
+    ...mapActions('pi', ['getReworkStates', 'doAction']),
     initData() {
+        if (this.pi && this.pi.pi_v4_state !== undefined) {
+            this.activeNum = this.pi.pi_v4_state;
+        }
+    },
+    prepareData(actionNumber) {
+        let result = ""
+        switch (actionNumber) {
+            case 0:
+                result = "REWORK__SCANNING";
+                break;
+            case 1:
+                result = "REWORK__SENDING_V4_INFO_TO_CLOUD";
+                break;
+            case 2:
+                result = "REWORK__DOWNLOADING_PLUME_CAS_FROM_CLOUD";
+                break;
+            case 3:
+                result = "REWORK__OPENING_SSH_SERVER_ON_V4";
+                break;
+            case 4:
+                result = "REWORK__SENDING_FW_TO_V4";
+                break;
+            case 5:
+                result = "REWORK__SENDING_PLUME_CAS_TO_V4";
+                break;
+            case 6:
+                result = "REWORK__INSTALLING_PLUME_CAS_ON_V4";
+                break;
+            case 7:
+                result = "REWORK__INSTALLING_FW_FOR_V4";
+                break;
+            case 8:
+                result = "REWORK__SENDING_UPGRADED_LOG_TO_CLOUD";
+                break;
+            default:
+                result = "REWORK__SENDING_UPGRADED_LOG_TO_CLOUD";
+                break;
+        }
+        return result
     },
     updateProgressBar(step_) {
         var positionI = this.allSteps.indexOf(step_);
@@ -116,7 +155,8 @@ export default {
                     d3.select('#foreign_' + i).html('<i class="el-icon-refresh"></i>');
                 } else {
                     if (this.currentState == 'failed') {
-                        d3.select('#foreign_' + i).html('<i class="el-icon-close"></i>');
+                        d3.select('#foreign_' + i).html('<i class="el-icon-close" style="color: #fff"></i>');
+                        d3.select('#step_' + i).attr('fill', this.colors.red).attr('stroke', this.colors.red).style("display", "block");
                     } else {
                         d3.select('#foreign_' + i).html('<i class="el-icon-check"></i>');
                     }
@@ -131,9 +171,17 @@ export default {
                 if (i == positionI) {
                     d3.select('#label_' + i).attr('fill', this.colors.black).style("display", "block");
                 }
+            } else if (positionI < steps.length && i == positionI + steps.length - 1 && this.currentState == 'failed') {
+                d3.select('#label_' + i).attr('fill', this.colors.black).style("display", "block");
+                d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>').style("display", "block");
+                d3.select('#step_' + i).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen).style("display", "block");
+                d3.select('#vertical_' + i).attr('height', 128);
             } else {
                 if (i >= steps.length) {
                     d3.select('#label_' + i).attr('fill', this.colors.black).style("display", "none");
+                    d3.select('#vertical_' + i).attr('height', 0);
+                    d3.select('#step_' + i).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen).style("display", "none");
+                    d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>').style("display", "none");
                 }
                 d3.select('#step_' + i).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen);
             }
@@ -285,13 +333,18 @@ export default {
             })
             .html(html)
             .on('click', () => {
-                this.activeNum = index.toString();
+                this.activeNum = index;
                 this.currentState = 'pending';
                 this.updateProgressBar(this.activeNum);
                 setTimeout(() => {
-                    this.currentState = 'failed';
-                    this.updateProgressBar(this.activeNum);
-                }, 3000)
+                    this.doAction({ action_name: this.prepareData(index), num: index}).then(() => {
+                        this.currentState = 'success';
+                    }).catch(() => {
+                        this.currentState = 'failed';
+                    }).finally(() => {
+                        this.updateProgressBar(this.activeNum);
+                    })
+                }, 1000)
             }))
         }
 

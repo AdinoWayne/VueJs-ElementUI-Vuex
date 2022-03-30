@@ -54,17 +54,12 @@ export default {
     D3
   },
   computed: {
-    ...mapGetters('post' ,["posts"])
+    ...mapGetters('pi' ,["pi"])
   },
-  created() {
-  },
-  mounted() {
-    if (!this.posts || this.posts.length  === 0) {
-      this.getPosts().then(() => this.initData());
-    }
-  },
+  created() {},
+  mounted() {},
   methods: {
-    ...mapActions('post', ['getPosts']),
+    ...mapActions('pi', ['getReworkStates']),
     initData() {}
   }
 };
