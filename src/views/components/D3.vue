@@ -155,7 +155,13 @@ export default {
                     d3.select('#foreign_' + i).html('<i class="el-icon-refresh"></i>');
                 } else {
                     if (this.currentState == 'failed') {
-                        d3.select('#foreign_' + i).html('<i class="el-icon-close" style="color: #fff"></i>');
+                        d3.select('#foreign_' + i).html('<i class="el-icon-close" style="color: #fff"></i>')
+                        .on("mouseenter", (d) => {
+                            d3.select(event.currentTarget).html('<i class="el-icon-refresh" style="color: #fff"></i>')
+                        })
+                        .on("mouseleave", (d) => {
+                            d3.select(event.currentTarget).html('<i class="el-icon-close" style="color: #fff"></i>')
+                        });
                         d3.select('#step_' + i).attr('fill', this.colors.red).attr('stroke', this.colors.red).style("display", "block");
                     } else {
                         d3.select('#foreign_' + i).html('<i class="el-icon-check"></i>');
