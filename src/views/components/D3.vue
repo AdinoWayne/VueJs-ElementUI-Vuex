@@ -107,7 +107,7 @@ export default {
         }
         return result
     },
-    updateProgressBar(step_) {
+    updateProgressBar(step_, isFirst) {
         var positionI = this.allSteps.indexOf(step_);
         var positionE = this.stepErrors.indexOf(step_);
         var steps = this.steps;
@@ -146,51 +146,70 @@ export default {
             .attr('fill', this.colors.green)
             .attr('height', 128);
         }
-        for(let i = 0; i < this.allSteps.length; i++){
-            if(i <= positionI && positionI < steps.length) {
-                d3.select('#step_' + i).attr('fill', this.colors.green).attr('stroke', this.colors.green);
-                if (this.currentState == 'pending' && this.allSteps[i] == this.activeNum) {
-                    d3.select('#foreign_' + i).html('<i class="el-icon-loading"></i>');
-                } else if (i == 0) {
-                    d3.select('#foreign_' + i).html('<i class="el-icon-refresh"></i>');
-                } else {
-                    if (this.currentState == 'failed') {
-                        d3.select('#foreign_' + i).html('<i class="el-icon-close" style="color: #fff"></i>')
-                        .on("mouseenter", (d) => {
-                            d3.select(event.currentTarget).html('<i class="el-icon-refresh" style="color: #fff"></i>')
-                        })
-                        .on("mouseleave", (d) => {
-                            d3.select(event.currentTarget).html('<i class="el-icon-close" style="color: #fff"></i>')
-                        });
-                        d3.select('#step_' + i).attr('fill', this.colors.red).attr('stroke', this.colors.red).style("display", "block");
+        if (isFirst) {
+            for(let i = 0; i < this.allSteps.length; i++){
+                if(i <= positionI && positionI < steps.length) {
+                    d3.select('#step_' + i).attr('fill', this.colors.green).attr('stroke', this.colors.green);
+                    if (i == 0) {
+                        d3.select('#foreign_' + i).html('<i class="el-icon-refresh"></i>');
                     } else {
                         d3.select('#foreign_' + i).html('<i class="el-icon-check"></i>');
                     }
-                }
-            } else if (i <= positionI - steps.length + 1 || i == positionI) {
-                d3.select('#step_' + i).attr('fill', this.colors.green).attr('stroke', this.colors.green);
-                if (i == 0) {
-                    d3.select('#foreign_' + i).html('<i class="el-icon-refresh"></i>').style("display", "block");
+                } else if (i <= positionI - steps.length + 1 || i == positionI) {
+                    d3.select('#step_' + i).attr('fill', this.colors.green).attr('stroke', this.colors.green);
+                    if (i == 0) {
+                        d3.select('#foreign_' + i).html('<i class="el-icon-refresh"></i>').style("display", "block");
+                    } else {
+                        d3.select('#foreign_' + i).html('<i class="el-icon-check"></i>').style("display", "block");
+                    }
+                    if (i == positionI) {
+                        d3.select('#label_' + i).attr('fill', this.colors.black).style("display", "block");
+                    }
                 } else {
-                    d3.select('#foreign_' + i).html('<i class="el-icon-check"></i>').style("display", "block");
+                    if (i >= steps.length) {
+                        d3.select('#label_' + i).attr('fill', this.colors.black).style("display", "none");
+                        d3.select('#vertical_' + i).attr('height', 0);
+                        d3.select('#step_' + i).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen).style("display", "none");
+                        d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>').style("display", "none");
+                    }
+                    d3.select('#step_' + i).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen);
                 }
-                if (i == positionI) {
-                    d3.select('#label_' + i).attr('fill', this.colors.black).style("display", "block");
-                }
-            } else if (positionI < steps.length && i == positionI + steps.length - 1 && this.currentState == 'failed') {
-                d3.select('#label_' + i).attr('fill', this.colors.black).style("display", "block");
-                d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>').style("display", "block");
-                d3.select('#step_' + i).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen).style("display", "block");
-                d3.select('#vertical_' + i).attr('height', 128);
-            } else {
-                if (i >= steps.length) {
-                    d3.select('#label_' + i).attr('fill', this.colors.black).style("display", "none");
-                    d3.select('#vertical_' + i).attr('height', 0);
-                    d3.select('#step_' + i).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen).style("display", "none");
-                    d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>').style("display", "none");
-                }
-                d3.select('#step_' + i).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen);
             }
+            return;
+        }
+        d3.select('#step_' + step_).attr('fill', this.colors.green).attr('stroke', this.colors.green);
+        if (this.currentState == 'pending') {
+            d3.select('#foreign_' + step_).html('<i class="el-icon-loading"></i>');
+            if (step_ == 0) {
+                for(let i = 1; i < this.allSteps.length; i++) {
+                    d3.select('#step_' + i).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen);
+                    if (i >= steps.length) {
+                        d3.select('#label_' + i).attr('fill', this.colors.black).style("display", "none");
+                        d3.select('#vertical_' + i).attr('height', 0);
+                        d3.select('#step_' + i).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen).style("display", "none");
+                        d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>').style("display", "none");
+                    } else {
+                        d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>');
+                    }
+                }
+            }
+        } else if (this.currentState == 'failed') {
+            d3.select('#foreign_' + step_).html('<i class="el-icon-close" style="color: #fff"></i>')
+            .on("mouseenter", () => {
+                d3.select(event.currentTarget).html('<i class="el-icon-refresh" style="color: #fff"></i>')
+            })
+            .on("mouseleave", () => {
+                d3.select(event.currentTarget).html('<i class="el-icon-close" style="color: #fff"></i>')
+            });
+            if (step_ < steps.length) {
+                d3.select('#label_' + (step_ + steps.length - 1)).attr('fill', this.colors.black).style("display", "block");
+                d3.select('#foreign_' + (step_ + steps.length - 1)).html('<i class="el-icon-arrow-right"></i>').style("display", "block");
+                d3.select('#step_' + (step_ + steps.length - 1)).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen).style("display", "block");
+                d3.select('#vertical_' + (step_ + steps.length - 1)).attr('height', 128);
+            }
+            d3.select('#step_' + step_).attr('fill', this.colors.red).attr('stroke', this.colors.red).style("display", "block");
+        } else if (this.currentState == 'success') {
+            d3.select('#foreign_' + step_).html('<i class="el-icon-check"></i>');
         }
     },
     initStep() {
@@ -298,7 +317,7 @@ export default {
             return 4; 
         })
         .attr('r', 10)
-        .attr('fill', this.colors.white)
+        .attr('fill', this.colors.lightGreen)
         .attr('stroke', this.colors.lightGreen)
         .attr('stroke-width', 6)
         .style("cursor", "pointer")
@@ -339,6 +358,9 @@ export default {
             })
             .html(html)
             .on('click', () => {
+                if (index - this.activeNum > 1 && index < steps.length) {
+                    return;
+                }
                 this.activeNum = index;
                 this.currentState = 'pending';
                 this.updateProgressBar(this.activeNum);
@@ -383,7 +405,7 @@ export default {
         })
         .style("font-size", '9px')
 
-        this.updateProgressBar(this.activeNum);
+        this.updateProgressBar(this.activeNum , true);
     }
   }
 };
