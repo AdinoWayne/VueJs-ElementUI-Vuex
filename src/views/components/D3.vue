@@ -68,7 +68,123 @@ export default {
     ...mapActions('pi', ['getReworkStates', 'doAction']),
     initData() {
         if (this.pi && this.pi.pi_v4_state !== undefined) {
-            this.activeNum = this.pi.pi_v4_state;
+            this.handleData(this.pi.pi_v4_state);
+        }
+    },
+    handleData(piV4State) {
+        switch (true) {
+            case piV4State.indexOf("REWORK__SCANNING") !== -1:
+                this.activeNum = 0;
+                this.currentState = "pending";
+                break;
+            case piV4State.indexOf("REWORK__FAIL_SCANNING") !== -1:
+                this.activeNum = 0;
+                this.currentState = "failed";
+                break;
+            case piV4State.indexOf("REWORK__SUCCESS_SCANNING") !== -1:
+                this.activeNum = 0;
+                this.currentState = "success";
+                break;
+            case piV4State.indexOf("REWORK__SENDING_V4_INFO_TO_CLOUD") !== -1:
+                this.activeNum = 1;
+                this.currentState = "pending";
+                break;
+            case piV4State.indexOf("REWOWK__FAIL_SENDING_V4_INFO_TO_CLOUD") !== -1:
+                this.activeNum = 1;
+                this.currentState = "failed";
+                break;
+            case piV4State.indexOf("REWOWK__SUCCESS_SENDING_V4_INFO_TO_CLOUD") !== -1:
+                this.activeNum = 1;
+                this.currentState = "success";
+                break;
+            case piV4State.indexOf("REWORK__DONWLOADING_PLUME_CAS_FROM_CLOUD") !== -1:
+                this.activeNum = 2;
+                this.currentState = "pending";
+                break;
+            case piV4State.indexOf("REWORK__FAIL_DONWLOADING_PLUME_CAS_FROM_CLOUD") !== -1:
+                this.activeNum = 2;
+                this.currentState = "failed";
+                break;
+            case piV4State.indexOf("REWORK__SUCCESS_DONWLOADING_PLUME_CAS_FROM_CLOUD") !== -1:
+                this.activeNum = 2;
+                this.currentState = "success";
+                break;
+            case piV4State.indexOf("REWORK__OPENNING_SSH_SERVER_ON_V4") !== -1:
+                this.activeNum = 3;
+                this.currentState = "pending";
+                break;
+            case piV4State.indexOf("REWORK__FAIL_OPENNING_SSH_SERVER_ON_V4") !== -1:
+                this.activeNum = 3;
+                this.currentState = "failed";
+                break;
+            case piV4State.indexOf("REWORK__SUCCESS_OPENNING_SSH_SERVER_ON_V4") !== -1:
+                this.activeNum = 3;
+                this.currentState = "success";
+                break;
+            case piV4State.indexOf("REWORK__SENDING_FW_TO_V4") !== -1:
+                this.activeNum = 4;
+                this.currentState = "pending";
+                break;
+            case piV4State.indexOf("REWORK__FAIL_SENDING_FW_TO_V4") !== -1:
+                this.activeNum = 4;
+                this.currentState = "failed";
+                break;
+            case piV4State.indexOf("REWORK__SUCCESS_SENDING_FW_TO_V4") !== -1:
+                this.activeNum = 4;
+                this.currentState = "success";
+                break;
+            case piV4State.indexOf("REWORK__SENDING_PLUME_CAS_TO_V4") !== -1:
+                this.activeNum = 5;
+                this.currentState = "pending";
+                break;
+            case piV4State.indexOf("REWORK__FAIL_SENDING_PLUME_CAS_TO_V4") !== -1:
+                this.activeNum = 5;
+                this.currentState = "failed";
+                break;
+            case piV4State.indexOf("REWORK__SUCCESS_SENDING_PLUME_CAS_TO_V4") !== -1:
+                this.activeNum = 5;
+                this.currentState = "success";
+                break;
+            case piV4State.indexOf("REWORK__INSTALLING_PLUME_CAS_ON_V4") !== -1:
+                this.activeNum = 6;
+                this.currentState = "pending";
+                break;
+            case piV4State.indexOf("REWORK__FAIL_INSTALLING_PLUME_CAS_ON_V4") !== -1:
+                this.activeNum = 6;
+                this.currentState = "failed";
+                break;
+            case piV4State.indexOf("REWORK__SUCCESS_INSTALLING_PLUME_CAS_ON_V4") !== -1:
+                this.activeNum = 6;
+                this.currentState = "success";
+                break;
+            case piV4State.indexOf("REWORK__INSTALLING_FW_FOR_V4") !== -1:
+                this.activeNum = 7;
+                this.currentState = "pending";
+                break;
+            case piV4State.indexOf("REWORK__FAIL_INSTALLING_FW_FOR_V4") !== -1:
+                this.activeNum = 7;
+                this.currentState = "failed";
+                break;
+            case piV4State.indexOf("REWORK__SUCCESS_INSTALLING_FW_FOR_V4") !== -1:
+                this.activeNum = 7;
+                this.currentState = "success";
+                break;
+            case piV4State.indexOf("REWORK__SENDING_UPGRADED_LOG_TO_CLOUD") !== -1:
+                this.activeNum = 8;
+                this.currentState = "pending";
+                break;
+            case piV4State.indexOf("REWORK__FAIL_SENDING_UPGRADED_LOG_TO_CLOUD") !== -1:
+                this.activeNum = 8;
+                this.currentState = "failed";
+                break;
+            case piV4State.indexOf("REWORK__SUCCESS_SENDING_UPGRADED_LOG_TO_CLOUD") !== -1:
+                this.activeNum = 8;
+                this.currentState = "success";
+                break;
+            default:
+                this.activeNum = 0;
+                this.currentState = "pending";
+                break;
         }
     },
     prepareData(actionNumber) {
@@ -358,7 +474,10 @@ export default {
             })
             .html(html)
             .on('click', () => {
-                if (index - this.activeNum > 1 && index < steps.length) {
+                if (
+                    (index < this.activeNum && index != 0) ||
+                    (index - this.activeNum > 1 && index < steps.length)
+                ) {
                     return;
                 }
                 this.activeNum = index;
