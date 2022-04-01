@@ -37,7 +37,7 @@ router.beforeEach((to, from, next) => {
   const authRequired = !publicPages.includes(to.path);
   const user = getLocalStorage('user');
 
-  if (authRequired && (!user && !user.token)) {
+  if (authRequired && (!user || !user.token)) {
     next('/login');
   } else {
     next();

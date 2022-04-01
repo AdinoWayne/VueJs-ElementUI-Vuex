@@ -1,13 +1,13 @@
 import axios from 'axios';
 import { setLocalStorage } from '../common/utils';
 
-const API_URL = 'http://localhost:3000/api/auth/';
+const API_URL = 'http://192.168.100.222:8001/api/pi/';
 
 class AuthService {
   login(user) {
     return axios
       .post(API_URL + 'login', {
-        email: user.username,
+        username: user.username,
         password: user.password
       })
       .then(response => {

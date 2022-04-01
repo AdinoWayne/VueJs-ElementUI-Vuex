@@ -1,54 +1,98 @@
 <template>
   <el-container>
-    <el-aside width="300px" style="padding: 20px">
-      <el-button type="primary" icon="el-icon-connection" plain>Connection</el-button>
-    </el-aside>
     <el-main>
-      <el-card class="box-card">
-        <div slot="header" class="clearfix">
-          <span>Information Cloud</span>
-        </div>
-        <div class="text item">
-          name: <span>HUMAX-ABC</span>
-        </div>
-        <div class="text item">
-          status: <span>connection</span>
-        </div>
-      </el-card>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <div class="grid-content bg-purple">
+            <el-card class="box-card card-information">
+              <div
+                slot="header"
+                class="clearfix"
+              >
+                <span>Cloud Information</span>
+              </div>
+              <div class="text item">
+                FW Name: <span>{{ data.cloud.fw_name }}</span>
+              </div>
+              <div class="text item">
+                Progress: <span>{{ data.cloud.curr_state }}</span>
+              </div>
+              <div class="text item">
+                Status: <span>{{ data.cloud.cloud_connected ? 'Connection' : 'Disconnection' }}</span>
+              </div>
+            </el-card>
+          </div>
+        </el-col>
+        <el-col :span="12">
+          <div class="grid-content bg-purple">
+            <el-card class="box-card card-information">
+              <div
+                slot="header"
+                class="clearfix"
+              >
+                <span>HGJ310v4 Information</span>
+              </div>
+              <div class="text item">
+                Version: <span>{{ data.v4.fw_ver }}</span>
+              </div>
+              <div class="text item">
+                MAC: <span>{{ data.v4.cm_mac }}</span>
+              </div>
+              <div class="text item">
+                Number: <span>{{ data.v4.sn_num }}</span>
+              </div>
+            </el-card>
+          </div>
+        </el-col>
+      </el-row>
+      <D3 />
     </el-main>
   </el-container>
 </template>
 
 <script>
-import PostService from '../services/post.service';
+import D3 from './components/D3.vue';
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'Home',
+  components: {
+    D3
+  },
   data() {
     return {
-      content: ''
+      data: {
+        cloud: {},
+        v4: {}
+      }
     };
   },
   computed: {
-    ...mapGetters('post' ,["posts"])
+    ...mapGetters('pi' ,["pi"])
   },
-  created() {
-  },
+  created() {},
   mounted() {
-    if (!this.posts || this.posts.length  === 0) {
-      this.getPosts().then(() => this.initData());
-    }
+    this.fetchData();
   },
   methods: {
-    ...mapActions('post', ['getPosts']),
+    ...mapActions('pi', ['getInfoCloud', 'getV4Info']),
+    fetchData() {
+      let $q = [];
+      $q.push(this.getInfoCloud());
+      $q.push(this.getV4Info());
+      Promise.all($q).then(() => {
+        this.initData();
+      });
+    },
     initData() {
-      console.log(this.posts);
+      if (this.pi) {
+        this.data = this.pi;
+      }
     }
   }
 };
 </script>
-<style>
+<style scope>
 .text {
   font-size: 14px;
 }
@@ -61,6 +105,10 @@ export default {
   margin-bottom: 18px;
 }
 
+.card-information {
+  min-height: 220px;
+}
+
 .clearfix:before,
 .clearfix:after {
   display: table;
@@ -68,9 +116,5 @@ export default {
 }
 .clearfix:after {
   clear: both
-}
-
-.box-card {
-  width: 480px;
 }
 </style>

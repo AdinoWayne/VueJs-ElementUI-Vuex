@@ -20,7 +20,6 @@
 </template>
 
 <script>
-import PostService from '../services/post.service';
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
@@ -42,13 +41,11 @@ export default {
   },
   methods: {
     ...mapActions('post', ['getPosts']),
-    initData() {
-      console.log(this.posts);
-    }
+    initData() {}
   }
 };
 </script>
-<style>
+<style scoped>
 .text {
   font-size: 14px;
 }

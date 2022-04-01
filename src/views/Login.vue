@@ -5,8 +5,11 @@
         id="profile-img"
         src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
         class="profile-img-card"
-      />
-      <form name="form" @submit.prevent="handleLogin">
+      >
+      <form
+        name="form"
+        @submit.prevent="handleLogin"
+      >
         <div class="form-group">
           <label for="username">Username</label>
           <input
@@ -15,12 +18,14 @@
             type="text"
             class="form-control"
             name="username"
-          />
+          >
           <div
             v-if="errors.has('username')"
             class="alert alert-danger"
             role="alert"
-          >Username is required!</div>
+          >
+            Username is required!
+          </div>
         </div>
         <div class="form-group">
           <label for="password">Password</label>
@@ -30,18 +35,26 @@
             type="password"
             class="form-control"
             name="password"
-          />
+          >
           <div
             v-if="errors.has('password')"
             class="alert alert-danger"
             role="alert"
-          >Password is required!</div>
+          >
+            Password is required!
+          </div>
         </div>
         <div class="form-group">
           <el-button class="form-button" @click="handleLogin" type="primary" :loading="loading" :disabled="loading">Login</el-button>
         </div>
         <div class="form-group">
-          <div v-if="message" class="alert alert-danger" role="alert">{{message}}</div>
+          <div
+            v-if="message"
+            class="alert alert-danger"
+            role="alert"
+          >
+            {{ message }}
+          </div>
         </div>
       </form>
     </el-card>

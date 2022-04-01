@@ -3,50 +3,53 @@
     <nav class="navbar navbar-expand navbar-dark bg-dark">
       <div class="navbar-nav mr-auto">
         <li class="nav-item">
-          <router-link to="/" class="nav-link">
+          <router-link
+            to="/"
+            class="nav-link"
+          >
             HUMAX
           </router-link>
         </li>
       </div>
-      <div v-if="!currentUser" class="navbar-nav ml-auto">
+      <div
+        v-if="!currentUser"
+        class="navbar-nav ml-auto"
+      >
         <li class="nav-item">
-          <router-link to="/register" class="nav-link">
-            <font-awesome-icon icon="user-plus" /> Sign Up
-          </router-link>
-        </li>
-        <li class="nav-item">
-          <router-link to="/login" class="nav-link">
+          <router-link
+            to="/login"
+            class="nav-link"
+          >
             <font-awesome-icon icon="sign-in-alt" /> Login
           </router-link>
         </li>
       </div>
 
-      <div v-if="currentUser" class="navbar-nav ml-auto">
+      <div
+        v-if="currentUser"
+        class="navbar-nav ml-auto"
+      >
         <li class="nav-item">
-          <router-link to="/profile" class="nav-link">
+          <router-link
+            to="/profile"
+            class="nav-link"
+          >
             <font-awesome-icon icon="user" />
             {{ currentUser.username }}
           </router-link>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href @click.prevent="logOut">
+          <a
+            class="nav-link"
+            href
+            @click.prevent="logOut"
+          >
             <font-awesome-icon icon="sign-out-alt" /> LogOut
           </a>
         </li>
       </div>
     </nav>
-    <el-container v-if="currentUser">
-      <el-aside width="300px" style="padding: 20px">
-        <el-tabs class="tabs-wrapper" v-model="name" :tab-position="'left'" @tab-click="switchTabs">
-          <el-tab-pane :label="item" :name="item" v-for="item in tabs" :key="item">
-          </el-tab-pane>
-        </el-tabs>
-      </el-aside>
-      <el-main>
-        <router-view />
-      </el-main>
-    </el-container>
-    <el-container v-else>
+    <el-container>
       <router-view />
     </el-container>
   </div>
@@ -54,6 +57,12 @@
 
 <script>
 export default {
+  data() {
+    return {
+      tabs: ['Status', 'Scan', 'Upgrade'],
+      name: 'Status'
+    };
+  },
   components: {},
   computed: {
     currentUser() {
@@ -63,17 +72,12 @@ export default {
   mounted() {
     this.name = this.$route.name;
   },
-  data() {
-    return {
-      tabs: ['Status', 'Scan', 'Upgrade'],
-      name: 'Status'
-    };
-  },
   methods: {
+    // eslint-disable-next-line no-unused-vars
     switchTabs(tab, _event) {
       var switchObject = {
         'Status': () => {
-          return this.$router.push("/");
+          return this.$router.push("/status");
         },
         'Scan': () => {
           return this.$router.push("/scan");
@@ -82,7 +86,7 @@ export default {
           return this.$router.push("/upgrade");
         },
         'default': () => {
-          return this.$router.push("/");
+          return this.$router.push("/status");
         }
       };
       return (switchObject[tab.label] || switchObject['default'])();
