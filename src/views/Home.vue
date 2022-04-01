@@ -1,34 +1,45 @@
 <template>
   <el-container>
     <el-main>
-      <el-button type="primary" icon="el-icon-connection" plain>Connection</el-button>
       <el-row :gutter="20">
         <el-col :span="12">
           <div class="grid-content bg-purple">
-            <el-card class="box-card">
-              <div slot="header" class="clearfix">
-                <span>Information Cloud</span>
+            <el-card class="box-card card-information">
+              <div
+                slot="header"
+                class="clearfix"
+              >
+                <span>Cloud Information</span>
               </div>
               <div class="text item">
-                name: <span>HUMAX-ABC</span>
+                FW Name: <span>{{ data.cloud.fw_name }}</span>
               </div>
               <div class="text item">
-                status: <span>connection</span>
+                Progress: <span>{{ data.cloud.curr_state }}</span>
+              </div>
+              <div class="text item">
+                Status: <span>{{ data.cloud.cloud_connected ? 'Connection' : 'Disconnection' }}</span>
               </div>
             </el-card>
           </div>
-          </el-col>
+        </el-col>
         <el-col :span="12">
           <div class="grid-content bg-purple">
-            <el-card class="box-card">
-              <div slot="header" class="clearfix">
-                <span>Information HGJ310v4</span>
+            <el-card class="box-card card-information">
+              <div
+                slot="header"
+                class="clearfix"
+              >
+                <span>HGJ310v4 Information</span>
               </div>
               <div class="text item">
-                name: <span>HUMAX-ABC</span>
+                Version: <span>{{ data.v4.fw_ver }}</span>
               </div>
               <div class="text item">
-                status: <span>connection</span>
+                MAC: <span>{{ data.v4.cm_mac }}</span>
+              </div>
+              <div class="text item">
+                Number: <span>{{ data.v4.sn_num }}</span>
               </div>
             </el-card>
           </div>
@@ -45,26 +56,43 @@ import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'Home',
-  data() {
-    return {
-      content: ''
-    };
-  },
   components: {
     D3
+  },
+  data() {
+    return {
+      data: {
+        cloud: {},
+        v4: {}
+      }
+    };
   },
   computed: {
     ...mapGetters('pi' ,["pi"])
   },
   created() {},
-  mounted() {},
+  mounted() {
+    this.fetchData();
+  },
   methods: {
-    ...mapActions('pi', ['getReworkStates']),
-    initData() {}
+    ...mapActions('pi', ['getInfoCloud', 'getV4Info']),
+    fetchData() {
+      let $q = [];
+      $q.push(this.getInfoCloud());
+      $q.push(this.getV4Info());
+      Promise.all($q).then(() => {
+        this.initData();
+      });
+    },
+    initData() {
+      if (this.pi) {
+        this.data = this.pi;
+      }
+    }
   }
 };
 </script>
-<style>
+<style scope>
 .text {
   font-size: 14px;
 }
@@ -75,6 +103,10 @@ export default {
 
 .item {
   margin-bottom: 18px;
+}
+
+.card-information {
+  min-height: 220px;
 }
 
 .clearfix:before,

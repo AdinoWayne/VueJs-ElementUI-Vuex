@@ -1,11 +1,23 @@
 <template>
   <el-container>
-    <el-aside width="300px" style="padding: 20px">
-      <el-button type="success" icon="el-icon-loading" plain>Scan</el-button>
+    <el-aside
+      width="300px"
+      style="padding: 20px"
+    >
+      <el-button
+        type="success"
+        icon="el-icon-loading"
+        plain
+      >
+        Scan
+      </el-button>
     </el-aside>
     <el-main>
       <el-card class="box-card">
-        <div slot="header" class="clearfix">
+        <div
+          slot="header"
+          class="clearfix"
+        >
           <span>Information Scan</span>
         </div>
         <div class="text item">
@@ -41,12 +53,11 @@ export default {
   },
   methods: {
     ...mapActions('post', ['getPosts']),
-    initData() {
-    }
+    initData() {}
   }
 };
 </script>
-<style scoped>
+<style>
 .text {
   font-size: 14px;
 }
@@ -67,9 +78,5 @@ export default {
 }
 .clearfix:after {
   clear: both
-}
-
-.box-card {
-  width: 480px;
 }
 </style>

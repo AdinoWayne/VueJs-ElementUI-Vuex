@@ -4,17 +4,21 @@
 /* eslint-disable no-unused-vars */
 <template>
   <el-container style="margin-top: 10px">
-      <el-card class="box-card">
-        <div slot="header" class="clearfix">
-          <span>Progress Step</span>
-        </div>
-        <div class="wrapper-ap-progress"></div>
-      </el-card>
+    <el-card class="box-card">
+      <div
+        slot="header"
+        class="clearfix"
+      >
+        <span>Progress Step</span>
+      </div>
+      <div class="wrapper-ap-progress" />
+    </el-card>
   </el-container>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import { PROGRESS } from "./../../common/constants";
 import * as d3 from "d3";
 
 export default {
@@ -45,6 +49,7 @@ export default {
       progress: null,
       arrHighProgress: [],
       currentState: "success",
+      timer: null,
       arrIcon: [],
       stepWidth: 0,
     };
@@ -54,6 +59,28 @@ export default {
     colors() {
         return { green: '#4DC87F', lightGreen: '#D9F0E3', white: '#FFFFFF', black: '#000000', red: '#E74C3C' };
     }
+  },
+  watch: {
+      currentState() {
+          if (this.currentState == 'pending') {
+                if (this.timer) {
+                    clearTimeout(this.timer);
+                    this.timer = null;
+                }
+                this.timer = setInterval(() => {
+                    this.getReworkStates().finally(() => {
+                        this.initData(() => {
+                            this.updateProgressBar(this.activeNum)
+                        });
+                    })
+                }, 5000);
+          } else {
+            if (this.timer) {
+                clearTimeout(this.timer);
+                this.timer = null;
+            }
+          }
+      }
   },
   created() {
       this.allSteps = [...this.steps, ...this.stepErrors];
@@ -66,118 +93,121 @@ export default {
   },
   methods: {
     ...mapActions('pi', ['getReworkStates', 'doAction']),
-    initData() {
+    initData(callback) {
         if (this.pi && this.pi.pi_v4_state !== undefined) {
             this.handleData(this.pi.pi_v4_state);
+        }
+        if (callback) {
+            callback();
         }
     },
     handleData(piV4State) {
         switch (true) {
-            case piV4State.indexOf("REWORK__SCANNING") !== -1:
+            case piV4State.indexOf(PROGRESS.REWORK__SCANNING) !== -1:
                 this.activeNum = 0;
                 this.currentState = "pending";
                 break;
-            case piV4State.indexOf("REWORK__FAIL_SCANNING") !== -1:
+            case piV4State.indexOf(PROGRESS.REWORK__FAIL_SCANNING) !== -1:
                 this.activeNum = 0;
                 this.currentState = "failed";
                 break;
-            case piV4State.indexOf("REWORK__SUCCESS_SCANNING") !== -1:
+            case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_SCANNING) !== -1:
                 this.activeNum = 0;
                 this.currentState = "success";
                 break;
-            case piV4State.indexOf("REWORK__SENDING_V4_INFO_TO_CLOUD") !== -1:
+            case piV4State.indexOf(PROGRESS.REWORK__SENDING_V4_INFO_TO_CLOUD) !== -1:
                 this.activeNum = 1;
                 this.currentState = "pending";
                 break;
-            case piV4State.indexOf("REWOWK__FAIL_SENDING_V4_INFO_TO_CLOUD") !== -1:
+            case piV4State.indexOf(PROGRESS.REWOWK__FAIL_SENDING_V4_INFO_TO_CLOUD) !== -1:
                 this.activeNum = 1;
                 this.currentState = "failed";
                 break;
-            case piV4State.indexOf("REWOWK__SUCCESS_SENDING_V4_INFO_TO_CLOUD") !== -1:
+            case piV4State.indexOf(PROGRESS.REWOWK__SUCCESS_SENDING_V4_INFO_TO_CLOUD) !== -1:
                 this.activeNum = 1;
                 this.currentState = "success";
                 break;
-            case piV4State.indexOf("REWORK__DONWLOADING_PLUME_CAS_FROM_CLOUD") !== -1:
+            case piV4State.indexOf(PROGRESS.REWORK__DONWLOADING_PLUME_CAS_FROM_CLOUD) !== -1:
                 this.activeNum = 2;
                 this.currentState = "pending";
                 break;
-            case piV4State.indexOf("REWORK__FAIL_DONWLOADING_PLUME_CAS_FROM_CLOUD") !== -1:
+            case piV4State.indexOf(PROGRESS.REWORK__FAIL_DONWLOADING_PLUME_CAS_FROM_CLOUD) !== -1:
                 this.activeNum = 2;
                 this.currentState = "failed";
                 break;
-            case piV4State.indexOf("REWORK__SUCCESS_DONWLOADING_PLUME_CAS_FROM_CLOUD") !== -1:
+            case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_DONWLOADING_PLUME_CAS_FROM_CLOUD) !== -1:
                 this.activeNum = 2;
                 this.currentState = "success";
                 break;
-            case piV4State.indexOf("REWORK__OPENNING_SSH_SERVER_ON_V4") !== -1:
+            case piV4State.indexOf(PROGRESS.REWORK__OPENNING_SSH_SERVER_ON_V4) !== -1:
                 this.activeNum = 3;
                 this.currentState = "pending";
                 break;
-            case piV4State.indexOf("REWORK__FAIL_OPENNING_SSH_SERVER_ON_V4") !== -1:
+            case piV4State.indexOf(PROGRESS.REWORK__FAIL_OPENNING_SSH_SERVER_ON_V4) !== -1:
                 this.activeNum = 3;
                 this.currentState = "failed";
                 break;
-            case piV4State.indexOf("REWORK__SUCCESS_OPENNING_SSH_SERVER_ON_V4") !== -1:
+            case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_OPENNING_SSH_SERVER_ON_V4) !== -1:
                 this.activeNum = 3;
                 this.currentState = "success";
                 break;
-            case piV4State.indexOf("REWORK__SENDING_FW_TO_V4") !== -1:
+            case piV4State.indexOf(PROGRESS.REWORK__SENDING_FW_TO_V4) !== -1:
                 this.activeNum = 4;
                 this.currentState = "pending";
                 break;
-            case piV4State.indexOf("REWORK__FAIL_SENDING_FW_TO_V4") !== -1:
+            case piV4State.indexOf(PROGRESS.REWORK__FAIL_SENDING_FW_TO_V4) !== -1:
                 this.activeNum = 4;
                 this.currentState = "failed";
                 break;
-            case piV4State.indexOf("REWORK__SUCCESS_SENDING_FW_TO_V4") !== -1:
+            case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_SENDING_FW_TO_V4) !== -1:
                 this.activeNum = 4;
                 this.currentState = "success";
                 break;
-            case piV4State.indexOf("REWORK__SENDING_PLUME_CAS_TO_V4") !== -1:
+            case piV4State.indexOf(PROGRESS.REWORK__SENDING_PLUME_CAS_TO_V4) !== -1:
                 this.activeNum = 5;
                 this.currentState = "pending";
                 break;
-            case piV4State.indexOf("REWORK__FAIL_SENDING_PLUME_CAS_TO_V4") !== -1:
+            case piV4State.indexOf(PROGRESS.REWORK__FAIL_SENDING_PLUME_CAS_TO_V4) !== -1:
                 this.activeNum = 5;
                 this.currentState = "failed";
                 break;
-            case piV4State.indexOf("REWORK__SUCCESS_SENDING_PLUME_CAS_TO_V4") !== -1:
+            case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_SENDING_PLUME_CAS_TO_V4) !== -1:
                 this.activeNum = 5;
                 this.currentState = "success";
                 break;
-            case piV4State.indexOf("REWORK__INSTALLING_PLUME_CAS_ON_V4") !== -1:
+            case piV4State.indexOf(PROGRESS.REWORK__INSTALLING_PLUME_CAS_ON_V4) !== -1:
                 this.activeNum = 6;
                 this.currentState = "pending";
                 break;
-            case piV4State.indexOf("REWORK__FAIL_INSTALLING_PLUME_CAS_ON_V4") !== -1:
+            case piV4State.indexOf(PROGRESS.REWORK__FAIL_INSTALLING_PLUME_CAS_ON_V4) !== -1:
                 this.activeNum = 6;
                 this.currentState = "failed";
                 break;
-            case piV4State.indexOf("REWORK__SUCCESS_INSTALLING_PLUME_CAS_ON_V4") !== -1:
+            case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_INSTALLING_PLUME_CAS_ON_V4) !== -1:
                 this.activeNum = 6;
                 this.currentState = "success";
                 break;
-            case piV4State.indexOf("REWORK__INSTALLING_FW_FOR_V4") !== -1:
+            case piV4State.indexOf(PROGRESS.REWORK__INSTALLING_FW_FOR_V4) !== -1:
                 this.activeNum = 7;
                 this.currentState = "pending";
                 break;
-            case piV4State.indexOf("REWORK__FAIL_INSTALLING_FW_FOR_V4") !== -1:
+            case piV4State.indexOf(PROGRESS.REWORK__FAIL_INSTALLING_FW_FOR_V4) !== -1:
                 this.activeNum = 7;
                 this.currentState = "failed";
                 break;
-            case piV4State.indexOf("REWORK__SUCCESS_INSTALLING_FW_FOR_V4") !== -1:
+            case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_INSTALLING_FW_FOR_V4) !== -1:
                 this.activeNum = 7;
                 this.currentState = "success";
                 break;
-            case piV4State.indexOf("REWORK__SENDING_UPGRADED_LOG_TO_CLOUD") !== -1:
+            case piV4State.indexOf(PROGRESS.REWORK__SENDING_UPGRADED_LOG_TO_CLOUD) !== -1:
                 this.activeNum = 8;
                 this.currentState = "pending";
                 break;
-            case piV4State.indexOf("REWORK__FAIL_SENDING_UPGRADED_LOG_TO_CLOUD") !== -1:
+            case piV4State.indexOf(PROGRESS.REWORK__FAIL_SENDING_UPGRADED_LOG_TO_CLOUD) !== -1:
                 this.activeNum = 8;
                 this.currentState = "failed";
                 break;
-            case piV4State.indexOf("REWORK__SUCCESS_SENDING_UPGRADED_LOG_TO_CLOUD") !== -1:
+            case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_SENDING_UPGRADED_LOG_TO_CLOUD) !== -1:
                 this.activeNum = 8;
                 this.currentState = "success";
                 break;
@@ -191,34 +221,34 @@ export default {
         let result = ""
         switch (actionNumber) {
             case 0:
-                result = "REWORK__SCANNING";
+                result = PROGRESS.REWORK__SCANNING;
                 break;
             case 1:
-                result = "REWORK__SENDING_V4_INFO_TO_CLOUD";
+                result = PROGRESS.REWORK__SENDING_V4_INFO_TO_CLOUD;
                 break;
             case 2:
-                result = "REWORK__DOWNLOADING_PLUME_CAS_FROM_CLOUD";
+                result = PROGRESS.REWORK__DONWLOADING_PLUME_CAS_FROM_CLOUD;
                 break;
             case 3:
-                result = "REWORK__OPENING_SSH_SERVER_ON_V4";
+                result = PROGRESS.REWORK__OPENNING_SSH_SERVER_ON_V4;
                 break;
             case 4:
-                result = "REWORK__SENDING_FW_TO_V4";
+                result = PROGRESS.REWORK__SENDING_FW_TO_V4;
                 break;
             case 5:
-                result = "REWORK__SENDING_PLUME_CAS_TO_V4";
+                result = PROGRESS.REWORK__SENDING_PLUME_CAS_TO_V4;
                 break;
             case 6:
-                result = "REWORK__INSTALLING_PLUME_CAS_ON_V4";
+                result = PROGRESS.REWORK__INSTALLING_PLUME_CAS_ON_V4;
                 break;
             case 7:
-                result = "REWORK__INSTALLING_FW_FOR_V4";
+                result = PROGRESS.REWORK__INSTALLING_FW_FOR_V4;
                 break;
             case 8:
-                result = "REWORK__SENDING_UPGRADED_LOG_TO_CLOUD";
+                result = PROGRESS.REWORK__SENDING_UPGRADED_LOG_TO_CLOUD;
                 break;
             default:
-                result = "REWORK__SENDING_UPGRADED_LOG_TO_CLOUD";
+                result = PROGRESS.REWORK__SENDING_UPGRADED_LOG_TO_CLOUD;
                 break;
         }
         return result
@@ -476,22 +506,21 @@ export default {
             .on('click', () => {
                 if (
                     (index < this.activeNum && index != 0) ||
-                    (index - this.activeNum > 1 && index < steps.length)
+                    (index - this.activeNum > 1 && index < steps.length) ||
+                    this.currentState == 'pending'
                 ) {
                     return;
                 }
                 this.activeNum = index;
                 this.currentState = 'pending';
                 this.updateProgressBar(this.activeNum);
-                setTimeout(() => {
-                    this.doAction({ action_name: this.prepareData(index), num: index}).then(() => {
-                        this.currentState = 'success';
-                    }).catch(() => {
-                        this.currentState = 'failed';
-                    }).finally(() => {
-                        this.updateProgressBar(this.activeNum);
-                    })
-                }, 1000)
+                this.doAction({ action_name: this.prepareData(index), num: index}).then(() => {
+                    this.currentState = 'success';
+                }).catch(() => {
+                    this.currentState = 'failed';
+                }).finally(() => {
+                    this.updateProgressBar(this.activeNum);
+                })
             }))
         }
 

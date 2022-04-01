@@ -1,7 +1,10 @@
 import PIService from '../services/piv4.service';
 
 const initialState = {
-    pi: {},
+    pi: {
+      cloud: {},
+      v4: {},
+    },
     nextAction: {
       status: 'success',
       prevAction: 0,
@@ -21,6 +24,30 @@ export const pi = {
         },
         error => {
           commit('getReworkStatesFailed');
+          return Promise.reject(error);
+        }
+      );
+    },
+    getInfoCloud({ commit }) {
+      return PIService.getInfoCloud().then(
+        res => {
+          commit('getInfoCloudSuccess', res.data);
+          return Promise.resolve(res.data);
+        },
+        error => {
+          commit('getInfoCloudFailed');
+          return Promise.reject(error);
+        }
+      );
+    },
+    getV4Info({ commit }) {
+      return PIService.getV4Info().then(
+        res => {
+          commit('getV4InfoSuccess', res.data);
+          return Promise.resolve(res.data);
+        },
+        error => {
+          commit('getV4InfoFailed');
           return Promise.reject(error);
         }
       );
@@ -48,10 +75,31 @@ export const pi = {
   },
   mutations: {
     getReworkStatesSuccess(state, pi) {
-      state.pi = pi;
+      state.pi = {
+        ...state.pi,
+        ...pi
+      };
     },
     getReworkStatesFailed() {
         // TODO
+    },
+    getInfoCloudSuccess(state, pi) {
+      state.pi = {
+        ...state.pi,
+        cloud: pi
+      };
+    },
+    getInfoCloudFailed() {
+      // TODO
+    },
+    getV4InfoSuccess(state, pi) {
+      state.pi = {
+        ...state.pi,
+        v4: pi
+      };
+    },
+    getV4InfoFailed() {
+      // TODO
     },
     setPiActionSuccess(state, action) {
       state.nextAction = {
