@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { setLocalStorage } from '../common/utils';
 
 const API_URL = 'http://192.168.100.222:8001/api/pi/';
 
@@ -11,7 +12,7 @@ class AuthService {
       })
       .then(response => {
         if (response.data) {
-          localStorage.setItem('user', JSON.stringify(response.data.token));
+          setLocalStorage('user', response.data);
         }
 
         return response.data;

@@ -1,6 +1,6 @@
 <template>
   <div class="col-md-12">
-    <div class="card card-container">
+    <el-card class="box-card">
       <img
         id="profile-img"
         src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
@@ -45,16 +45,7 @@
           </div>
         </div>
         <div class="form-group">
-          <button
-            class="btn btn-primary btn-block"
-            :disabled="loading"
-          >
-            <span
-              v-show="loading"
-              class="spinner-border spinner-border-sm"
-            />
-            <span>Login</span>
-          </button>
+          <el-button class="form-button" @click="handleLogin" type="primary" :loading="loading" :disabled="loading">Login</el-button>
         </div>
         <div class="form-group">
           <div
@@ -66,7 +57,7 @@
           </div>
         </div>
       </form>
-    </div>
+    </el-card>
   </div>
 </template>
 
@@ -125,6 +116,15 @@ export default {
 label {
   display: block;
   margin-top: 10px;
+}
+
+.box-card {
+  margin: 30px auto;
+  width: 400px;
+}
+
+.form-button {
+  width: 100%;
 }
 
 .card-container.card {

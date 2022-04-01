@@ -50,9 +50,7 @@
       </div>
     </nav>
     <el-container>
-      <el-main>
-        <router-view />
-      </el-main>
+      <router-view />
     </el-container>
   </div>
 </template>
@@ -65,6 +63,7 @@ export default {
       name: 'Status'
     };
   },
+  components: {},
   computed: {
     currentUser() {
       return this.$store.state.auth.user;

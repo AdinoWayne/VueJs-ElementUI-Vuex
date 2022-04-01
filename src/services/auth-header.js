@@ -1,5 +1,7 @@
+import { getLocalStorage } from '../common/utils';
+
 export default function authHeader() {
-  let user = JSON.parse(localStorage.getItem('user'));
+  let user = getLocalStorage('user');
 
   if (user) {
     return { Authorization: user }; // for Spring Boot back-end
