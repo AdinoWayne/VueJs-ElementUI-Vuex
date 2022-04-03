@@ -70,10 +70,12 @@ export default {
                 this.timer = setInterval(() => {
                     this.getReworkStates().finally(() => {
                         this.initData(() => {
+                            console.log(this.currentState);
+                            console.log(this.activeNum);
                             this.updateProgressBar(this.activeNum)
                         });
                     })
-                }, 5000);
+                }, 10000);
           } else {
             if (this.timer) {
                 clearTimeout(this.timer);
@@ -120,7 +122,7 @@ export default {
                 this.currentState = "pending";
                 break;
             case piV4State.indexOf(PROGRESS.REWOWK__FAIL_SENDING_V4_INFO_TO_CLOUD) !== -1:
-                this.activeNum = 1;
+                this.activeNum = 9;
                 this.currentState = "failed";
                 break;
             case piV4State.indexOf(PROGRESS.REWOWK__SUCCESS_SENDING_V4_INFO_TO_CLOUD) !== -1:
@@ -132,7 +134,7 @@ export default {
                 this.currentState = "pending";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__FAIL_DONWLOADING_PLUME_CAS_FROM_CLOUD) !== -1:
-                this.activeNum = 2;
+                this.activeNum = 10;
                 this.currentState = "failed";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_DONWLOADING_PLUME_CAS_FROM_CLOUD) !== -1:
@@ -144,7 +146,7 @@ export default {
                 this.currentState = "pending";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__FAIL_OPENNING_SSH_SERVER_ON_V4) !== -1:
-                this.activeNum = 3;
+                this.activeNum = 11;
                 this.currentState = "failed";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_OPENNING_SSH_SERVER_ON_V4) !== -1:
@@ -156,7 +158,7 @@ export default {
                 this.currentState = "pending";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__FAIL_SENDING_FW_TO_V4) !== -1:
-                this.activeNum = 4;
+                this.activeNum = 12;
                 this.currentState = "failed";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_SENDING_FW_TO_V4) !== -1:
@@ -168,7 +170,7 @@ export default {
                 this.currentState = "pending";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__FAIL_SENDING_PLUME_CAS_TO_V4) !== -1:
-                this.activeNum = 5;
+                this.activeNum = 13;
                 this.currentState = "failed";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_SENDING_PLUME_CAS_TO_V4) !== -1:
@@ -180,7 +182,7 @@ export default {
                 this.currentState = "pending";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__FAIL_INSTALLING_PLUME_CAS_ON_V4) !== -1:
-                this.activeNum = 6;
+                this.activeNum = 14;
                 this.currentState = "failed";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_INSTALLING_PLUME_CAS_ON_V4) !== -1:
@@ -192,7 +194,7 @@ export default {
                 this.currentState = "pending";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__FAIL_INSTALLING_FW_FOR_V4) !== -1:
-                this.activeNum = 7;
+                this.activeNum = 15;
                 this.currentState = "failed";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_INSTALLING_FW_FOR_V4) !== -1:
@@ -204,7 +206,7 @@ export default {
                 this.currentState = "pending";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__FAIL_SENDING_UPGRADED_LOG_TO_CLOUD) !== -1:
-                this.activeNum = 8;
+                this.activeNum = 16;
                 this.currentState = "failed";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_SENDING_UPGRADED_LOG_TO_CLOUD) !== -1:
@@ -254,6 +256,7 @@ export default {
         return result
     },
     updateProgressBar(step_, isFirst) {
+        console.log(step_, isFirst, this.currentState);
         var positionI = this.allSteps.indexOf(step_);
         var positionE = this.stepErrors.indexOf(step_);
         var steps = this.steps;
@@ -282,29 +285,49 @@ export default {
             .attr('height', () => {
                 return 128;
             });
-            d3.select('#step_' + positionI)
-            .attr('fill', this.colors.green)
-            .attr('stroke', this.colors.green)
-            .style("display", "block");
-            this.arrHighProgress[positionE + 1].transition()
-            .delay(500)
-            .duration(1000)
-            .attr('fill', this.colors.green)
-            .attr('height', 128);
+            if (this.currentState == 'success') {
+                d3.select('#step_' + positionI)
+                    .attr('fill', this.colors.green)
+                    .attr('stroke', this.colors.green)
+                    .style("display", "block");
+                this.arrHighProgress[positionE + 1].transition()
+                    .delay(500)
+                    .duration(1000)
+                    .attr('fill', this.colors.green)
+                    .attr('height', 128);
+            }
         }
         if (isFirst) {
             for(let i = 0; i < this.allSteps.length; i++){
                 if(i <= positionI && positionI < steps.length) {
                     d3.select('#step_' + i).attr('fill', this.colors.green).attr('stroke', this.colors.green);
-                    if (i == 0) {
+                    if (i == 0 && i != positionI) { 
                         d3.select('#foreign_' + i).html('<i class="el-icon-refresh"></i>');
+                    } else if (i == positionI && this.currentState == 'pending') {
+                        d3.select('#foreign_' + i).html('<i class="el-icon-loading"></i>');
                     } else {
-                        d3.select('#foreign_' + i).html('<i class="el-icon-check"></i>');
+                        if (this.currentState == 'failed') {
+                            d3.select('#foreign_' + i).html('<i class="el-icon-refresh"></i>');
+                            d3.select('#step_' + i).attr('fill', this.colors.red).attr('stroke', this.colors.red);
+                        } else {
+                            d3.select('#foreign_' + i).html('<i class="el-icon-check"></i>');
+                        }
                     }
                 } else if (i <= positionI - steps.length + 1 || i == positionI) {
                     d3.select('#step_' + i).attr('fill', this.colors.green).attr('stroke', this.colors.green);
                     if (i == 0) {
                         d3.select('#foreign_' + i).html('<i class="el-icon-refresh"></i>').style("display", "block");
+                    } else if (i == positionI - steps.length + 1) {
+                        d3.select('#step_' + i).attr('fill', this.colors.red).attr('stroke', this.colors.red).style("display", "block");
+                        d3.select('#foreign_' + i).html('<i class="el-icon-close" style="color: #fff"></i>');
+                    } else if (i == positionI) {
+                        d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>').style("display", "block");
+                        if (this.currentState == 'failed') {
+                            d3.select('#step_' + i)
+                                .attr('fill', this.colors.lightGreen)
+                                .attr('stroke', this.colors.lightGreen)
+                                .style("display", "block");
+                        }
                     } else {
                         d3.select('#foreign_' + i).html('<i class="el-icon-check"></i>').style("display", "block");
                     }
@@ -338,16 +361,24 @@ export default {
                         d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>');
                     }
                 }
+            } else {
+                d3.select('#foreign_' + 0).html('<i class="el-icon-refresh"></i>');
             }
         } else if (this.currentState == 'failed') {
             d3.select('#foreign_' + step_).html('<i class="el-icon-close" style="color: #fff"></i>')
-            .on("mouseenter", () => {
-                d3.select(event.currentTarget).html('<i class="el-icon-refresh" style="color: #fff"></i>')
-            })
-            .on("mouseleave", () => {
-                d3.select(event.currentTarget).html('<i class="el-icon-close" style="color: #fff"></i>')
-            });
-            if (step_ < steps.length) {
+            // .on('click', () => {
+            //     this.activeNum = step_;
+            //     this.currentState = 'pending';
+            //     this.updateProgressBar(step_);
+            //     this.doAction({ action_name: this.prepareData(step_), num: step_})
+            // })
+            // .on("mouseenter", () => {
+            //     d3.select(event.currentTarget).html('<i class="el-icon-refresh" style="color: #fff"></i>')
+            // })
+            // .on("mouseleave", () => {
+            //     d3.select(event.currentTarget).html('<i class="el-icon-close" style="color: #fff"></i>')
+            // })
+            if (step_ !== 0 && step_ < steps.length) {
                 d3.select('#label_' + (step_ + steps.length - 1)).attr('fill', this.colors.black).style("display", "block");
                 d3.select('#foreign_' + (step_ + steps.length - 1)).html('<i class="el-icon-arrow-right"></i>').style("display", "block");
                 d3.select('#step_' + (step_ + steps.length - 1)).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen).style("display", "block");
@@ -507,6 +538,7 @@ export default {
                 if (
                     (index < this.activeNum && index != 0) ||
                     (index - this.activeNum > 1 && index < steps.length) ||
+                    (this.currentState == 'failed' && index > this.activeNum && index < steps.length) ||
                     this.currentState == 'pending'
                 ) {
                     return;
@@ -514,13 +546,7 @@ export default {
                 this.activeNum = index;
                 this.currentState = 'pending';
                 this.updateProgressBar(this.activeNum);
-                this.doAction({ action_name: this.prepareData(index), num: index}).then(() => {
-                    this.currentState = 'success';
-                }).catch(() => {
-                    this.currentState = 'failed';
-                }).finally(() => {
-                    this.updateProgressBar(this.activeNum);
-                })
+                this.doAction({ action_name: this.prepareData(index), num: index})
             }))
         }
 
