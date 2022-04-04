@@ -70,12 +70,10 @@ export default {
                 this.timer = setInterval(() => {
                     this.getReworkStates().finally(() => {
                         this.initData(() => {
-                            console.log(this.currentState);
-                            console.log(this.activeNum);
                             this.updateProgressBar(this.activeNum)
                         });
                     })
-                }, 10000);
+                }, 5000);
           } else {
             if (this.timer) {
                 clearTimeout(this.timer);
@@ -88,6 +86,11 @@ export default {
       this.allSteps = [...this.steps, ...this.stepErrors];
   },
   mounted() {
+    let num = localStorage.getItem("stepNum")
+    num = num ? parseInt(num, 10) : null;
+    if (num) {
+        this.activeNum = num;
+    }
     this.getReworkStates().finally(() => {
         this.initData();
         this.initStep();
@@ -104,6 +107,8 @@ export default {
         }
     },
     handleData(piV4State) {
+        let num = localStorage.getItem("stepNum")
+        num = num ? parseInt(num, 10) : null; 
         switch (true) {
             case piV4State.indexOf(PROGRESS.REWORK__SCANNING) !== -1:
                 this.activeNum = 0;
@@ -122,7 +127,7 @@ export default {
                 this.currentState = "pending";
                 break;
             case piV4State.indexOf(PROGRESS.REWOWK__FAIL_SENDING_V4_INFO_TO_CLOUD) !== -1:
-                this.activeNum = 9;
+                this.activeNum = 1;
                 this.currentState = "failed";
                 break;
             case piV4State.indexOf(PROGRESS.REWOWK__SUCCESS_SENDING_V4_INFO_TO_CLOUD) !== -1:
@@ -134,7 +139,7 @@ export default {
                 this.currentState = "pending";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__FAIL_DONWLOADING_PLUME_CAS_FROM_CLOUD) !== -1:
-                this.activeNum = 10;
+                this.activeNum = 2;
                 this.currentState = "failed";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_DONWLOADING_PLUME_CAS_FROM_CLOUD) !== -1:
@@ -146,7 +151,7 @@ export default {
                 this.currentState = "pending";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__FAIL_OPENNING_SSH_SERVER_ON_V4) !== -1:
-                this.activeNum = 11;
+                this.activeNum = 3;
                 this.currentState = "failed";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_OPENNING_SSH_SERVER_ON_V4) !== -1:
@@ -158,7 +163,7 @@ export default {
                 this.currentState = "pending";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__FAIL_SENDING_FW_TO_V4) !== -1:
-                this.activeNum = 12;
+                this.activeNum = 4;
                 this.currentState = "failed";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_SENDING_FW_TO_V4) !== -1:
@@ -170,7 +175,7 @@ export default {
                 this.currentState = "pending";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__FAIL_SENDING_PLUME_CAS_TO_V4) !== -1:
-                this.activeNum = 13;
+                this.activeNum = 5;
                 this.currentState = "failed";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_SENDING_PLUME_CAS_TO_V4) !== -1:
@@ -182,7 +187,7 @@ export default {
                 this.currentState = "pending";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__FAIL_INSTALLING_PLUME_CAS_ON_V4) !== -1:
-                this.activeNum = 14;
+                this.activeNum = 6;
                 this.currentState = "failed";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_INSTALLING_PLUME_CAS_ON_V4) !== -1:
@@ -194,7 +199,7 @@ export default {
                 this.currentState = "pending";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__FAIL_INSTALLING_FW_FOR_V4) !== -1:
-                this.activeNum = 15;
+                this.activeNum = 7;
                 this.currentState = "failed";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_INSTALLING_FW_FOR_V4) !== -1:
@@ -202,15 +207,27 @@ export default {
                 this.currentState = "success";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SENDING_UPGRADED_LOG_TO_CLOUD) !== -1:
-                this.activeNum = 8;
+                if (num > 7) {
+                    this.activeNum = 8;
+                } else {
+                    this.activeNum = num + this.steps.length -1;
+                }
                 this.currentState = "pending";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__FAIL_SENDING_UPGRADED_LOG_TO_CLOUD) !== -1:
-                this.activeNum = 16;
+                if (num > 7) {
+                    this.activeNum = 8;
+                } else {
+                    this.activeNum = num + this.steps.length -1;
+                }
                 this.currentState = "failed";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_SENDING_UPGRADED_LOG_TO_CLOUD) !== -1:
-                this.activeNum = 8;
+                if (num > 7) {
+                    this.activeNum = 8;
+                } else {
+                    this.activeNum = num + this.steps.length -1;
+                }
                 this.currentState = "success";
                 break;
             default:
@@ -256,11 +273,11 @@ export default {
         return result
     },
     updateProgressBar(step_, isFirst) {
-        console.log(step_, isFirst, this.currentState);
-        var positionI = this.allSteps.indexOf(step_);
-        var positionE = this.stepErrors.indexOf(step_);
         var steps = this.steps;
         var stepWidth = this.stepWidth;
+        var positionI = this.allSteps.indexOf(step_);
+        var a = this.currentState == 'failed' ? step_ + steps.length - 1 : step_;
+        var positionE = this.stepErrors.indexOf(a);
         this.progress.transition()
             .duration(1000)
             .attr('fill', this.colors.green)
@@ -271,27 +288,31 @@ export default {
                 }
                 return (index - steps.length + 1) * stepWidth;
             });
-        if (positionI >= steps.length) {
-            this.progressFirstBackGround
-            .attr('height', () => {
-                return 128;
-            });
+        if (positionI >= steps.length || this.currentState == 'failed') {
+            if (step_ > 0) {
+                this.progressFirstBackGround
+                .attr('height', () => {
+                    return 128;
+                });
+            }
             this.progressError
             .attr('width', () => {
-                var index = this.allSteps.indexOf(step_);
+                var index = this.allSteps.indexOf(a);
                 return (index - steps.length + 1) * stepWidth;
             });
-            this.arrProgress[positionE]
-            .attr('height', () => {
-                return 128;
-            });
-            if (this.currentState == 'success') {
+            if (positionE > -1) {
+                this.arrProgress[positionE]
+                .attr('height', () => {
+                    return 128;
+                });
+            }
+            if (this.currentState == 'success' || this.currentState == 'pending') {
                 d3.select('#step_' + positionI)
                     .attr('fill', this.colors.green)
                     .attr('stroke', this.colors.green)
                     .style("display", "block");
                 this.arrHighProgress[positionE + 1].transition()
-                    .delay(500)
+                    .delay(10)
                     .duration(1000)
                     .attr('fill', this.colors.green)
                     .attr('height', 128);
@@ -306,7 +327,7 @@ export default {
                     } else if (i == positionI && this.currentState == 'pending') {
                         d3.select('#foreign_' + i).html('<i class="el-icon-loading"></i>');
                     } else {
-                        if (this.currentState == 'failed') {
+                        if (this.currentState == 'failed' && i == positionI) {
                             d3.select('#foreign_' + i).html('<i class="el-icon-refresh"></i>');
                             d3.select('#step_' + i).attr('fill', this.colors.red).attr('stroke', this.colors.red);
                         } else {
@@ -321,12 +342,15 @@ export default {
                         d3.select('#step_' + i).attr('fill', this.colors.red).attr('stroke', this.colors.red).style("display", "block");
                         d3.select('#foreign_' + i).html('<i class="el-icon-close" style="color: #fff"></i>');
                     } else if (i == positionI) {
-                        d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>').style("display", "block");
                         if (this.currentState == 'failed') {
                             d3.select('#step_' + i)
                                 .attr('fill', this.colors.lightGreen)
                                 .attr('stroke', this.colors.lightGreen)
                                 .style("display", "block");
+                        } else if (this.currentState == 'pending') {
+                            d3.select('#foreign_' + i).html('<i class="el-icon-loading"></i>').style("display", "block");
+                        } else {
+                            d3.select('#foreign_' + i).html('<i class="el-icon-check"></i>').style("display", "block");
                         }
                     } else {
                         d3.select('#foreign_' + i).html('<i class="el-icon-check"></i>').style("display", "block");
@@ -335,7 +359,12 @@ export default {
                         d3.select('#label_' + i).attr('fill', this.colors.black).style("display", "block");
                     }
                 } else {
-                    if (i >= steps.length) {
+                    if (this.currentState == 'failed' && i == a) {
+                        d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>').style("display", "block");
+                        d3.select('#label_' + i).attr('fill', this.colors.black).style("display", "block");
+                        d3.select('#step_' + i).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen).style("display", "block");
+                        // d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>');
+                    } else if (i >= steps.length) {
                         d3.select('#label_' + i).attr('fill', this.colors.black).style("display", "none");
                         d3.select('#vertical_' + i).attr('height', 0);
                         d3.select('#step_' + i).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen).style("display", "none");
@@ -361,6 +390,15 @@ export default {
                         d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>');
                     }
                 }
+                this.progressError
+                .attr('width', () => {
+                    return 0;
+                });
+                this.progressFirstBackGround
+                .attr('height', () => {
+                    return 0;
+                });
+                this.arrHighProgress.map(el => el.attr('height', 0))
             } else {
                 d3.select('#foreign_' + 0).html('<i class="el-icon-refresh"></i>');
             }
@@ -383,10 +421,27 @@ export default {
                 d3.select('#foreign_' + (step_ + steps.length - 1)).html('<i class="el-icon-arrow-right"></i>').style("display", "block");
                 d3.select('#step_' + (step_ + steps.length - 1)).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen).style("display", "block");
                 d3.select('#vertical_' + (step_ + steps.length - 1)).attr('height', 128);
+                this.arrHighProgress.map(el => el.attr('height', 0))
             }
             d3.select('#step_' + step_).attr('fill', this.colors.red).attr('stroke', this.colors.red).style("display", "block");
         } else if (this.currentState == 'success') {
             d3.select('#foreign_' + step_).html('<i class="el-icon-check"></i>');
+            if (step_ < steps.length) {
+                for(let i = steps.length; i < this.allSteps.length; i++){
+                    d3.select('#label_' + i).attr('fill', this.colors.black).style("display", "none");
+                    d3.select('#vertical_' + i).attr('height', 0);
+                    d3.select('#step_' + i).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen).style("display", "none");
+                    d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>').style("display", "none");
+                }
+                this.progressError
+                .attr('width', () => {
+                    return 0;
+                });
+                this.progressFirstBackGround
+                .attr('height', () => {
+                    return 0;
+                });
+            }
         }
     },
     initStep() {
@@ -425,6 +480,7 @@ export default {
             .attr('fill', this.colors.lightGreen)
             .attr('height', 8)
             .attr('width', 0)
+            .attr('id', 'progressError')
             .attr('rx', 4)
             .attr('ry', 4)
             .attr("x", 0)
@@ -434,6 +490,7 @@ export default {
             .attr('fill', this.colors.lightGreen)
             .attr('height', 0)
             .attr('width', 8)
+            .attr('id', 'progressFirstBackGround')
             .attr('rx', 4)
             .attr('ry', 4)
             .attr("x", -4)
@@ -463,6 +520,7 @@ export default {
             .attr('fill', this.colors.green)
             .attr('height', 0)
             .attr('width', 8)
+            .attr('id', 'arrHighProgress_' + index)
             .attr('rx', 4)
             .attr('ry', 4)
             .attr("x", index * stepWidth - 4)
@@ -536,12 +594,19 @@ export default {
             .html(html)
             .on('click', () => {
                 if (
+                    (index !== this.activeNum && this.activeNum != index + steps.length - 1) && (
                     (index < this.activeNum && index != 0) ||
                     (index - this.activeNum > 1 && index < steps.length) ||
                     (this.currentState == 'failed' && index > this.activeNum && index < steps.length) ||
-                    this.currentState == 'pending'
+                    this.currentState == 'pending')
                 ) {
                     return;
+                }
+                if (index  >= steps.length) {
+                    const value = this.activeNum < steps.length ? this.activeNum : this.activeNum - steps.length + 1;
+                    localStorage.setItem("stepNum", value);
+                } else if (index == 0) {
+                    localStorage.setItem("stepNum", 0);
                 }
                 this.activeNum = index;
                 this.currentState = 'pending';
