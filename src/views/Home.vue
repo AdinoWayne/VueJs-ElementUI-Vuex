@@ -2,7 +2,7 @@
   <el-container>
     <el-main>
       <el-row :gutter="20">
-        <el-col :span="12">
+        <el-col :span="12" class="card-content">
           <div class="grid-content bg-purple">
             <el-card class="box-card card-information">
               <div
@@ -23,7 +23,7 @@
             </el-card>
           </div>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="12" class="card-content">
           <div class="grid-content bg-purple">
             <el-card class="box-card card-information">
               <div
@@ -41,6 +41,10 @@
               <div class="text item">
                 Number: <span>{{ data.v4.sn_num }}</span>
               </div>
+              <div class="text item">
+                <el-button type="primary" @click="() => putMode(MODE.REWORK__ALL_AUTO)" v-if="data.pi_rework_mode.indexOf(MODE.REWORK__ALL_AUTO) !== -1">Auto</el-button>
+                <el-button type="primary" @click="() => putMode(MODE.REWORK__ALL_MANUAL)" v-else>Manual</el-button>
+              </div>
             </el-card>
           </div>
         </el-col>
@@ -53,6 +57,7 @@
 <script>
 import D3 from './components/D3.vue';
 import { mapActions, mapGetters } from 'vuex'
+import { MODE } from './../common/constants';
 
 export default {
   name: 'Home',
@@ -63,23 +68,28 @@ export default {
     return {
       data: {
         cloud: {},
-        v4: {}
+        v4: {},
+        pi_rework_mode: ""
       }
     };
   },
   computed: {
-    ...mapGetters('pi' ,["pi"])
+    ...mapGetters('pi' ,["pi"]),
+    MODE() {
+      return MODE;
+    }
   },
   created() {},
   mounted() {
     this.fetchData();
   },
   methods: {
-    ...mapActions('pi', ['getInfoCloud', 'getV4Info']),
+    ...mapActions('pi', ['getInfoCloud', 'getV4Info', 'getReworkMode', 'doAction']),
     fetchData() {
       let $q = [];
       $q.push(this.getInfoCloud());
       $q.push(this.getV4Info());
+      $q.push(this.getReworkMode());
       Promise.all($q).then(() => {
         this.initData();
       });
@@ -88,6 +98,13 @@ export default {
       if (this.pi) {
         this.data = this.pi;
       }
+    },
+    putMode(param) {
+      this.doAction({ action_name: param, num: -1}).finally(() => {
+          this.getReworkMode().finally(() => {
+            this.initData();
+          })
+      })
     }
   }
 };
@@ -116,5 +133,8 @@ export default {
 }
 .clearfix:after {
   clear: both
+}
+.card-content .el-card {
+  min-height: 278px;
 }
 </style>

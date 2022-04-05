@@ -4,6 +4,7 @@ const initialState = {
     pi: {
       cloud: {},
       v4: {},
+      pi_rework_mode: ""
     },
     nextAction: {
       status: 'success',
@@ -48,6 +49,18 @@ export const pi = {
         },
         error => {
           commit('getV4InfoFailed');
+          return Promise.reject(error);
+        }
+      );
+    },
+    getReworkMode({ commit }) {
+      return PIService.getReworkMode().then(
+        res => {
+          commit('getReworkModeSuccess', res.data);
+          return Promise.resolve(res.data);
+        },
+        error => {
+          commit('getReworkModeFailed');
           return Promise.reject(error);
         }
       );
@@ -99,6 +112,15 @@ export const pi = {
       };
     },
     getV4InfoFailed() {
+      // TODO
+    },
+    getReworkModeSuccess(state, pi) {
+      state.pi = {
+        ...state.pi,
+        pi_rework_mode: pi.pi_rework_mode
+      };
+    },
+    getReworkModeFailed() {
       // TODO
     },
     setPiActionSuccess(state, action) {

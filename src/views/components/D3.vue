@@ -690,4 +690,8 @@ export default {
 .box-card {
   width: 100%;
 }
+
+.wrapper-ap-progress {
+    margin-top: 50px;
+}
 </style>
