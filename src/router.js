@@ -40,6 +40,9 @@ router.beforeEach((to, from, next) => {
   if (authRequired && (!user || !user.token)) {
     next('/login');
   } else {
+    if (to.path === "/") {
+      next('/status');
+    }
     next();
   }
 });

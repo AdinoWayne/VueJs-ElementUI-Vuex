@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from './../common/api';
 import authHeader from './auth-header';
 
 const API_URL = 'http://localhost:3000/api/pi/';
@@ -17,6 +17,20 @@ class PIService {
 
   getReworkMode() {
     return axios.get(API_URL + 'get_rework_mode', { headers: authHeader() });
+  }
+
+  getReworkVersion() {
+    return axios.get(API_URL + 'get_rework_current_ver', { headers: authHeader() });
+  }
+
+  getReworkMAC() {
+    return axios.get(API_URL + 'pi_rework_cm_mac_check', { headers: authHeader() });
+  }
+
+  postReworkMAC(data) {
+    return axios.post(API_URL + 'pi_rework_cm_mac_check', {
+      pi_rework_cm_mac_check: data.pi_rework_cm_mac_check
+    }, { headers: authHeader() });
   }
 
   setAction(data) {

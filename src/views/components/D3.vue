@@ -3,17 +3,7 @@
 /* eslint-disable no-redeclare */
 /* eslint-disable no-unused-vars */
 <template>
-  <el-container style="margin-top: 10px">
-    <el-card class="box-card">
-      <div
-        slot="header"
-        class="clearfix"
-      >
-        <span>Progress Step</span>
-      </div>
-      <div class="wrapper-ap-progress" />
-    </el-card>
-  </el-container>
+  <div class="wrapper-ap-progress" />
 </template>
 
 <script>
@@ -333,7 +323,6 @@ export default {
         if (isFirst) {
             for(let i = 0; i < this.allSteps.length; i++){
                 if(i <= positionI && positionI < steps.length) {
-                    console.log("here1", i);
                     d3.select('#step_' + i).attr('fill', this.colors.green).attr('stroke', this.colors.green);
                     if (i == 0 && i != positionI) { 
                         d3.select('#foreign_' + i).html('<i class="el-icon-refresh"></i>');
@@ -348,7 +337,6 @@ export default {
                         }
                     }
                 } else if (i <= positionI - steps.length + 1 || i == positionI) {
-                    console.log("here2", i);
                     d3.select('#step_' + i).attr('fill', this.colors.green).attr('stroke', this.colors.green);
                     if (i == 0) {
                         d3.select('#foreign_' + i).html('<i class="el-icon-refresh"></i>').style("display", "block");
@@ -374,7 +362,6 @@ export default {
                         d3.select('#label_' + i).attr('fill', this.colors.black).style("display", "block");
                     }
                 } else {
-                    console.log("here3", i);
                     if (this.currentState == 'failed' && (i == step_ || i == step_ + steps.length - 1)) {
                         d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>').style("display", "block");
                         d3.select('#label_' + i).attr('fill', this.colors.black).style("display", "block");

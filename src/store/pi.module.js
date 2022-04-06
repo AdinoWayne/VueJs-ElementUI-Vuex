@@ -4,8 +4,10 @@ const initialState = {
     pi: {
       cloud: {},
       v4: {},
-      pi_rework_mode: ""
+      pi_rework_mode: "",
+      version: {}
     },
+    isEnableMAC: false,
     nextAction: {
       status: 'success',
       prevAction: 0,
@@ -61,6 +63,50 @@ export const pi = {
         },
         error => {
           commit('getReworkModeFailed');
+          return Promise.reject(error);
+        }
+      );
+    },
+    getReworkVersion({ commit }) {
+      return PIService.getReworkVersion().then(
+        res => {
+          commit('getReworkVersionSuccess', res.data);
+          return Promise.resolve(res.data);
+        },
+        error => {
+          commit('getReworkVersionFailed');
+          return Promise.reject(error);
+        }
+      );
+    },
+    getReworkMAC({ commit }) {
+      return PIService.getReworkVersion().then(
+        res => {
+          commit('getReworkMACSuccess', res.data);
+          return Promise.resolve(res.data);
+        },
+        error => {
+          commit('getReworkMACFailed');
+          return Promise.reject(error);
+        }
+      );
+    },
+    postReworkMAC({ commit }, data) {
+      return PIService.setAction(data).then(
+        // eslint-disable-next-line no-unused-vars
+        _res => {
+          if (_res && _res.data && _res.data.length > 0) {
+            if (_res.data[0].status) {
+              commit('postReworkMACSuccess');
+              return Promise.resolve(data);
+            } else {
+              commit('postReworkMACFailed');
+              return Promise.reject(data);
+            }
+          }
+        },
+        error => {
+          commit('postReworkMACFailed', data);
           return Promise.reject(error);
         }
       );
@@ -136,7 +182,26 @@ export const pi = {
         prevAction: state.pi.pi_v4_state,
         action: action.num
       };
-    }
+    },
+    postReworkMACSuccess() {},
+    postReworkMACFailed() {},
+    getReworkVersionSuccess(state, pi) {
+      state.pi = {
+        ...state.pi,
+        version: {
+          pi_rework_latest_ver: pi.pi_rework_latest_ver,
+          pi_rework_current_ver: pi.pi_rework_current_ver
+        }
+      };
+    },
+    getReworkVersionFailed() {},
+    getReworkMACSuccess(state, pi) {
+      state.pi = {
+        ...state.pi,
+        isEnableMAC: pi.pi_rework_cm_mac_check
+      };
+    },
+    getReworkMACFailed() {},
   },
   getters: {
     pi(state) {
