@@ -8,7 +8,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import { PROGRESS } from "./../../common/constants";
+import { PROGRESS, CLOUD } from "./../../common/constants";
 import * as d3 from "d3";
 
 export default {
@@ -16,6 +16,7 @@ export default {
   data() {
     return {
       activeNum: 0,
+      prevNum: 0,
       svg: null,
       steps: [0, 1, 2, 3, 4, 5, 6, 7, 8],
       stepErrors: [9, 10, 11, 12, 13, 14, 15, 16],
@@ -90,13 +91,13 @@ export default {
     ...mapActions('pi', ['getReworkStates', 'doAction']),
     initData(callback) {
         if (this.pi && this.pi.pi_v4_state !== undefined) {
-            this.handleData(this.pi.pi_v4_state);
+            this.handleData(this.pi.pi_v4_state, this.pi.pi_v4_prev);
         }
         if (callback) {
             callback();
         }
     },
-    handleData(piV4State) {
+    handleData(piV4State, piV4Prev) {
         let num = localStorage.getItem("stepNum")
         num = num ? parseInt(num, 10) : null; 
         switch (true) {
@@ -204,7 +205,7 @@ export default {
                 this.currentState = "success";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SENDING_UPGRADED_LOG_TO_CLOUD) !== -1:
-                if (num >= 7) {
+                if (num >= 7 || piV4Prev.indexOf(PROGRESS.REWORK__SUCCESS_INSTALLING_FW_FOR_V4) !== -1) {
                     this.activeNum = 8;
                 } else {
                     this.activeNum = num + this.steps.length -1;
@@ -212,7 +213,7 @@ export default {
                 this.currentState = "pending";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__FAIL_SENDING_UPGRADED_LOG_TO_CLOUD) !== -1:
-                if (num >= 7) {
+                if (num >= 7 || piV4Prev.indexOf(PROGRESS.REWORK__SUCCESS_INSTALLING_FW_FOR_V4) !== -1) {
                     this.activeNum = 8;
                 } else {
                     this.activeNum = num + this.steps.length -1;
@@ -220,7 +221,7 @@ export default {
                 this.currentState = "failed";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_SENDING_UPGRADED_LOG_TO_CLOUD) !== -1:
-                if (num >= 7) {
+                if (num >= 7 || piV4Prev.indexOf(PROGRESS.REWORK__SUCCESS_INSTALLING_FW_FOR_V4) !== -1) {
                     this.activeNum = 8;
                 } else {
                     this.activeNum = num + this.steps.length -1;
@@ -447,6 +448,17 @@ export default {
             }
         }
     },
+    handleTooltip(value) {
+        switch (value) {
+            case 0:
+                return CLOUD.REWORK__SCANNING.TEXT;
+            case 1:
+                return CLOUD.REWORK__SENDING_V4_INFO_TO_CLOUD.TEXT;
+            default:
+                return CLOUD.REWORK__SENDING_UPGRADED_LOG_TO_CLOUD.TEXT;
+        }
+
+    },
     initStep() {
         var width = 960, height = 240, offset = 48;
 
@@ -459,6 +471,11 @@ export default {
             .attr('preserveAspectRatio', 'xMinYMin meet')
             .attr('viewBox', dimensions)
             .classed('svg-content', true);
+
+        // Define the div for the tooltip
+        var div = d3.select(".wrapper-ap-progress").append("div")	
+            .attr("class", "tooltip")				
+            .style("opacity", 0);
 
         var steps = this.steps;
         var stepErrors = this.stepErrors;
@@ -615,7 +632,21 @@ export default {
                 this.currentState = 'pending';
                 this.updateProgressBar(this.activeNum);
                 this.doAction({ action_name: this.prepareData(index), num: index})
-            }))
+            })
+            .on("mouseover", (d) => {
+                console.log(index);
+                div.transition()		
+                    .duration(200)		
+                    .style("opacity", .9)
+                    .style("left", (d.pageX - 100) + "px")
+                div	.html("<span>" + this.handleTooltip(index) +"</span>")	
+                    .style("top", (index >= steps.length ? "160px" : "15px"));
+                })					
+            .on("mouseout", function(d) {		
+                div.transition()		
+                    .duration(500)		
+                    .style("opacity", 0);	
+            }));
         }
 
         this.progressBar.selectAll('text')
@@ -680,5 +711,19 @@ export default {
 
 .wrapper-ap-progress {
     margin-top: 50px;
+    position: relative;
+}
+
+div.tooltip {	
+    position: absolute;			
+    text-align: center;			
+    width: 150px;					
+    height: 30px;					
+    padding: 2px;				
+    font: 10px sans-serif;		
+    background: lightsteelblue;	
+    border: 0px;		
+    border-radius: 3px;			
+    pointer-events: none;			
 }
 </style>
