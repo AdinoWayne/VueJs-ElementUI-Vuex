@@ -80,7 +80,7 @@ export const pi = {
       );
     },
     getReworkMAC({ commit }) {
-      return PIService.getReworkVersion().then(
+      return PIService.getReworkMAC().then(
         res => {
           commit('getReworkMACSuccess', res.data);
           return Promise.resolve(res.data);
@@ -92,7 +92,7 @@ export const pi = {
       );
     },
     postReworkMAC({ commit }, data) {
-      return PIService.setAction(data).then(
+      return PIService.postReworkMAC(data).then(
         // eslint-disable-next-line no-unused-vars
         _res => {
           if (_res && _res.data && _res.data.length > 0) {

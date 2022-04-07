@@ -44,3 +44,153 @@ export const MODE = {
 export const ACTION = {
     REWORK__UPGRADE_REWORK_SOURCE: "REWORK__UPGRADE_REWORK_SOURCE"
 }
+
+export const CLOUD = {
+    REWORK__CHECKING_FW_VER_WITH_CLOUD: {
+        TEXT: "In progress of checking firmware version with Hmx Cloud",
+        VALUE: "REWORK__CHECKING_FW_VER_WITH_CLOUD"
+    },
+    REWORK__FAIL_CHECKING_FW_VER_WITH_CLOUD:  {
+        TEXT: "Checking FW version with cloud is failed",
+        VALUE: "REWORK__FAIL_CHECKING_FW_VER_WITH_CLOUD"
+    },
+    REWORK__SUCCESS_CHECKING_FW_VER_WITH_CLOUD:   {
+        TEXT: "Checking FW version with cloud is success",
+        VALUE: "REWORK__SUCCESS_CHECKING_FW_VER_WITH_CLOUD"
+    },
+
+    REWORK__DOWNLOAD_FW_FROM_CLOUD:   {
+        TEXT: "In progress of downloading firmware form HMX Cloud",
+        VALUE: "REWORK__DOWNLOAD_FW_FROM_CLOUD"
+    },
+    REWORK__FAIL_DOWNLOAD_FW_FROM_CLOUD:   {
+        TEXT: "Downloading FW version with HMX cloud is failed",
+        VALUE: "REWORK__FAIL_DOWNLOAD_FW_FROM_CLOUD"
+    },
+    REWORK__SUCCESS_DOWNLOAD_FW_FROM_CLOUD:   {
+        TEXT: "Downloading FW version with HMX cloud is succeed",
+        VALUE: "REWORK__SUCCESS_DOWNLOAD_FW_FROM_CLOUD"
+    },
+
+    REWORK__NONE:   {
+        TEXT: "Rework is not started",
+        VALUE: "REWORK__NONE"
+    },
+    REWORK__ALL_AUTO:   {
+        TEXT: "Rework is in Auto Mode",
+        VALUE: "REWORK__ALL_AUTO"
+    },
+    REWORK__ALL_MANUAL:   {
+        TEXT: "Rework is in Manual Mode",
+        VALUE: "REWORK__ALL_MANUAL"
+    },
+
+    REWORK__SCANNING:   {
+        TEXT: "In progress of scanning HGJ310v4",
+        VALUE: "REWORK__SCANNING"
+    },
+    REWORK__FAIL_SCANNING:   {
+        TEXT: "Scanning HGJ310v4 is failed",
+        VALUE: "REWORK__FAIL_SCANNING"
+    },
+    REWORK__SUCCESS_SCANNING:   {
+        TEXT: "Scanning HGJ310v4 is succeed",
+        VALUE: "REWORK__SUCCESS_SCANNING"
+    },
+    REWORK__SENDING_V4_INFO_TO_CLOUD:   {
+        TEXT: "In progress of sending HGJ310v4 information to cloud",
+        VALUE: "REWORK__SENDING_V4_INFO_TO_CLOUD"
+    },
+    REWOWK__FAIL_SENDING_V4_INFO_TO_CLOUD:   {
+        TEXT: "Sending HGJ310v4 information to cloud is failed",
+        VALUE: "REWOWK__FAIL_SENDING_V4_INFO_TO_CLOUD"
+    },
+    REWOWK__SUCCESS_SENDING_V4_INFO_TO_CLOUD:   {
+        TEXT: "Sending HGJ310v4 information to cloud is succeed",
+        VALUE: "REWOWK__SUCCESS_SENDING_V4_INFO_TO_CLOUD"
+    },
+    REWORK__DONWLOADING_PLUME_CAS_FROM_CLOUD:   {
+        TEXT: "In progress of downloading PLUME CAs form HMX Cloud",
+        VALUE: "REWORK__DONWLOADING_PLUME_CAS_FROM_CLOUD"
+    },
+    REWORK__FAIL_DONWLOADING_PLUME_CAS_FROM_CLOUD:   {
+        TEXT: "Downloading PLUME CAs from HMX Cloud is failed",
+        VALUE: "REWORK__FAIL_DONWLOADING_PLUME_CAS_FROM_CLOUD"
+    },
+    REWORK__SUCCESS_DONWLOADING_PLUME_CAS_FROM_CLOUD:   {
+        TEXT: "Downloading PLUME CAs from HMX Cloud is succeed",
+        VALUE: "REWORK__SUCCESS_DONWLOADING_PLUME_CAS_FROM_CLOUD"
+    },
+    REWORK__OPENNING_SSH_SERVER_ON_V4:   {
+        TEXT: "Inprogress of opening SSH server on HGJ310v4",
+        VALUE: "REWORK__OPENNING_SSH_SERVER_ON_V4"
+    },
+    REWORK__FAIL_OPENNING_SSH_SERVER_ON_V4:   {
+        TEXT: "Opening SSH server on HGJ310v4 is failed",
+        VALUE: "REWORK__FAIL_OPENNING_SSH_SERVER_ON_V4"
+    },
+    REWORK__SUCCESS_OPENNING_SSH_SERVER_ON_V4:   {
+        TEXT: "Opening SSH server on HGJ310v4 is succeed",
+        VALUE: "REWORK__SUCCESS_OPENNING_SSH_SERVER_ON_V4"
+    },
+    REWORK__SENDING_FW_TO_V4:   {
+        TEXT: "In progress of sending firmware to HGJ310v4",
+        VALUE: "REWORK__SENDING_FW_TO_V4"
+    },
+    REWORK__FAIL_SENDING_FW_TO_V4:   {
+        TEXT: "Sending firmware to HGJ310v4 is failed",
+        VALUE: "REWORK__FAIL_SENDING_FW_TO_V4"
+    },
+    REWORK__SUCCESS_SENDING_FW_TO_V4:   {
+        TEXT: "Sending firmware to HGJ310v4 is succeed",
+        VALUE: "REWORK__SUCCESS_SENDING_FW_TO_V4"
+    },
+    REWORK__SENDING_PLUME_CAS_TO_V4:   {
+        TEXT: "In progress of sending PLUME CAs to HGJ310v4",
+        VALUE: "REWORK__SENDING_PLUME_CAS_TO_V4"
+    },
+    REWORK__FAIL_SENDING_PLUME_CAS_TO_V4:   {
+        TEXT: "Sending PLUME CAs to HGJ310v4 is failed",
+        VALUE: "REWORK__FAIL_SENDING_PLUME_CAS_TO_V4"
+    },
+    REWORK__SUCCESS_SENDING_PLUME_CAS_TO_V4:   {
+        TEXT: "Sending PLUME CAs to HGJ310v4 is succeed",
+        VALUE: "REWORK__SUCCESS_SENDING_PLUME_CAS_TO_V4"
+    },
+    REWORK__INSTALLING_PLUME_CAS_ON_V4:   {
+        TEXT: "In progress of installing PLUME CAs on HGJ310v4",
+        VALUE: "REWORK__INSTALLING_PLUME_CAS_ON_V4"
+    },
+    REWORK__FAIL_INSTALLING_PLUME_CAS_ON_V4:   {
+        TEXT: "Installing PLUME CAs on HGJ310v4 is failed",
+        VALUE: "REWORK__FAIL_INSTALLING_PLUME_CAS_ON_V4"
+    },
+    REWORK__SUCCESS_INSTALLING_PLUME_CAS_ON_V4:   {
+        TEXT: "Installing PLUME CAs on HGJ310v4 is succeed",
+        VALUE: "REWORK__SUCCESS_INSTALLING_PLUME_CAS_ON_V4"
+    },
+    REWORK__INSTALLING_FW_FOR_V4:   {
+        TEXT: "In progress of installing firmware on HGJ310v4",
+        VALUE: "REWORK__INSTALLING_FW_FOR_V4"
+    },
+    REWORK__FAIL_INSTALLING_FW_FOR_V4:   {
+        TEXT: "Installing firmware on HGJ310v4 is failed",
+        VALUE: "REWORK__FAIL_INSTALLING_FW_FOR_V4"
+    },
+    REWORK__SUCCESS_INSTALLING_FW_FOR_V4:   {
+        TEXT: "Installing firmware on HGJ310v4 is succeed",
+        VALUE: "REWORK__SUCCESS_INSTALLING_FW_FOR_V4"
+    },
+    REWORK__SENDING_UPGRADED_LOG_TO_CLOUD:   {
+        TEXT: "In progress of sending upgraded log to HMX Cloud",
+        VALUE: "REWORK__SENDING_UPGRADED_LOG_TO_CLOUD"
+    },
+    REWORK__FAIL_SENDING_UPGRADED_LOG_TO_CLOUD:   {
+        TEXT: "Sending upgraded log to HMX Cloud is failed",
+        VALUE: "REWORK__FAIL_SENDING_UPGRADED_LOG_TO_CLOUD"
+    },
+    REWORK__SUCCESS_SENDING_UPGRADED_LOG_TO_CLOUD:   {
+        TEXT: "Sending upgraded log to HMX Cloud is succeed",
+        VALUE: "REWORK__FAIL_SENDING_UPGRADED_LOG_TO_CLOUD"
+    },
+}

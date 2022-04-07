@@ -16,6 +16,7 @@
             v-model="user.username"
             v-validate="'required'"
             type="text"
+            v-on:keyup.enter="onEnter"
             class="form-control"
             name="username"
           >
@@ -32,6 +33,7 @@
           <input
             v-model="user.password"
             v-validate="'required'"
+            v-on:keyup.enter="onEnter"
             type="password"
             class="form-control"
             name="password"
@@ -107,6 +109,9 @@ export default {
           );
         }
       });
+    },
+    onEnter() {
+      this.handleLogin();
     }
   }
 };

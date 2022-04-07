@@ -448,7 +448,7 @@ export default {
         }
     },
     initStep() {
-        var width = 960, height = 480, offset = 48;
+        var width = 960, height = 240, offset = 48;
 
         width += offset * 2;
         height += offset * 2;
