@@ -70,14 +70,11 @@
                 <el-button
                   size="mini"
                   type="primary"
-                  :disabled="data.version && data.version.pi_rework_latest_ver == data.version.pi_rework_current_ver"
+                  :disabled="isDisabledVersion(data.version)"
                   @click="centerDialogVisible = true"
                 >
-                  Update
+                  Update <span v-if="!isDisabledVersion(data.version)">to {{ data.version.pi_rework_latest_ver }}</span>
                 </el-button>
-              </div>
-              <div class="text item">
-                <span class="item-label"> Latest Version: </span><span v-if="data.version && data.version.pi_rework_current_ver">{{ loadData(data.version.pi_rework_latest_ver) }}</span>
               </div>
               <div class="text item flex">
                 <div class="item-label">
@@ -146,6 +143,7 @@
 import D3 from './components/D3.vue';
 import { mapActions, mapGetters } from 'vuex'
 import { MODE, ACTION, CLOUD } from './../common/constants';
+import { compareVersionNumbers } from './../common/utils';
 
 export default {
   name: 'Home',
@@ -212,9 +210,8 @@ export default {
       if (this.pi) {
         this.data = this.pi;
         if (this.isEnableMac !== null || this.isEnableMac !== undefined) {
-          this.isEnableMac = this.pi.isEnableMAC;
+          this.isEnableMac = this.pi.pi_rework_cm_mac_check == true || this.pi.pi_rework_cm_mac_check == 'enable' ? true : false;
         }
-        console.log(this.pi);
         if (this.pi.pi_rework_mode) {
           this.pi_rework_mode = this.pi.pi_rework_mode.indexOf(MODE.REWORK__ALL_AUTO) !== -1 ? true : false;
         }
@@ -312,12 +309,27 @@ export default {
               return data;
         }
     },
+    isDisabledVersion(value) {
+      if (!value) {
+        return true;
+      }
+      if (!value.pi_rework_latest_ver || !value.pi_rework_current_ver) {
+        return true;
+      }
+      return !(compareVersionNumbers(value.pi_rework_latest_ver, value.pi_rework_current_ver) > 0)
+    },
     updateMAC(value) {
       this.isEnableMac = value;
       if (this.isEnableMac == null || this.isEnableMac == undefined) {
         return;
       }
-      this.postReworkMAC({ pi_rework_cm_mac_check: value}).finally(() => {
+      let data = ""
+      if (value) {
+        data = "REWORK__CM_MAC_CHECK_ENABLE";
+      } else {
+        data = "REWORK__CM_MAC_CHECK_DISABLE";
+      }
+      this.postReworkMAC({ pi_rework_cm_mac_check: data}).finally(() => {
           this.getReworkMAC().finally(() => {
             this.initData();
           })

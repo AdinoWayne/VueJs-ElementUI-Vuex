@@ -3,7 +3,7 @@
 /* eslint-disable no-redeclare */
 /* eslint-disable no-unused-vars */
 <template>
-  <div class="wrapper-ap-progress" />
+  <div class="wrapper-ap-progress" id="ap-progress"/>
 </template>
 
 <script>
@@ -454,6 +454,20 @@ export default {
                 return CLOUD.REWORK__SCANNING.TEXT;
             case 1:
                 return CLOUD.REWORK__SENDING_V4_INFO_TO_CLOUD.TEXT;
+            case 2:
+                return CLOUD.REWORK__DONWLOADING_PLUME_CAS_FROM_CLOUD.TEXT;
+            case 3:
+                return CLOUD.REWORK__OPENNING_SSH_SERVER_ON_V4.TEXT;
+            case 4:
+                return CLOUD.REWORK__SENDING_FW_TO_V4.TEXT;
+            case 5:
+                return CLOUD.REWORK__SENDING_PLUME_CAS_TO_V4.TEXT;
+            case 6:
+                return CLOUD.REWORK__INSTALLING_PLUME_CAS_ON_V4.TEXT;
+            case 7:
+                return CLOUD.REWORK__INSTALLING_FW_FOR_V4.TEXT;
+            case 8:
+                return CLOUD.REWORK__SENDING_UPGRADED_LOG_TO_CLOUD.TEXT;
             default:
                 return CLOUD.REWORK__SENDING_UPGRADED_LOG_TO_CLOUD.TEXT;
         }
@@ -461,7 +475,7 @@ export default {
     },
     initStep() {
         var width = 960, height = 240, offset = 48;
-
+        // var wD3 = document.getElementById('ap-progress').offsetWidth;
         width += offset * 2;
         height += offset * 2;
         var dimensions = '' + 0 + ' ' + 0 + ' ' + width + ' ' + height;
@@ -634,15 +648,14 @@ export default {
                 this.doAction({ action_name: this.prepareData(index), num: index})
             })
             .on("mouseover", (d) => {
-                console.log(index);
                 div.transition()		
                     .duration(200)		
-                    .style("opacity", .9)
+                    .style("opacity", 1)
                     .style("left", (d.pageX - 100) + "px")
                 div	.html("<span>" + this.handleTooltip(index) +"</span>")	
                     .style("top", (index >= steps.length ? "160px" : "15px"));
                 })					
-            .on("mouseout", function(d) {		
+            .on("mouseout", function() {		
                 div.transition()		
                     .duration(500)		
                     .style("opacity", 0);	
@@ -717,8 +730,8 @@ export default {
 div.tooltip {	
     position: absolute;			
     text-align: center;			
-    width: 150px;					
-    height: 30px;					
+    width: 120px;					
+    height: 50px;					
     padding: 2px;				
     font: 10px sans-serif;		
     background: lightsteelblue;	
