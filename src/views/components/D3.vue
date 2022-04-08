@@ -91,7 +91,7 @@ export default {
     ...mapActions('pi', ['getReworkStates', 'doAction']),
     initData(callback) {
         if (this.pi && this.pi.pi_v4_state !== undefined) {
-            this.handleData(this.pi.pi_v4_state, this.pi.pi_v4_prev);
+            this.handleData(this.pi.pi_v4_state, this.pi.pre_pi_v4_state);
         }
         if (callback) {
             callback();
