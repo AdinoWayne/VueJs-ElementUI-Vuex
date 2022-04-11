@@ -77,11 +77,6 @@ export default {
       this.allSteps = [...this.steps, ...this.stepErrors];
   },
   mounted() {
-    let num = localStorage.getItem("stepNum")
-    num = num ? parseInt(num, 10) : null;
-    if (num) {
-        this.activeNum = num;
-    }
     this.getReworkStates().finally(() => {
         this.initData();
         this.initStep();
@@ -97,9 +92,68 @@ export default {
             callback();
         }
     },
+    handlePrev(data) {
+        switch (true) {
+            case (
+                data.indexOf(PROGRESS.REWORK__SCANNING) !== -1 ||
+                data.indexOf(PROGRESS.REWORK__FAIL_SCANNING) !== -1
+            ):
+                return 0;
+            case (
+                data.indexOf(PROGRESS.REWORK__SUCCESS_SCANNING) !== -1 ||
+                data.indexOf(PROGRESS.REWOWK__FAIL_SENDING_V4_INFO_TO_CLOUD) !== -1 ||
+                data.indexOf(PROGRESS.REWORK__SENDING_V4_INFO_TO_CLOUD) !== -1
+                ):
+                return 1;
+            case (
+                data.indexOf(PROGRESS.REWORK__DONWLOADING_PLUME_CAS_FROM_CLOUD) !== -1 ||
+                data.indexOf(PROGRESS.REWORK__FAIL_DONWLOADING_PLUME_CAS_FROM_CLOUD) !== -1 ||
+                data.indexOf(PROGRESS.REWOWK__SUCCESS_SENDING_V4_INFO_TO_CLOUD) !== -1
+                ):
+                return 2;
+            case (
+                data.indexOf(PROGRESS.REWORK__OPENNING_SSH_SERVER_ON_V4) !== -1 ||
+                data.indexOf(PROGRESS.REWORK__FAIL_OPENNING_SSH_SERVER_ON_V4) !== -1 ||
+                data.indexOf(PROGRESS.REWORK__SUCCESS_DONWLOADING_PLUME_CAS_FROM_CLOUD) !== -1
+                ):
+                return 3;
+            case (
+                data.indexOf(PROGRESS.REWORK__SENDING_FW_TO_V4) !== -1 ||
+                data.indexOf(PROGRESS.REWORK__FAIL_SENDING_FW_TO_V4) !== -1 ||
+                data.indexOf(PROGRESS.REWORK__SUCCESS_OPENNING_SSH_SERVER_ON_V4) !== -1
+                ):
+                return 4;
+            case (
+                data.indexOf(PROGRESS.REWORK__SENDING_PLUME_CAS_TO_V4) !== -1 ||
+                data.indexOf(PROGRESS.REWORK__FAIL_SENDING_PLUME_CAS_TO_V4) !== -1 ||
+                data.indexOf(PROGRESS.REWORK__SUCCESS_SENDING_FW_TO_V4) !== -1
+                ):
+                return 5;
+            case (
+                data.indexOf(PROGRESS.REWORK__INSTALLING_PLUME_CAS_ON_V4) !== -1 ||
+                data.indexOf(PROGRESS.REWORK__FAIL_INSTALLING_PLUME_CAS_ON_V4) !== -1 ||
+                data.indexOf(PROGRESS.REWORK__SUCCESS_SENDING_PLUME_CAS_TO_V4) !== -1
+                ):
+                return 6;
+            case (
+                data.indexOf(PROGRESS.REWORK__INSTALLING_FW_FOR_V4) !== -1 ||
+                data.indexOf(PROGRESS.REWORK__FAIL_INSTALLING_FW_FOR_V4) !== -1 ||
+                data.indexOf(PROGRESS.REWORK__SUCCESS_INSTALLING_PLUME_CAS_ON_V4) !== -1
+                ):
+                return 7;
+            case (
+                data.indexOf(PROGRESS.REWORK__SENDING_UPGRADED_LOG_TO_CLOUD) !== -1 ||
+                data.indexOf(PROGRESS.REWORK__FAIL_SENDING_UPGRADED_LOG_TO_CLOUD) !== -1 ||
+                data.indexOf(PROGRESS.REWORK__SUCCESS_INSTALLING_FW_FOR_V4) !== -1
+                ):
+                return 8;
+            default:
+                return 0;
+        }
+    },
     handleData(piV4State, piV4Prev) {
-        let num = localStorage.getItem("stepNum")
-        num = num ? parseInt(num, 10) : null; 
+        const num = this.handlePrev(piV4Prev);
+        console.log(num, piV4Prev);
         switch (true) {
             case piV4State.indexOf(PROGRESS.REWORK__SCANNING) !== -1:
                 this.activeNum = 0;
@@ -122,7 +176,6 @@ export default {
                 this.currentState = "failed";
                 break;
             case piV4State.indexOf(PROGRESS.REWOWK__SUCCESS_SENDING_V4_INFO_TO_CLOUD) !== -1:
-                localStorage.setItem("stepNum", 1);
                 this.activeNum = 1;
                 this.currentState = "success";
                 break;
@@ -135,7 +188,6 @@ export default {
                 this.currentState = "failed";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_DONWLOADING_PLUME_CAS_FROM_CLOUD) !== -1:
-                localStorage.setItem("stepNum", 2);
                 this.activeNum = 2;
                 this.currentState = "success";
                 break;
@@ -148,7 +200,6 @@ export default {
                 this.currentState = "failed";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_OPENNING_SSH_SERVER_ON_V4) !== -1:
-                localStorage.setItem("stepNum", 3);
                 this.activeNum = 3;
                 this.currentState = "success";
                 break;
@@ -161,7 +212,6 @@ export default {
                 this.currentState = "failed";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_SENDING_FW_TO_V4) !== -1:
-                localStorage.setItem("stepNum", 4);
                 this.activeNum = 4;
                 this.currentState = "success";
                 break;
@@ -174,7 +224,6 @@ export default {
                 this.currentState = "failed";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_SENDING_PLUME_CAS_TO_V4) !== -1:
-                localStorage.setItem("stepNum", 5);
                 this.activeNum = 5;
                 this.currentState = "success";
                 break;
@@ -187,7 +236,6 @@ export default {
                 this.currentState = "failed";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_INSTALLING_PLUME_CAS_ON_V4) !== -1:
-                localStorage.setItem("stepNum", 6);
                 this.activeNum = 6;
                 this.currentState = "success";
                 break;
@@ -200,12 +248,11 @@ export default {
                 this.currentState = "failed";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_INSTALLING_FW_FOR_V4) !== -1:
-                localStorage.setItem("stepNum", 7);
                 this.activeNum = 7;
                 this.currentState = "success";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SENDING_UPGRADED_LOG_TO_CLOUD) !== -1:
-                if (num >= 7 || piV4Prev.indexOf(PROGRESS.REWORK__SUCCESS_INSTALLING_FW_FOR_V4) !== -1) {
+                if (piV4Prev.indexOf(PROGRESS.REWORK__SUCCESS_INSTALLING_FW_FOR_V4) !== -1) {
                     this.activeNum = 8;
                 } else {
                     this.activeNum = num + this.steps.length -1;
@@ -213,7 +260,10 @@ export default {
                 this.currentState = "pending";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__FAIL_SENDING_UPGRADED_LOG_TO_CLOUD) !== -1:
-                if (num >= 7 || piV4Prev.indexOf(PROGRESS.REWORK__SUCCESS_INSTALLING_FW_FOR_V4) !== -1) {
+                if (
+                    piV4Prev.indexOf(PROGRESS.REWORK__SUCCESS_INSTALLING_FW_FOR_V4) !== -1 ||
+                    piV4Prev.indexOf(PROGRESS.REWORK__SENDING_UPGRADED_LOG_TO_CLOUD) !== -1
+                    ) {
                     this.activeNum = 8;
                 } else {
                     this.activeNum = num + this.steps.length -1;
@@ -221,7 +271,10 @@ export default {
                 this.currentState = "failed";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_SENDING_UPGRADED_LOG_TO_CLOUD) !== -1:
-                if (num >= 7 || piV4Prev.indexOf(PROGRESS.REWORK__SUCCESS_INSTALLING_FW_FOR_V4) !== -1) {
+                if (
+                    piV4Prev.indexOf(PROGRESS.REWORK__SUCCESS_INSTALLING_FW_FOR_V4) !== -1 ||
+                    piV4Prev.indexOf(PROGRESS.REWORK__SENDING_UPGRADED_LOG_TO_CLOUD) !== -1
+                ) {
                     this.activeNum = 8;
                 } else {
                     this.activeNum = num + this.steps.length -1;
@@ -638,9 +691,6 @@ export default {
                 }
                 if (index  >= steps.length) {
                     const value = this.activeNum < steps.length ? this.activeNum : this.activeNum - steps.length + 1;
-                    localStorage.setItem("stepNum", value);
-                } else if (index == 0) {
-                    localStorage.setItem("stepNum", 0);
                 }
                 this.activeNum = index;
                 this.currentState = 'pending';
