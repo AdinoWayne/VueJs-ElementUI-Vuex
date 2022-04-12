@@ -528,10 +528,10 @@ export default {
     },
     initStep() {
         var width = 960, height = 240, offset = 48;
-        // var wD3 = document.getElementById('ap-progress').offsetWidth;
+        var wD3 = document.getElementById('ap-progress').offsetWidth;
         width += offset * 2;
         height += offset * 2;
-        var dimensions = '' + 0 + ' ' + 0 + ' ' + width + ' ' + height;
+        var dimensions = '' + 0 + ' ' + 0 + ' ' + width + ' ' + 240;
 
         this.svg = d3.select('.wrapper-ap-progress').append('svg')
             .attr('id', 'scene', true)
