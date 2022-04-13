@@ -42,7 +42,8 @@ export const MODE = {
 }
 
 export const ACTION = {
-    REWORK__UPGRADE_REWORK_SOURCE: "REWORK__UPGRADE_REWORK_SOURCE"
+    REWORK__UPGRADE_PI_SOURCE: "REWORK__UPGRADE_PI_SOURCE",
+    REWORK__RESTART : "REWORK__RESTART",
 }
 
 export const CLOUD = {
@@ -73,7 +74,7 @@ export const CLOUD = {
     },
 
     REWORK__NONE:   {
-        TEXT: "Rework is not started",
+        TEXT: "Connecting to HMX Cloud",
         VALUE: "REWORK__NONE"
     },
     REWORK__ALL_AUTO:   {

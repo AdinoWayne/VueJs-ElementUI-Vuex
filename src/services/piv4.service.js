@@ -1,7 +1,7 @@
 import axios from './../common/api';
 import authHeader from './auth-header';
 
-const API_URL = 'http://192.168.100.222:8001/api/pi/';
+const API_URL = 'http://192.168.100.222:8888/api/pi/';
 class PIService {
   getInfoCloud() {
     return axios.get(API_URL + 'get_cloud_info', { headers: authHeader() });
@@ -20,7 +20,7 @@ class PIService {
   }
 
   getReworkVersion() {
-    return axios.get(API_URL + 'get_rework_current_ver', { headers: authHeader() });
+    return axios.get(API_URL + 'get_pi_code_version', { headers: authHeader() });
   }
 
   getReworkMAC() {

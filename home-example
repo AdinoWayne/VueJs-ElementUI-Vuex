@@ -22,12 +22,7 @@
                   <th>Current State</th><td>{{ loadData(data.cloud.curr_state) }}</td>
                 </tr>
                 <tr>
-                  <th>Connection Status</th><td>
-                    <span v-if="data.cloud.cloud_connected === 'True'">Connected</span><span
-                      v-else
-                      class="test"
-                    >Disconnected</span>
-                  </td>
+                  <th>Connection Status</th><td>{{ data.cloud.cloud_connected === 'True' ? 'Connected' : 'Disconnected' }}</td>
                 </tr>
               </table>
             </el-card>
@@ -50,10 +45,10 @@
                   <th>FW Version</th><td>{{ data.v4.fw_ver }}</td>
                 </tr>
                 <tr>
-                  <th>CM MAC</th><td>{{ data.v4.cm_mac }}</td>
+                  <th>MAC</th><td>{{ data.v4.cm_mac }}</td>
                 </tr>
                 <tr>
-                  <th>Serial Number</th><td>{{ data.v4.sn_num }}</td>
+                  <th>Number</th><td>{{ data.v4.sn_num }}</td>
                 </tr>
               </table>
             </el-card>
@@ -73,7 +68,7 @@
               </div>
               <table class="home-table">
                 <tr>
-                  <th>Current Pi Code Version</th><td>
+                  <th>Current Version</th><td>
                     <span
                       v-if="data.version && data.version.pi_rework_current_ver"
                       class="margin__right-10"
@@ -90,7 +85,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <th>Rework Run Mode</th><td>
+                  <th>Rework Mode</th><td>
                     <el-switch
                       v-model="pi_rework_mode"
                       style="display: block"
@@ -143,29 +138,8 @@
         <el-button @click="centerDialogVisible = false">Cancel</el-button>
         <el-button
           type="primary"
-          :loading="isLoading"
           @click="handleConfirm"
         >Confirm</el-button>
-      </span>
-    </el-dialog>
-    <el-dialog
-      title="Warning"
-      :visible.sync="dialogRestart"
-      :show-close="false"
-      :close-on-click-modal="false"
-      width="30%"
-      center
-    >
-      <span>Update completed, Do you want to restart ?</span>
-      <span
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button
-          type="primary"
-          :loading="isLoading"
-          @click="handleRestart"
-        >Restart</el-button>
       </span>
     </el-dialog>
   </el-container>
@@ -191,9 +165,7 @@ export default {
       },
       pi_rework_mode: null,
       centerDialogVisible: false,
-      dialogRestart: false,
       isEnableMac: null,
-      isLoading: false,
       timer: null,
     };
   },
@@ -257,28 +229,17 @@ export default {
       }
       this.timer = setTimeout(() => {
         this.fetchData();
-      }, 2000);
-    },
-    handleRestart() {
-      this.isLoading = true;
-      this.doAction({ action_name: ACTION.REWORK__RESTART, num: -1}).finally(() => {
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
-      })
+      }, 1000);
     },
     updateVersion() {
-      this.isLoading = true;
-      this.doAction({ action_name: ACTION.REWORK__UPGRADE_PI_SOURCE, num: -1}).then(() => {
-          this.isLoading = false;
-          this.centerDialogVisible = false;
-          this.dialogRestart = true;
-          // this.getReworkVersion().finally(() => {
-          //   this.initData();
-          // })
+      this.doAction({ action_name: ACTION.REWORK__UPGRADE_PI_SOURCE, num: -1}).finally(() => {
+          this.getReworkVersion().finally(() => {
+            this.initData();
+          })
       })
     },
     handleConfirm() {
+      this.centerDialogVisible = false;
       this.updateVersion();
     },
     loadData(data) {
@@ -407,8 +368,8 @@ export default {
   flex: 1;
 }
 .btn-update {
-  background-color: #13ce66 !important;
-  border-color: #13ce66 !important;
+  background-color: #13ce66;
+  border-color: #13ce66;
 }
 .home-table th {
   padding: 5px;
@@ -464,33 +425,4 @@ export default {
   min-width: 100px;
   display: inline-block;
 }
-
-@-webkit-keyframes my {
-    0% { color: #e74c3c; font-size: 15px;} 
-    50% { color: #222;; font-size: 14px;} 
-    100% { color: #e74c3c; font-size: 15px;} 
- }
- @-moz-keyframes my { 
-    0% { color: #e74c3c; font-size: 15px;} 
-    50% { color: #222;; font-size: 14px;} 
-    100% { color: #e74c3c; font-size: 15px;} 
- }
- @-o-keyframes my { 
-    0% { color: #e74c3c; font-size: 15px;} 
-    50% { color: #222;; font-size: 14px;} 
-    100% { color: #e74c3c; font-size: 15px;} 
- }
- @keyframes my { 
-    0% { color: #e74c3c; font-size: 15px;} 
-    50% { color: #222;; font-size: 14px;} 
-    100% { color: #e74c3c; font-size: 15px;} 
- } 
- .test {
-    font-weight: bold;
-    -webkit-animation: my 700ms infinite;
-    -moz-animation: my 700ms infinite; 
-    -o-animation: my 700ms infinite; 
-    animation: my 700ms infinite;
-}
-
 </style>

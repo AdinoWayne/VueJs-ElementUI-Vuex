@@ -26,14 +26,14 @@ export default {
       allSteps: [],
       arrText: [
             'Scan',
-            'Send V4 info to Cloud',
-            'Download Plume CAs',
-            'Open SSH Server',
-            'Send FW to V4',
-            'Send Plume CAs',
-            'Install Plume CAs',
+            'Send to Cloud',
+            'Download from Cloud',
+            'Open SSH',
+            'Send FW',
+            'Send Plume Cas',
+            'Install Plume Cas',
             'Install FW',
-            'Send Log to Cloud'
+            'Send Log'
       ],
       arrProgress: [],
       progressBar: null,
@@ -65,7 +65,7 @@ export default {
             if (this.isBegin) {
                 this.getReworkStates().finally(() => {
                     this.initData(() => {
-                        this.updateProgressBar(this.activeNum, true)
+                        this.updateProgressBar(this.activeNum)
                     });
                 })
             }
@@ -368,7 +368,6 @@ export default {
                     .attr('height', 128);
             }
         }
-        console.log(isFirst, step_, this.currentState);
         if (isFirst) {
             for(let i = 0; i < this.allSteps.length; i++){
                 if(i <= positionI && positionI < steps.length) {
@@ -424,21 +423,6 @@ export default {
                     }
                     d3.select('#step_' + i).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen);
                 }
-                if (step_ == 0 && i > 0 && i < steps.length) {
-                    d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>')
-                    d3.select('#vertical_' + i).attr('height', 0);
-                }
-            }
-            if (step_ == 0 || (this.currentState == 'pending' && step_ < steps.length)) {
-                this.progressError
-                .attr('width', () => {
-                    return 0;
-                });
-                this.progressFirstBackGround
-                .attr('height', () => {
-                    return 0;
-                });
-                this.arrHighProgress.map(el => el.attr('height', 0))
             }
             return;
         }
@@ -468,31 +452,21 @@ export default {
                 this.arrHighProgress.map(el => el.attr('height', 0))
             } else {
                 d3.select('#foreign_' + 0).html('<i class="el-icon-refresh"></i>');
-                for(let i = 1; i < this.allSteps.length; i++) {
-                    if (i < step_ && step_ < steps.length) {
-                        d3.select('#foreign_' + i).html('<i class="el-icon-check"></i>');
-                    }
-                    if (step_ < steps.length && i >= steps.length) {
-                        d3.select('#label_' + i).attr('fill', this.colors.black).style("display", "none");
-                        d3.select('#vertical_' + i).attr('height', 0);
-                        d3.select('#step_' + i).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen).style("display", "none");
-                        d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>').style("display", "none");
-                    }
-                }
-                if (step_ < steps.length) {
-                    this.progressError
-                    .attr('width', () => {
-                        return 0;
-                    });
-                    this.progressFirstBackGround
-                    .attr('height', () => {
-                        return 0;
-                    });
-                    this.arrHighProgress.map(el => el.attr('height', 0))
-                }
             }
         } else if (this.currentState == 'failed') {
             d3.select('#foreign_' + step_).html('<i class="el-icon-close" style="color: #fff"></i>')
+            // .on('click', () => {
+            //     this.activeNum = step_;
+            //     this.currentState = 'pending';
+            //     this.updateProgressBar(step_);
+            //     this.doAction({ action_name: this.prepareData(step_), num: step_})
+            // })
+            // .on("mouseenter", () => {
+            //     d3.select(event.currentTarget).html('<i class="el-icon-refresh" style="color: #fff"></i>')
+            // })
+            // .on("mouseleave", () => {
+            //     d3.select(event.currentTarget).html('<i class="el-icon-close" style="color: #fff"></i>')
+            // })
             if (step_ !== 0 && step_ < steps.length) {
                 d3.select('#label_' + (step_ + steps.length - 1)).attr('fill', this.colors.black).style("display", "block");
                 d3.select('#foreign_' + (step_ + steps.length - 1)).html('<i class="el-icon-arrow-right"></i>').style("display", "block");
@@ -669,19 +643,12 @@ export default {
             })
             .html(html)
             .on('click', () => {
-                if (this.pi && this.pi.cloud && this.pi.cloud.cloud_connected !== 'True') {
-                    return;
-                }
-                if (this.currentState == 'pending') {
-                    return;
-                }
-                if (this.currentState == 'success' && index == this.activeNum && index != 0) {
-                    return;
-                }
-                if (index !== this.activeNum && (
+                if (
+                    (index !== this.activeNum && this.activeNum != index + steps.length - 1) && (
                     (index < this.activeNum && index != 0) ||
                     (index - this.activeNum > 1 && index < steps.length) ||
-                    (this.currentState == 'failed' && index > this.activeNum && index < steps.length))
+                    (this.currentState == 'failed' && index > this.activeNum && index < steps.length)) ||
+                    this.currentState == 'pending'
                 ) {
                     return;
                 }
