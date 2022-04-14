@@ -3,12 +3,12 @@
     <nav class="navbar navbar-expand navbar-dark bg-dark">
       <div class="navbar-nav mr-auto">
         <li class="nav-item">
-          <router-link
-            to="/"
-            class="nav-link"
+          <a
+            href="https://www.humax-networks.com/"
+            class="nav-link logo-left"
           >
-            HUMAX
-          </router-link>
+            HUMAX NETWORK
+          </a>
         </li>
       </div>
       <div
@@ -30,15 +30,6 @@
         class="navbar-nav ml-auto"
       >
         <li class="nav-item">
-          <router-link
-            to="/profile"
-            class="nav-link"
-          >
-            <font-awesome-icon icon="user" />
-            {{ currentUser.username }}
-          </router-link>
-        </li>
-        <li class="nav-item">
           <a
             class="nav-link"
             href
@@ -50,7 +41,9 @@
       </div>
     </nav>
     <el-container>
-      <router-view />
+      <el-main>
+        <router-view />
+      </el-main>
     </el-container>
   </div>
 </template>
@@ -63,7 +56,6 @@ export default {
       name: 'Status'
     };
   },
-  components: {},
   computed: {
     currentUser() {
       return this.$store.state.auth.user;
@@ -73,7 +65,6 @@ export default {
     this.name = this.$route.name;
   },
   methods: {
-    // eslint-disable-next-line no-unused-vars
     switchTabs(tab, _event) {
       var switchObject = {
         'Status': () => {
@@ -107,5 +98,10 @@ export default {
 }
 .el-tabs--left .el-tabs__header.is-left {
   width: 200px;
+}
+.logo-left {
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff !important;
 }
 </style>

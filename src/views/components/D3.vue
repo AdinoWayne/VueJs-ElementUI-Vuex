@@ -11,7 +11,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import { PROGRESS } from "./../../common/constants";
+import { PROGRESS, CLOUD } from "./../../common/constants";
 import * as d3 from "d3";
 
 export default {
@@ -368,7 +368,6 @@ export default {
                     .attr('height', 128);
             }
         }
-        console.log(isFirst, step_, this.currentState);
         if (isFirst) {
             for(let i = 0; i < this.allSteps.length; i++){
                 if(i <= positionI && positionI < steps.length) {
@@ -670,6 +669,9 @@ export default {
             .html(html)
             .on('click', () => {
                 if (this.pi && this.pi.cloud && this.pi.cloud.cloud_connected !== 'True') {
+                    return;
+                }
+                if (this.pi && this.pi.cloud && this.pi.cloud.curr_state.indexOf(CLOUD.REWORK__SUCCESS_DOWNLOAD_FW_FROM_CLOUD.VALUE) === -1) {
                     return;
                 }
                 if (this.currentState == 'pending') {

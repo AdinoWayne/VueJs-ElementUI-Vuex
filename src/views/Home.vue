@@ -19,7 +19,14 @@
                   <th>FW Name</th><td>{{ data.cloud.fw_name }}</td>
                 </tr>
                 <tr>
-                  <th>Current State</th><td>{{ loadData(data.cloud.curr_state) }}</td>
+                  <th>Current State</th><td>
+                    <span
+                      v-if="isFocus('REWORK__CHECKING_FW_VER_WITH_CLOUD')"
+                      class="test"
+                    >{{ loadData(data.cloud.curr_state) }}</span><span
+                      v-else
+                    >{{ loadData(data.cloud.curr_state) }}</span>
+                  </td>
                 </tr>
                 <tr>
                   <th>Connection Status</th><td>
@@ -361,6 +368,24 @@ export default {
           default:
               return data;
         }
+    },
+    isFocus(value) {
+      console.log(value);
+      if (!value) {
+        return false
+      }
+      switch (true) {
+        case value.indexOf(CLOUD.REWORK__CHECKING_FW_VER_WITH_CLOUD.VALUE) !== -1:
+            return true;
+        case value.indexOf(CLOUD.REWORK__FAIL_CHECKING_FW_VER_WITH_CLOUD.VALUE) !== -1:
+            return true;
+        case value.indexOf(CLOUD.REWORK__DOWNLOAD_FW_FROM_CLOUD.VALUE) !== -1:
+            return true;
+        case value.indexOf(CLOUD.REWORK__FAIL_DOWNLOAD_FW_FROM_CLOUD.VALUE) !== -1:
+            return true;
+        default:
+          return false;
+      }
     },
     isDisabledVersion(value) {
       if (!value) {
