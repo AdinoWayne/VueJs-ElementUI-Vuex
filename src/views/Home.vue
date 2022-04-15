@@ -21,7 +21,7 @@
                 <tr>
                   <th>Current State</th><td>
                     <span
-                      v-if="isFocus('REWORK__CHECKING_FW_VER_WITH_CLOUD')"
+                      v-if="isFocus(data.cloud.curr_state)"
                       class="test"
                     >{{ loadData(data.cloud.curr_state) }}</span><span
                       v-else
@@ -142,7 +142,7 @@
       width="30%"
       center
     >
-      <span>Update Version could affect to operation, are you sure ?</span>
+      <span class="dialog-message">Update Version could affect to operation, are you sure?</span>
       <span
         slot="footer"
         class="dialog-footer"
@@ -163,7 +163,7 @@
       width="30%"
       center
     >
-      <span>Update completed, Do you want to restart ?</span>
+      <span class="dialog-message">Update completed, Do you want to restart?</span>
       <span
         slot="footer"
         class="dialog-footer"
@@ -370,7 +370,6 @@ export default {
         }
     },
     isFocus(value) {
-      console.log(value);
       if (!value) {
         return false
       }
@@ -509,13 +508,17 @@ export default {
     0% { color: #e74c3c; font-size: 15px;} 
     50% { color: #222;; font-size: 14px;} 
     100% { color: #e74c3c; font-size: 15px;} 
- } 
- .test {
+} 
+.test {
     font-weight: bold;
     -webkit-animation: my 700ms infinite;
     -moz-animation: my 700ms infinite; 
     -o-animation: my 700ms infinite; 
     animation: my 700ms infinite;
 }
-
+.dialog-message {
+    width: 100%;
+    display: block;
+    text-align: center;
+}
 </style>
