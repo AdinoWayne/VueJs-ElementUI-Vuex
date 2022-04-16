@@ -32,17 +32,17 @@ export const router = new Router({
   ]
 });
 
-router.beforeEach((to, from, next) => {
-  const publicPages = ['/login', '/register'];
-  const authRequired = !publicPages.includes(to.path);
-  const user = getLocalStorage('user');
+// router.beforeEach((to, from, next) => {
+//   const publicPages = ['/login', '/register'];
+//   const authRequired = !publicPages.includes(to.path);
+//   const user = getLocalStorage('user');
 
-  if (authRequired && (!user || !user.token)) {
-    next('/login');
-  } else {
-    if (to.path === "/") {
-      next('/status');
-    }
-    next();
-  }
-});
+//   if (authRequired && (!user || !user.token)) {
+//     next('/login');
+//   } else {
+//     if (to.path === "/") {
+//       next('/status');
+//     }
+//     next();
+//   }
+// });

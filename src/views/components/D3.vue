@@ -40,6 +40,7 @@ export default {
       progressBackground: null,
       progressError: null,
       progressFirstBackGround: null,
+      FirstHighLight: null,
       progress: null,
       arrHighProgress: [],
       currentState: "success",
@@ -76,6 +77,11 @@ export default {
         this.initData();
         this.initStep();
     })
+  },
+  watch: {
+      activeNum (newValue, oldValue) {
+          this.prevNum = oldValue;
+      }
   },
   methods: {
     ...mapActions('pi', ['getReworkStates', 'doAction']),
@@ -324,16 +330,25 @@ export default {
         var positionI = this.allSteps.indexOf(step_);
         var positionE = this.stepErrors.indexOf(step_);
         var positionB = this.stepErrors.indexOf(step_ + steps.length - 1);
-        this.progress.transition()
-            .duration(1000)
-            .attr('fill', this.colors.green)
-            .attr('width', () => {
-                var index = this.allSteps.indexOf(step_);
-                if (index < steps.length) {
-                    return (index) * stepWidth;
-                }
-                return (index - steps.length + 1) * stepWidth;
-            });
+        if (step_ !== 0) {
+            this.progress.transition()
+                .duration(1000)
+                .attr('fill', this.colors.green)
+                .attr('width', () => {
+                    var index = this.allSteps.indexOf(step_);
+                    if (index < steps.length) {
+                        return (index) * stepWidth;
+                    }
+                    return (index - steps.length + 1) * stepWidth;
+                });
+        } else {
+            this.progress
+                .attr('fill', this.colors.green)
+                .attr('width', () => {
+                    return 0;
+                });
+        }
+
         if (positionI >= steps.length || this.currentState == 'failed') {
             if (step_ > 0) {
                 this.progressFirstBackGround
@@ -369,6 +384,10 @@ export default {
             }
         }
         if (isFirst) {
+            if (step_ == 0) {
+                this.progressError.attr('fill', this.colors.green)
+                this.progressFirstBackGround.attr('fill', this.colors.green)
+            }
             for(let i = 0; i < this.allSteps.length; i++){
                 if(i <= positionI && positionI < steps.length) {
                     d3.select('#step_' + i).attr('fill', this.colors.green).attr('stroke', this.colors.green);
@@ -429,11 +448,15 @@ export default {
                 }
             }
             if (step_ == 0 || (this.currentState == 'pending' && step_ < steps.length)) {
-                this.progressError
+                this.progressError.transition()
+                .delay(200)
+                .attr('fill', this.colors.lightGreen)
                 .attr('width', () => {
                     return 0;
                 });
-                this.progressFirstBackGround
+                this.progressFirstBackGround.transition()
+                .delay(300)
+                .attr('fill', this.colors.lightGreen)
                 .attr('height', () => {
                     return 0;
                 });
