@@ -383,6 +383,7 @@ export default {
                     .attr('height', 128);
             }
         }
+
         if (isFirst) {
             if (step_ == 0) {
                 this.progressError.attr('fill', this.colors.green)
@@ -439,6 +440,9 @@ export default {
                         d3.select('#vertical_' + i).attr('height', 0);
                         d3.select('#step_' + i).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen).style("display", "none");
                         d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>').style("display", "none");
+                    }
+                    if (i > step_) {
+                        d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>');
                     }
                     d3.select('#step_' + i).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen);
                 }
