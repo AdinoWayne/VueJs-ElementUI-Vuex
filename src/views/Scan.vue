@@ -1,30 +1,21 @@
 <template>
   <el-container>
-    <el-aside
-      width="300px"
-      style="padding: 20px"
-    >
-      <el-button
-        type="success"
-        icon="el-icon-loading"
-        plain
-      >
-        Scan
-      </el-button>
-    </el-aside>
     <el-main>
       <el-card class="box-card">
         <div
           slot="header"
           class="clearfix"
         >
-          <span>Information Scan</span>
+          <span>Information Raspberry PI</span>
         </div>
         <div class="text item">
-          name: <span>HUMAX-ABC</span>
+          HGJ310v4 Gateway IP: <span>192.168.50.1</span>
         </div>
         <div class="text item">
-          status: <span>connection</span>
+          SSID on Raspberry PI's Wifi Interface: <span>hvn_ssid</span>
+        </div>
+        <div class="text item">
+          PASSWORD on Raspberry PI's Wifi Interface: <span>hvn_passowrd</span>
         </div>
       </el-card>
     </el-main>

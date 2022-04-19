@@ -1,6 +1,6 @@
 <template>
   <el-container>
-    <el-main>
+    <el-main class="child-main">
       <el-row :gutter="20">
         <el-col
           :span="8"
@@ -21,7 +21,7 @@
                 <tr>
                   <th>Current State</th><td>
                     <span
-                      v-if="isFocus(data.cloud.curr_state)"
+                      v-if="true"
                       class="test"
                     >{{ loadData(data.cloud.curr_state) }}</span><span
                       v-else
@@ -142,7 +142,7 @@
       width="30%"
       center
     >
-      <span class="dialog-message">Update Version could affect to operation, are you sure?</span>
+      <span class="dialog-message">Update could affect to current progress. Choose confirm to continue?</span>
       <span
         slot="footer"
         class="dialog-footer"
@@ -412,6 +412,9 @@ export default {
           })
       })
     }
+  },
+  destroyed() {
+    clearTimeout(this.timer);
   }
 };
 </script>
@@ -490,35 +493,94 @@ export default {
 }
 
 @-webkit-keyframes my {
-    0% { color: #e74c3c; font-size: 15px;} 
-    50% { color: #222;; font-size: 14px;} 
-    100% { color: #e74c3c; font-size: 15px;} 
+    0% {
+      color: #e74c3c;
+      text-shadow:
+        0 0 5px #fbb5ae,
+        0 0 10px #ff8477
+    } 
+    50% {
+      color: #222;
+      text-shadow: none;
+    } 
+    100% {
+      color: #e74c3c;
+      text-shadow:
+        0 0 5px #fbb5ae,
+        0 0 10px #ff8477
+    }
  }
  @-moz-keyframes my { 
-    0% { color: #e74c3c; font-size: 15px;} 
-    50% { color: #222;; font-size: 14px;} 
-    100% { color: #e74c3c; font-size: 15px;} 
+    0% {
+      color: #e74c3c;
+      text-shadow:
+        0 0 5px #fbb5ae,
+        0 0 10px #ff8477
+    } 
+    50% {
+      color: #222;
+      text-shadow: none;
+    } 
+    100% {
+      color: #e74c3c;
+      text-shadow:
+        0 0 5px #fbb5ae,
+        0 0 10px #ff8477
+    }
  }
  @-o-keyframes my { 
-    0% { color: #e74c3c; font-size: 15px;} 
-    50% { color: #222;; font-size: 14px;} 
-    100% { color: #e74c3c; font-size: 15px;} 
+    0% {
+      color: #e74c3c;
+      text-shadow:
+        0 0 5px #fbb5ae,
+        0 0 10px #ff8477
+    } 
+    50% {
+      color: #222;
+      text-shadow: none;
+    } 
+    100% {
+      color: #e74c3c;
+      text-shadow:
+        0 0 5px #fbb5ae,
+        0 0 10px #ff8477
+    }
  }
  @keyframes my { 
-    0% { color: #e74c3c; font-size: 15px;} 
-    50% { color: #222;; font-size: 14px;} 
-    100% { color: #e74c3c; font-size: 15px;} 
+    0% {
+      color: #e74c3c;
+      text-shadow:
+        0 0 5px #fbb5ae,
+        0 0 10px #ff8477
+    } 
+    50% {
+      color: #222;
+      text-shadow: none;
+    } 
+    100% {
+      color: #e74c3c;
+      text-shadow:
+        0 0 5px #fbb5ae,
+        0 0 10px #ff8477
+    }
 } 
 .test {
     font-weight: bold;
-    -webkit-animation: my 700ms infinite;
-    -moz-animation: my 700ms infinite; 
-    -o-animation: my 700ms infinite; 
-    animation: my 700ms infinite;
+    -webkit-animation: my 1000ms infinite;
+    -moz-animation: my 1000ms infinite; 
+    -o-animation: my 1000ms infinite; 
+    animation: my 1000ms infinite;
 }
 .dialog-message {
     width: 100%;
     display: block;
     text-align: center;
+}
+.child-main, .child-main .card-content:last-child, .child-main .card-content:first-child {
+  padding: 0 !important;
+}
+.child-main > .el-row {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
 }
 </style>

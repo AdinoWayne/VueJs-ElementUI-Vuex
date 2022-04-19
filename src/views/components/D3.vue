@@ -349,7 +349,7 @@ export default {
                 });
         }
 
-        if (positionI >= steps.length || this.currentState == 'failed') {
+        if (positionI >= steps.length || (this.currentState == 'failed' && step_ !== 8)) {
             if (step_ > 0) {
                 this.progressFirstBackGround
                 .attr('height', () => {
@@ -383,7 +383,6 @@ export default {
                     .attr('height', 128);
             }
         }
-
         if (isFirst) {
             if (step_ == 0) {
                 this.progressError.attr('fill', this.colors.green)
@@ -430,7 +429,7 @@ export default {
                         d3.select('#label_' + i).attr('fill', this.colors.black).style("display", "block");
                     }
                 } else {
-                    if (this.currentState == 'failed' && (i == step_ || i == step_ + steps.length - 1)) {
+                    if (this.currentState == 'failed' && (i == step_ || i == step_ + steps.length - 1) && step_ !== 8) {
                         d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>').style("display", "block");
                         d3.select('#label_' + i).attr('fill', this.colors.black).style("display", "block");
                         d3.select('#step_' + i).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen).style("display", "block");
@@ -753,6 +752,9 @@ export default {
         this.updateProgressBar(this.activeNum , true);
         this.isBegin = true;
     }
+  },
+  destroyed() {
+    clearTimeout(this.timer);
   }
 };
 </script>

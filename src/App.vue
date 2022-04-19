@@ -41,7 +41,13 @@
       </div>
     </nav>
     <el-container>
-      <el-main>
+      <el-aside width="160px" style="padding: 20px">
+        <el-tabs class="tabs-wrapper" v-model="name" :tab-position="'left'" @tab-click="switchTabs">
+          <el-tab-pane :name="item.value" :label="item.text" v-for="item in tabs" :key="item.value">
+          </el-tab-pane>
+        </el-tabs>
+      </el-aside>
+      <el-main class="main">
         <router-view />
       </el-main>
     </el-container>
@@ -52,8 +58,14 @@
 export default {
   data() {
     return {
-      tabs: ['Status', 'Scan', 'Upgrade'],
-      name: 'Status'
+      tabs: [{
+        text: 'Rework',
+        value: 'status'
+      },{
+        text: 'Raspberry Pi',
+        value: 'pi'
+      }],
+      name: 'Rework',
     };
   },
   computed: {
@@ -65,16 +77,13 @@ export default {
     this.name = this.$route.name;
   },
   methods: {
-    switchTabs(tab, _event) {
+    switchTabs(tab) {
       var switchObject = {
-        'Status': () => {
+        'Rework': () => {
           return this.$router.push("/status");
         },
-        'Scan': () => {
-          return this.$router.push("/scan");
-        },
-        'Upgrade': () => {
-          return this.$router.push("/upgrade");
+        'Raspberry Pi': () => {
+          return this.$router.push("/pi");
         },
         'default': () => {
           return this.$router.push("/status");
@@ -94,14 +103,17 @@ export default {
 	margin-top: 20px;
 }
 .tabs-wrapper {
-  height: 80vh;
+  height: 100%;
 }
 .el-tabs--left .el-tabs__header.is-left {
-  width: 200px;
+  width: 120px;
 }
 .logo-left {
   font-size: 16px;
   font-weight: bold;
   color: #fff !important;
+}
+.el-main.main {
+  padding-left: 0;
 }
 </style>
