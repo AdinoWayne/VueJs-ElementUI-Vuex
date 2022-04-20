@@ -12,6 +12,20 @@ const initialState = {
       status: 'success',
       prevAction: 0,
       action: 0
+    },
+    raspberry_pi: {
+      gateway: {
+        hgj310v4_gw_ip: '',
+      },
+      wifi: {
+        ssid: '',
+        password: '',
+      },
+      interface: {
+        eth0: '',
+        usb_to_ethernet: '',
+        wifi: '',
+      }
     }
 };
 
@@ -87,6 +101,42 @@ export const pi = {
         },
         error => {
           commit('getReworkMACFailed');
+          return Promise.reject(error);
+        }
+      );
+    },
+    getGatewayIP({ commit }) {
+      return PIService.getGatewayIP().then(
+        res => {
+          commit('getGatewayIPSuccess', res.data);
+          return Promise.resolve(res.data);
+        },
+        error => {
+          commit('getGatewayIPFailed');
+          return Promise.reject(error);
+        }
+      );
+    },
+    getWifiAccount({ commit }) {
+      return PIService.getWifiAccount().then(
+        res => {
+          commit('getWifiAccountSuccess', res.data);
+          return Promise.resolve(res.data);
+        },
+        error => {
+          commit('getWifiAccountFailed');
+          return Promise.reject(error);
+        }
+      );
+    },
+    getInterfaceIP({ commit }) {
+      return PIService.getInterfaceIP().then(
+        res => {
+          commit('getInterfaceIPSuccess', res.data);
+          return Promise.resolve(res.data);
+        },
+        error => {
+          commit('getInterfaceIPFailed');
           return Promise.reject(error);
         }
       );
@@ -202,6 +252,27 @@ export const pi = {
       };
     },
     getReworkMACFailed() {},
+    getGatewayIPSuccess(state, data) {
+      state.raspberry_pi.gateway = {
+        hgj310v4_gw_ip: data.hgj310v4_gw_ip,
+      };
+    },
+    getGatewayIPFailed() {},
+    getWifiAccountSuccess(state, data) {
+      state.raspberry_pi.wifi = {
+        ssid: data.ssid,
+        password: data.password,
+      };
+    },
+    getWifiAccountFailed() {},
+    getInterfaceIPSuccess(state, data) {
+      state.raspberry_pi.interface = {
+        eth0: data.eth0,
+        usb_to_ethernet: data['USB-to-Ethernet'],
+        wifi: data['Wi-Fi']
+      };
+    },
+    getInterfaceIPFailed() {},
   },
   getters: {
     pi(state) {
@@ -209,6 +280,15 @@ export const pi = {
     },
     nextAction(state) {
         return state.nextAction;
-    }
+    },
+    raspberry_pi_gateway(state) {
+      return state.raspberry_pi.gateway;
+    },
+    raspberry_pi_wifi(state) {
+      return state.raspberry_pi.wifi;
+    },
+    raspberry_pi_interface(state) {
+      return state.raspberry_pi.interface;
+    },
   }
 };

@@ -38,6 +38,18 @@ class PIService {
       action_name: data.action_name
     }, { headers: authHeader() });
   }
+
+  getGatewayIP() {
+    return axios.get(API_URL + 'get_hgj310v4_gw_ip', { headers: authHeader() });
+  }
+
+  getWifiAccount() {
+    return axios.get(API_URL + 'get_rasp_pi_wifi_account', { headers: authHeader() });
+  }
+
+  getInterfaceIP() {
+    return axios.get(API_URL + 'get_rasp_pi_interface_ips', { headers: authHeader() });
+  }
 }
 
 export default new PIService();

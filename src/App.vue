@@ -41,7 +41,7 @@
       </div>
     </nav>
     <el-container>
-      <el-aside width="160px" style="padding: 20px">
+      <el-aside width="160px" style="padding: 20px" v-if="currentUser">
         <el-tabs class="tabs-wrapper" v-model="name" :tab-position="'left'" @tab-click="switchTabs">
           <el-tab-pane :name="item.value" :label="item.text" v-for="item in tabs" :key="item.value">
           </el-tab-pane>
@@ -104,6 +104,7 @@ export default {
 }
 .tabs-wrapper {
   height: 100%;
+  min-height: 80vh;
 }
 .el-tabs--left .el-tabs__header.is-left {
   width: 120px;
