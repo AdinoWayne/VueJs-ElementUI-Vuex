@@ -9,11 +9,18 @@
               class="clearfix"
             >
               <span>Raspberry PI(set/show IP)</span>
-              <el-button type="success" size="mini" style="float: right">Update</el-button>
+              <el-button type="success" size="mini" style="float: right"
+              @click="() => handleClick(1)">Update</el-button>
             </div>
             <table class="home-table">
                 <tr>
-                  <th>HGJ310v4 Gateway IP</th><td><el-input size="mini" v-model="input"></el-input></td>
+                  <th>HGJ310v4 Gateway IP</th>
+                  <td>
+                    <el-input size="mini" 
+                    v-model="gateway.hgj310v4_gw_ip"
+                    @change="e => onChange(e, gateway.hgj310v4_gw_ip)">
+                    </el-input>
+                  </td>
                 </tr>
               </table>
           </el-card>
@@ -25,14 +32,25 @@
               class="clearfix"
             >
               <span>Raspberry PI(set/show SSID / PWD)</span>
-              <el-button type="success" size="mini" style="float: right">Update</el-button>
+              <el-button type="success" size="mini" style="float: right"
+              @click="() => handleClick(2)">Update</el-button>
             </div>
               <table class="home-table">
                 <tr>
-                  <th>SSID on Raspberry PI's Wifi Interface</th><td><el-input size="mini" v-model="input"></el-input></td>
+                  <th>SSID on Raspberry PI's Wifi Interface</th>
+                  <td>
+                    <el-input size="mini" v-model="wifi.ssid"
+                    @change="e => onChange(e, wifi.ssid)">
+                    </el-input>
+                  </td>
                 </tr>
                 <tr style="border-bottom: 0">
-                  <th>PASSWORD on Raspberry PI's Wifi Interface</th><td><el-input size="mini" v-model="input" show-password></el-input></td>
+                  <th>PASSWORD on Raspberry PI's Wifi Interface</th>
+                  <td>
+                    <el-input size="mini" v-model="wifi.password" show-password
+                    @change="e => onChange(e, wifi.password)">
+                    </el-input>
+                  </td>
                 </tr>
               </table>
           </el-card>
@@ -67,14 +85,25 @@
               class="clearfix"
             >
               <span>Open a SSH Server on HGJ310v4</span>
-              <el-button type="success" size="mini" style="float: right">Update</el-button>
+              <el-button type="success" size="mini" style="float: right"
+              @click="() => handleClick(3)">Update</el-button>
             </div>
             <table class="home-table">
               <tr>
-                <th>ID</th><td><el-input size="mini" v-model="data.root.id"></el-input></td>
+                <th>ID</th>
+                <td>
+                  <el-input size="mini" v-model="root.id"
+                  @change="e => onChange(e, root.id)">
+                  </el-input>
+                </td>
               </tr>
               <tr style="border-bottom: 0">
-                <th>Password</th><td><el-input size="mini" v-model="data.root.password" show-password></el-input></td>
+                <th>Password</th>
+                <td>
+                  <el-input size="mini" v-model="root.password" show-password
+                  @change="e => onChange(e, root.password)">
+                  </el-input>
+                </td>
               </tr>
             </table>
           </el-card>
@@ -86,16 +115,14 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-
+import { ACTION } from './../common/constants';
 export default {
   name: 'Home',
   data() {
     return {
-      data: {
-        root: {
-          id: 'root',
-          password: 'hmxosync'
-        }
+      root: {
+        id: 'root',
+        password: 'hmxosync'
       },
       wifi: {},
       gateway: {},
@@ -109,9 +136,9 @@ export default {
   },
   mounted() {
     let $q = [];
-    $q.push(this.raspberry_pi_gateway());
-    $q.push(this.raspberry_pi_wifi());
-    $q.push(this.raspberry_pi_interface());
+    $q.push(this.getGatewayIP());
+    $q.push(this.getWifiAccount());
+    $q.push(this.getInterfaceIP());
     Promise.all($q).finally(() => {
       this.initData();
     });
@@ -132,6 +159,47 @@ export default {
       }
       if (this.raspberry_pi_interface) {
         this.interfaces = this.raspberry_pi_interface
+      }
+    },
+    onChange(e, value) {
+      value = e;
+    },
+    putGateway() {
+      this.doAction({
+        action_name: ACTION.REWORK_SET_HGJ310V4_GW_IP,
+        hgj310v4_gw_ip: this.gateway.hgj310v4_gw_ip,
+        num: -1
+      });
+    },
+    putWifi() {
+      this.doAction({
+        action_name: ACTION.REWORK_SET_RAPS_PI_WIFI_ACCOUNT,
+        ssid: this.wifi.ssid,
+        password: this.wifi.password,
+        num: -1
+      });
+    },
+    openSSH() {
+      this.doAction({
+        action_name: ACTION.REWORK_SET_OPEN_SSH_SERVER_ON_V4_MANUALLY,
+        id: this.root.id,
+        password: this.root.password,
+        num: -1
+      });
+    },
+    handleClick(type) {
+      switch(type) {
+        case 1:
+          this.putGateway();
+          break;
+        case 2:
+          this.putWifi();
+          break;
+        case 3:
+          this.openSSH();
+          break;
+        default:
+          break;
       }
     }
   }

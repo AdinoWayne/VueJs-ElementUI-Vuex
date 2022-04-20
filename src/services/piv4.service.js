@@ -34,8 +34,11 @@ class PIService {
   }
 
   setAction(data) {
+    if (data.num !== undefined) {
+      delete data.num;
+    }
     return axios.post(API_URL + 'do_action', {
-      action_name: data.action_name
+      ...data
     }, { headers: authHeader() });
   }
 
