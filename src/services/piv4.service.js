@@ -53,6 +53,14 @@ class PIService {
   getInterfaceIP() {
     return axios.get(API_URL + 'get_rasp_pi_interface_ips', { headers: authHeader() });
   }
+
+  getSkipPlumeCas() {
+    return axios.get(API_URL + 'get_skip_installing_plume_cas', { headers: authHeader() });
+  }
+
+  getSkipInstallFW() {
+    return axios.get(API_URL + 'get_skip_installing_fw', { headers: authHeader() });
+  }
 }
 
 export default new PIService();

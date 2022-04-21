@@ -5,9 +5,11 @@ const initialState = {
       cloud: {},
       v4: {},
       pi_rework_mode: "",
-      version: {}
+      version: {},
+      isEnableMAC: false,
+      skip_installing_plume_cas: false,
+      skip_installing_fw: false,
     },
-    isEnableMAC: false,
     nextAction: {
       status: 'success',
       prevAction: 0,
@@ -137,6 +139,30 @@ export const pi = {
         },
         error => {
           commit('getInterfaceIPFailed');
+          return Promise.reject(error);
+        }
+      );
+    },
+    getSkipPlumeCas({ commit }) {
+      return PIService.getSkipPlumeCas().then(
+        res => {
+          commit('getSkipPlumeCasSuccess', res.data);
+          return Promise.resolve(res.data);
+        },
+        error => {
+          commit('getSkipPlumeCasFailed');
+          return Promise.reject(error);
+        }
+      );
+    },
+    getSkipInstallFW({ commit }) {
+      return PIService.getSkipInstallFW().then(
+        res => {
+          commit('getSkipInstallFWSuccess', res.data);
+          return Promise.resolve(res.data);
+        },
+        error => {
+          commit('getSkipInstallFWFailed');
           return Promise.reject(error);
         }
       );
@@ -273,6 +299,14 @@ export const pi = {
       };
     },
     getInterfaceIPFailed() {},
+    getSkipPlumeCasSuccess(state, data) {
+      state.pi.skip_installing_plume_cas = data.skip_installing_plume_cas
+    },
+    getSkipPlumeCasFailed() {},
+    getSkipInstallFWSuccess(state, data) {
+      state.pi.skip_installing_fw = data.skip_installing_fw
+    },
+    getSkipInstallFWFailed() {},
   },
   getters: {
     pi(state) {

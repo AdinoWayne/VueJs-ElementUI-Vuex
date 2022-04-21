@@ -119,6 +119,32 @@
                     />
                   </td>
                 </tr>
+                <tr>
+                  <th>Skip Installing Plume CAs</th><td>
+                    <el-switch
+                      key="key"
+                      v-model="skip_install_plume"
+                      style="display: block"
+                      active-color="#13ce66"
+                      active-text="Enable"
+                      inactive-text="Disable"
+                      @change="(value) => handleSkip(1, value)"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <th>Skip Installing Firmware</th><td>
+                    <el-switch
+                      key="key"
+                      v-model="skip_install_fw"
+                      style="display: block"
+                      active-color="#13ce66"
+                      active-text="Enable"
+                      inactive-text="Disable"
+                      @change="(value) => handleSkip(2, value)"
+                    />
+                  </td>
+                </tr>
               </table>
             </el-card>
           </div>
@@ -139,7 +165,7 @@
     <el-dialog
       title="Warning"
       :visible.sync="centerDialogVisible"
-      width="30%"
+      class="home-dialog"
       center
     >
       <span class="dialog-message">Update could affect to current progress. Choose confirm to continue?</span>
@@ -160,7 +186,7 @@
       :visible.sync="dialogRestart"
       :show-close="false"
       :close-on-click-modal="false"
-      width="30%"
+      class="home-dialog"
       center
     >
       <span class="dialog-message">Update completed, Do you want to restart?</span>
@@ -197,11 +223,14 @@ export default {
         version: {},
       },
       pi_rework_mode: null,
+      skip_install_plume: false,
+      skip_install_fw: false,
       centerDialogVisible: false,
       dialogRestart: false,
       isEnableMac: null,
       isLoading: false,
       timer: null,
+      key: 0,
     };
   },
   computed: {
@@ -222,7 +251,9 @@ export default {
       'doAction',
       'getReworkMAC',
       'postReworkMAC',
-      'getReworkVersion'
+      'getReworkVersion',
+      'getSkipPlumeCas',
+      'getSkipInstallFW'
     ]),
     fetchData() {
       let $q = [];
@@ -231,6 +262,11 @@ export default {
       $q.push(this.getReworkMode());
       $q.push(this.getReworkMAC());
       $q.push(this.getReworkVersion());
+      $q.push(this.getSkipPlumeCas());
+      $q.push(this.getSkipInstallFW());
+      if (this.key == 0) {
+        this.key = 1;
+      } 
       Promise.all($q).finally(() => {
         this.initData();
       });
@@ -257,6 +293,12 @@ export default {
         if (this.pi.pi_rework_mode) {
           this.pi_rework_mode = this.pi.pi_rework_mode.indexOf(MODE.REWORK__ALL_AUTO) !== -1 ? true : false;
         }
+        if (this.pi.skip_installing_plume_cas) {
+          this.skip_installing_plume_cas = this.pi.skip_installing_plume_cas == 'enable' ? true : false;
+        }
+        if (this.pi.skip_installing_fw) {
+          this.skip_installing_fw = this.pi.skip_installing_fw == 'enable' ? true : false;
+        }
       }
       if (this.timer) {
         clearTimeout(this.timer);
@@ -280,9 +322,6 @@ export default {
           this.isLoading = false;
           this.centerDialogVisible = false;
           this.dialogRestart = true;
-          // this.getReworkVersion().finally(() => {
-          //   this.initData();
-          // })
       })
     },
     handleConfirm() {
@@ -411,6 +450,33 @@ export default {
             this.initData();
           })
       })
+    },
+    handleSkip(key, value) {
+      let status = value ? 'enable' : 'disable';
+      switch (key) {
+        case 1:
+          this.doAction({
+            skip_installing_plume_cas: status,
+            action_name: ACTION.REWORK_SET_SKIP_INSTALLING_PLUME_CAS
+            }).finally(() => {
+              this.getReworkMAC().finally(() => {
+                this.initData();
+              })
+          })
+          break;
+        case 2:
+          this.doAction({
+            skip_installing_fw: status,
+            action_name: ACTION.REWORK_SET_SKIP_INSTALLING_FW
+          }).finally(() => {
+              this.getReworkMAC().finally(() => {
+                this.initData();
+              })
+          })
+          break;
+        default:
+          break;
+      }
     }
   },
   destroyed() {
@@ -443,12 +509,15 @@ export default {
   font-weight: 400;
   border-right: 1px solid #eee;
 }
-.home-table tr:nth-child(2) {
-  border-top: 1px solid #eee;
+.home-table tr {
   border-bottom: 1px solid #eee;
 }
+.home-table tr:last-child {
+  border: none;
+}
 .home-table td {
-  min-width: 150px;
+  min-width: 165px;
+  word-break: break-word;
   padding: 5px;
 }
 .margin__right-10 {
@@ -477,7 +546,7 @@ export default {
   clear: both
 }
 .card-content .el-card {
-  min-height: 290px;
+  min-height: 329px;
   display: flex;
   flex-direction: column;
 }
@@ -582,5 +651,9 @@ export default {
 .child-main > .el-row {
   margin-left: 0 !important;
   margin-right: 0 !important;
+}
+.home-dialog .el-dialog {
+  width: 30%;
+  min-width: 500px;
 }
 </style>

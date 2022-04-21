@@ -161,6 +161,7 @@ export default {
         this.interfaces = this.raspberry_pi_interface
       }
     },
+    // eslint-disable-next-line no-unused-vars
     onChange(e, value) {
       value = e;
     },
