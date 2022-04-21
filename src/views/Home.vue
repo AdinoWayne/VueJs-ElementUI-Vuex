@@ -158,7 +158,12 @@
           >
             <span>Progress Step</span>
           </div>
-          <D3 />
+          <div v-if="false">
+            <D3 />
+          </div>
+          <div v-else>
+            <LittleD3 />
+          </div>
         </el-card>
       </el-container>
     </el-main>
@@ -206,6 +211,7 @@
 
 <script>
 import D3 from './components/D3.vue';
+import LittleD3 from './components/LittleD3.vue';
 import { mapActions, mapGetters } from 'vuex'
 import { MODE, ACTION, CLOUD } from './../common/constants';
 import { compareVersionNumbers } from './../common/utils';
@@ -225,7 +231,8 @@ import { HOME_PI } from './../store/types/getters';
 export default {
   name: 'Home',
   components: {
-    D3
+    D3,
+    LittleD3
   },
   data() {
     return {
@@ -318,7 +325,7 @@ export default {
       }
       this.timer = setTimeout(() => {
         this.fetchData();
-      }, 2000);
+      }, 20000);
     },
     handleRestart() {
       this.isLoading = true;
