@@ -1,0 +1,27 @@
+export const GET_REWORK_STATE_SUCCESS = "getReworkStatesSuccess";
+export const GET_REWORK_STATE_FAILED = "getReworkStatesFailed";
+export const GET_INFO_CLOUD_SUCCESS = "getInfoCloudSuccess";
+export const GET_INFO_CLOUD_FAILED = "getInfoCloudFailed";
+export const GET_INFO_V4_SUCCESS = "getV4InfoSuccess";
+export const GET_INFO_V4_FAILED = "getV4InfoFailed";
+export const GET_REWORK_MODE_SUCCESS = "getReworkModeSuccess";
+export const GET_REWORK_MODE_FAILED = "getReworkModeFailed";
+export const GET_REWORK_VERSION_SUCCESS = "getReworkVersionSuccess";
+export const GET_REWORK_VERSION_FAILED = "getReworkVersionFailed";
+export const GET_REWORK_MAC_SUCCESS = "getReworkMACSuccess";
+export const GET_REWORK_MAC_FAILED = "getReworkMACFailed";
+export const GET_GATEWAY_IP_SUCCESS = "getGatewayIPSuccess";
+export const GET_GATEWAY_IP_FAILED = "getGatewayIPFailed";
+export const GET_WIFI_ACCOUNT_SUCCESS = "getWifiAccountSuccess";
+export const GET_WIFI_ACCOUNT_FAILED = "getWifiAccountFailed";
+export const GET_INTERFACE_IP_SUCCESS = "getInterfaceIPSuccess";
+export const GET_INTERFACE_IP_FAILED = "getInterfaceIPFailed";
+export const GET_SKIP_PLUME_CAS_SUCCESS = "getSkipPlumeCasSuccess";
+export const GET_SKIP_PLUME_CAS_FAILED = "getSkipPlumeCasFailed";
+export const GET_SKIP_INSTALL_FW_SUCCESS = "getSkipInstallFWSuccess";
+export const GET_SKIP_INSTALL_FW_FAILED = "getSkipInstallFWFailed";
+
+export const SET_REWORK_MAC_SUCCESS = "postReworkMACSuccess";
+export const SET_REWORK_MAC_FAILED = "postReworkMACFailed";
+export const SET_PI_ACTION_SUCCESS = "setPiActionSuccess";
+export const SET_PI_ACTION_FAILED = "setPiActionFailed";

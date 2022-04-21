@@ -1,4 +1,56 @@
 import PIService from '../services/piv4.service';
+import {
+  HOME_PI,
+  NEXT_ACTION,
+  RASPBERRY_PI_GATEWAY,
+  RASPBERRY_PI_WIFI,
+  RASPBERRY_PI_INTERFACE
+} from './types/getters';
+
+import {
+  GET_REWORK_STATE_SUCCESS,
+  GET_REWORK_STATE_FAILED,
+  GET_INFO_CLOUD_SUCCESS,
+  GET_INFO_CLOUD_FAILED,
+  GET_INFO_V4_SUCCESS,
+  GET_INFO_V4_FAILED,
+  GET_REWORK_MODE_SUCCESS,
+  GET_REWORK_MODE_FAILED,
+  GET_REWORK_VERSION_SUCCESS,
+  GET_REWORK_VERSION_FAILED,
+  GET_REWORK_MAC_SUCCESS,
+  GET_REWORK_MAC_FAILED,
+  GET_GATEWAY_IP_SUCCESS,
+  GET_GATEWAY_IP_FAILED,
+  GET_WIFI_ACCOUNT_SUCCESS,
+  GET_WIFI_ACCOUNT_FAILED,
+  GET_INTERFACE_IP_SUCCESS,
+  GET_INTERFACE_IP_FAILED,
+  GET_SKIP_PLUME_CAS_SUCCESS,
+  GET_SKIP_PLUME_CAS_FAILED,
+  GET_SKIP_INSTALL_FW_SUCCESS,
+  GET_SKIP_INSTALL_FW_FAILED,
+  SET_REWORK_MAC_SUCCESS,
+  SET_REWORK_MAC_FAILED,
+  SET_PI_ACTION_SUCCESS,
+  SET_PI_ACTION_FAILED
+} from './types/mutations';
+
+import {
+  GET_REWORK_STATE,
+  GET_INFO_CLOUD,
+  GET_INFO_V4,
+  GET_REWORK_MODE,
+  GET_REWORK_VERSION,
+  GET_REWORK_MAC,
+  GET_GATEWAY_IP,
+  GET_WIFI_ACCOUNT,
+  GET_INTERFACE_IP,
+  GET_SKIP_PLUME_CAS,
+  GET_SKIP_INSTALL_FW,
+  SET_REWORK_MAC,
+  SET_PI_ACTION
+} from './types/actions';
 
 const initialState = {
     pi: {
@@ -35,233 +87,225 @@ export const pi = {
   namespaced: true,
   state: initialState,
   actions: {
-    getReworkStates({ commit }) {
+    [GET_REWORK_STATE]({ commit }) {
       return PIService.getReworkStates().then(
         res => {
-          commit('getReworkStatesSuccess', res.data);
+          commit(GET_REWORK_STATE_SUCCESS, res.data);
           return Promise.resolve(res.data);
         },
         error => {
-          commit('getReworkStatesFailed');
+          commit(GET_REWORK_STATE_FAILED);
           return Promise.reject(error);
         }
       );
     },
-    getInfoCloud({ commit }) {
+    [GET_INFO_CLOUD]({ commit }) {
       return PIService.getInfoCloud().then(
         res => {
-          commit('getInfoCloudSuccess', res.data);
+          commit(GET_INFO_CLOUD_SUCCESS, res.data);
           return Promise.resolve(res.data);
         },
         error => {
-          commit('getInfoCloudFailed');
+          commit(GET_INFO_CLOUD_FAILED);
           return Promise.reject(error);
         }
       );
     },
-    getV4Info({ commit }) {
+    [GET_INFO_V4]({ commit }) {
       return PIService.getV4Info().then(
         res => {
-          commit('getV4InfoSuccess', res.data);
+          commit(GET_INFO_V4_SUCCESS, res.data);
           return Promise.resolve(res.data);
         },
         error => {
-          commit('getV4InfoFailed');
+          commit(GET_INFO_V4_FAILED);
           return Promise.reject(error);
         }
       );
     },
-    getReworkMode({ commit }) {
+    [GET_REWORK_MODE]({ commit }) {
       return PIService.getReworkMode().then(
         res => {
-          commit('getReworkModeSuccess', res.data);
+          commit(GET_REWORK_MODE_SUCCESS, res.data);
           return Promise.resolve(res.data);
         },
         error => {
-          commit('getReworkModeFailed');
+          commit(GET_REWORK_MODE_FAILED);
           return Promise.reject(error);
         }
       );
     },
-    getReworkVersion({ commit }) {
+    [GET_REWORK_VERSION]({ commit }) {
       return PIService.getReworkVersion().then(
         res => {
-          commit('getReworkVersionSuccess', res.data);
+          commit(GET_REWORK_VERSION_SUCCESS, res.data);
           return Promise.resolve(res.data);
         },
         error => {
-          commit('getReworkVersionFailed');
+          commit(GET_REWORK_VERSION_FAILED);
           return Promise.reject(error);
         }
       );
     },
-    getReworkMAC({ commit }) {
+    [GET_REWORK_MAC]({ commit }) {
       return PIService.getReworkMAC().then(
         res => {
-          commit('getReworkMACSuccess', res.data);
+          commit(GET_REWORK_MAC_SUCCESS, res.data);
           return Promise.resolve(res.data);
         },
         error => {
-          commit('getReworkMACFailed');
+          commit(GET_REWORK_MAC_FAILED);
           return Promise.reject(error);
         }
       );
     },
-    getGatewayIP({ commit }) {
+    [GET_GATEWAY_IP]({ commit }) {
       return PIService.getGatewayIP().then(
         res => {
-          commit('getGatewayIPSuccess', res.data);
+          commit(GET_GATEWAY_IP_SUCCESS, res.data);
           return Promise.resolve(res.data);
         },
         error => {
-          commit('getGatewayIPFailed');
+          commit(GET_GATEWAY_IP_FAILED);
           return Promise.reject(error);
         }
       );
     },
-    getWifiAccount({ commit }) {
+    [GET_WIFI_ACCOUNT]({ commit }) {
       return PIService.getWifiAccount().then(
         res => {
-          commit('getWifiAccountSuccess', res.data);
+          commit(GET_WIFI_ACCOUNT_SUCCESS, res.data);
           return Promise.resolve(res.data);
         },
         error => {
-          commit('getWifiAccountFailed');
+          commit(GET_WIFI_ACCOUNT_FAILED);
           return Promise.reject(error);
         }
       );
     },
-    getInterfaceIP({ commit }) {
+    [GET_INTERFACE_IP]({ commit }) {
       return PIService.getInterfaceIP().then(
         res => {
-          commit('getInterfaceIPSuccess', res.data);
+          commit(GET_INTERFACE_IP_SUCCESS, res.data);
           return Promise.resolve(res.data);
         },
         error => {
-          commit('getInterfaceIPFailed');
+          commit(GET_INTERFACE_IP_FAILED);
           return Promise.reject(error);
         }
       );
     },
-    getSkipPlumeCas({ commit }) {
+    [GET_SKIP_PLUME_CAS]({ commit }) {
       return PIService.getSkipPlumeCas().then(
         res => {
-          commit('getSkipPlumeCasSuccess', res.data);
+          commit(GET_SKIP_PLUME_CAS_SUCCESS, res.data);
           return Promise.resolve(res.data);
         },
         error => {
-          commit('getSkipPlumeCasFailed');
+          commit(GET_SKIP_PLUME_CAS_FAILED);
           return Promise.reject(error);
         }
       );
     },
-    getSkipInstallFW({ commit }) {
+    [GET_SKIP_INSTALL_FW]({ commit }) {
       return PIService.getSkipInstallFW().then(
         res => {
-          commit('getSkipInstallFWSuccess', res.data);
+          commit(GET_SKIP_INSTALL_FW_SUCCESS, res.data);
           return Promise.resolve(res.data);
         },
         error => {
-          commit('getSkipInstallFWFailed');
+          commit(GET_SKIP_INSTALL_FW_FAILED);
           return Promise.reject(error);
         }
       );
     },
-    postReworkMAC({ commit }, data) {
+    [SET_REWORK_MAC]({ commit }, data) {
       return PIService.postReworkMAC(data).then(
         // eslint-disable-next-line no-unused-vars
         _res => {
           if (_res && _res.data && _res.data.length > 0) {
             if (_res.data[0].status) {
-              commit('postReworkMACSuccess');
+              commit(SET_REWORK_MAC_SUCCESS);
               return Promise.resolve(data);
             } else {
-              commit('postReworkMACFailed');
+              commit(SET_REWORK_MAC_FAILED);
               return Promise.reject(data);
             }
           }
         },
         error => {
-          commit('postReworkMACFailed', data);
+          commit(SET_REWORK_MAC_FAILED, data);
           return Promise.reject(error);
         }
       );
     },
-    doAction({ commit }, data) {
+    [SET_PI_ACTION]({ commit }, data) {
       return PIService.setAction(data).then(
         // eslint-disable-next-line no-unused-vars
         _res => {
           if (_res && _res.data && _res.data.length > 0) {
             if (_res.data[0].status) {
-              commit('setPiActionSuccess', data);
+              commit(SET_PI_ACTION_SUCCESS, data);
               return Promise.resolve(data);
             } else {
-              commit('setPiActionFailed', data);
+              commit(SET_PI_ACTION_FAILED, data);
               return Promise.reject(data);
             }
           }
         },
         error => {
-          commit('setPiActionFailed', data);
+          commit(SET_PI_ACTION_FAILED, data);
           return Promise.reject(error);
         }
       );
     },
   },
   mutations: {
-    getReworkStatesSuccess(state, pi) {
+    [GET_REWORK_STATE_SUCCESS](state, pi) {
       state.pi = {
         ...state.pi,
         ...pi
       };
     },
-    getReworkStatesFailed() {
-        // TODO
-    },
-    getInfoCloudSuccess(state, pi) {
+    [GET_REWORK_STATE_FAILED]() {},
+    [GET_INFO_CLOUD_SUCCESS](state, pi) {
       state.pi = {
         ...state.pi,
         cloud: pi
       };
     },
-    getInfoCloudFailed() {
-      // TODO
-    },
-    getV4InfoSuccess(state, pi) {
+    [GET_INFO_CLOUD_FAILED]() {},
+    [GET_INFO_V4_SUCCESS](state, pi) {
       state.pi = {
         ...state.pi,
         v4: pi
       };
     },
-    getV4InfoFailed() {
-      // TODO
-    },
-    getReworkModeSuccess(state, pi) {
+    [GET_INFO_V4_FAILED]() {},
+    [GET_REWORK_MODE_SUCCESS](state, pi) {
       state.pi = {
         ...state.pi,
         pi_rework_mode: pi.pi_rework_mode
       };
     },
-    getReworkModeFailed() {
-      // TODO
-    },
-    setPiActionSuccess(state, action) {
+    [GET_REWORK_MODE_FAILED]() {},
+    [SET_PI_ACTION_SUCCESS](state, action) {
       state.nextAction = {
         status: 'success',
         prevAction: state.pi.pi_v4_state,
         action: action.num
       };
     },
-    setPiActionFailed(state, action) {
+    [SET_PI_ACTION_FAILED](state, action) {
       state.nextAction = {
         status: 'failed',
         prevAction: state.pi.pi_v4_state,
         action: action.num
       };
     },
-    postReworkMACSuccess() {},
-    postReworkMACFailed() {},
-    getReworkVersionSuccess(state, pi) {
+    [SET_REWORK_MAC_SUCCESS]() {},
+    [SET_REWORK_MAC_FAILED]() {},
+    [GET_REWORK_VERSION_SUCCESS](state, pi) {
       state.pi = {
         ...state.pi,
         version: {
@@ -270,58 +314,58 @@ export const pi = {
         }
       };
     },
-    getReworkVersionFailed() {},
-    getReworkMACSuccess(state, pi) {
+    [GET_REWORK_VERSION_FAILED]() {},
+    [GET_REWORK_MAC_SUCCESS](state, pi) {
       state.pi = {
         ...state.pi,
         isEnableMAC: pi.pi_rework_cm_mac_check
       };
     },
-    getReworkMACFailed() {},
-    getGatewayIPSuccess(state, data) {
+    [GET_REWORK_MAC_FAILED]() {},
+    [GET_GATEWAY_IP_SUCCESS](state, data) {
       state.raspberry_pi.gateway = {
         hgj310v4_gw_ip: data.hgj310v4_gw_ip,
       };
     },
-    getGatewayIPFailed() {},
-    getWifiAccountSuccess(state, data) {
+    [GET_GATEWAY_IP_FAILED]() {},
+    [GET_WIFI_ACCOUNT_SUCCESS](state, data) {
       state.raspberry_pi.wifi = {
         ssid: data.ssid,
         password: data.password,
       };
     },
-    getWifiAccountFailed() {},
-    getInterfaceIPSuccess(state, data) {
+    [GET_WIFI_ACCOUNT_FAILED]() {},
+    [GET_INTERFACE_IP_SUCCESS](state, data) {
       state.raspberry_pi.interface = {
         eth0: data.eth0,
         usb_to_ethernet: data['USB-to-Ethernet'],
         wifi: data['Wi-Fi']
       };
     },
-    getInterfaceIPFailed() {},
-    getSkipPlumeCasSuccess(state, data) {
+    [GET_INTERFACE_IP_FAILED]() {},
+    [GET_SKIP_PLUME_CAS_SUCCESS](state, data) {
       state.pi.skip_installing_plume_cas = data.skip_installing_plume_cas
     },
-    getSkipPlumeCasFailed() {},
-    getSkipInstallFWSuccess(state, data) {
+    [GET_SKIP_PLUME_CAS_FAILED]() {},
+    [GET_SKIP_INSTALL_FW_SUCCESS](state, data) {
       state.pi.skip_installing_fw = data.skip_installing_fw
     },
-    getSkipInstallFWFailed() {},
+    [GET_SKIP_INSTALL_FW_FAILED]() {},
   },
   getters: {
-    pi(state) {
+    [HOME_PI](state) {
         return state.pi;
     },
-    nextAction(state) {
+    [NEXT_ACTION](state) {
         return state.nextAction;
     },
-    raspberry_pi_gateway(state) {
+    [RASPBERRY_PI_GATEWAY](state) {
       return state.raspberry_pi.gateway;
     },
-    raspberry_pi_wifi(state) {
+    [RASPBERRY_PI_WIFI](state) {
       return state.raspberry_pi.wifi;
     },
-    raspberry_pi_interface(state) {
+    [RASPBERRY_PI_INTERFACE](state) {
       return state.raspberry_pi.interface;
     },
   }

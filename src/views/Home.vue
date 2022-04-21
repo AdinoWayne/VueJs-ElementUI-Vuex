@@ -209,6 +209,18 @@ import D3 from './components/D3.vue';
 import { mapActions, mapGetters } from 'vuex'
 import { MODE, ACTION, CLOUD } from './../common/constants';
 import { compareVersionNumbers } from './../common/utils';
+import {
+  GET_INFO_CLOUD,
+  GET_INFO_V4,
+  GET_REWORK_MODE,
+  SET_PI_ACTION,
+  GET_REWORK_MAC,
+  SET_REWORK_MAC,
+  GET_REWORK_VERSION,
+  GET_SKIP_PLUME_CAS,
+  GET_SKIP_INSTALL_FW
+} from './../store/types/actions';
+import { HOME_PI } from './../store/types/getters';
 
 export default {
   name: 'Home',
@@ -234,7 +246,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('pi' ,["pi"]),
+    ...mapGetters('pi', {HOME_PI}),
     MODE() {
       return MODE;
     }
@@ -244,26 +256,26 @@ export default {
   },
   mounted() {},
   methods: {
-    ...mapActions('pi', [
-      'getInfoCloud',
-      'getV4Info',
-      'getReworkMode',
-      'doAction',
-      'getReworkMAC',
-      'postReworkMAC',
-      'getReworkVersion',
-      'getSkipPlumeCas',
-      'getSkipInstallFW'
-    ]),
+    ...mapActions('pi',{
+      GET_INFO_CLOUD,
+      GET_INFO_V4,
+      GET_REWORK_MODE,
+      SET_PI_ACTION,
+      GET_REWORK_MAC,
+      SET_REWORK_MAC,
+      GET_REWORK_VERSION,
+      GET_SKIP_PLUME_CAS,
+      GET_SKIP_INSTALL_FW
+    }),
     fetchData() {
       let $q = [];
-      $q.push(this.getInfoCloud());
-      $q.push(this.getV4Info());
-      $q.push(this.getReworkMode());
-      $q.push(this.getReworkMAC());
-      $q.push(this.getReworkVersion());
-      $q.push(this.getSkipPlumeCas());
-      $q.push(this.getSkipInstallFW());
+      $q.push(this.GET_INFO_CLOUD({}));
+      $q.push(this.GET_INFO_V4());
+      $q.push(this.GET_REWORK_MODE());
+      $q.push(this.GET_REWORK_MAC());
+      $q.push(this.GET_REWORK_VERSION());
+      $q.push(this.GET_SKIP_PLUME_CAS());
+      $q.push(this.GET_SKIP_INSTALL_FW());
       if (this.key == 0) {
         this.key = 1;
       } 
@@ -278,26 +290,26 @@ export default {
       } else {
         param = MODE.REWORK__ALL_MANUAL;
       }
-      this.doAction({ action_name: param, num: -1}).finally(() => {
-          this.getReworkMode().finally(() => {
+      this.SET_PI_ACTION({ action_name: param, num: -1}).finally(() => {
+          this.GET_REWORK_MODE().finally(() => {
             this.initData();
           })
       })
     },
     initData() {
-      if (this.pi) {
-        this.data = this.pi;
+      if (this.HOME_PI) {
+        this.data = this.HOME_PI;
         if (this.isEnableMac !== null || this.isEnableMac !== undefined) {
-          this.isEnableMac = this.pi.pi_rework_cm_mac_check == 'enable' ? true : false;
+          this.isEnableMac = this.HOME_PI.pi_rework_cm_mac_check == 'enable' ? true : false;
         }
-        if (this.pi.pi_rework_mode) {
-          this.pi_rework_mode = this.pi.pi_rework_mode.indexOf(MODE.REWORK__ALL_AUTO) !== -1 ? true : false;
+        if (this.HOME_PI.pi_rework_mode) {
+          this.pi_rework_mode = this.HOME_PI.pi_rework_mode.indexOf(MODE.REWORK__ALL_AUTO) !== -1 ? true : false;
         }
-        if (this.pi.skip_installing_plume_cas) {
-          this.skip_installing_plume_cas = this.pi.skip_installing_plume_cas == 'enable' ? true : false;
+        if (this.HOME_PI.skip_installing_plume_cas) {
+          this.skip_installing_plume_cas = this.HOME_PI.skip_installing_plume_cas == 'enable' ? true : false;
         }
-        if (this.pi.skip_installing_fw) {
-          this.skip_installing_fw = this.pi.skip_installing_fw == 'enable' ? true : false;
+        if (this.HOME_PI.skip_installing_fw) {
+          this.skip_installing_fw = this.HOME_PI.skip_installing_fw == 'enable' ? true : false;
         }
       }
       if (this.timer) {
@@ -310,7 +322,7 @@ export default {
     },
     handleRestart() {
       this.isLoading = true;
-      this.doAction({ action_name: ACTION.REWORK__RESTART, num: -1}).finally(() => {
+      this.SET_PI_ACTION({ action_name: ACTION.REWORK__RESTART, num: -1}).finally(() => {
         setTimeout(() => {
           window.location.reload();
         }, 3000);
@@ -318,7 +330,7 @@ export default {
     },
     updateVersion() {
       this.isLoading = true;
-      this.doAction({ action_name: ACTION.REWORK__UPGRADE_PI_SOURCE, num: -1}).then(() => {
+      this.SET_PI_ACTION({ action_name: ACTION.REWORK__UPGRADE_PI_SOURCE, num: -1}).then(() => {
           this.isLoading = false;
           this.centerDialogVisible = false;
           this.dialogRestart = true;
@@ -445,8 +457,8 @@ export default {
       } else {
         data = "REWORK__CM_MAC_CHECK_DISABLE";
       }
-      this.doAction({ action_name: data}).finally(() => {
-          this.getReworkMAC().finally(() => {
+      this.SET_PI_ACTION({ action_name: data}).finally(() => {
+          this.GET_REWORK_MAC().finally(() => {
             this.initData();
           })
       })
@@ -455,23 +467,15 @@ export default {
       let status = value ? 'enable' : 'disable';
       switch (key) {
         case 1:
-          this.doAction({
+          this.SET_PI_ACTION({
             skip_installing_plume_cas: status,
             action_name: ACTION.REWORK_SET_SKIP_INSTALLING_PLUME_CAS
-            }).finally(() => {
-              this.getReworkMAC().finally(() => {
-                this.initData();
-              })
           })
           break;
         case 2:
-          this.doAction({
+          this.SET_PI_ACTION({
             skip_installing_fw: status,
             action_name: ACTION.REWORK_SET_SKIP_INSTALLING_FW
-          }).finally(() => {
-              this.getReworkMAC().finally(() => {
-                this.initData();
-              })
           })
           break;
         default:

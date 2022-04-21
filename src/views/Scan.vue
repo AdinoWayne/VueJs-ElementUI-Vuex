@@ -114,8 +114,10 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex';
 import { ACTION } from './../common/constants';
+import { RASPBERRY_PI_GATEWAY, RASPBERRY_PI_WIFI, RASPBERRY_PI_INTERFACE } from './../store/types/getters';
+import { GET_GATEWAY_IP, GET_WIFI_ACCOUNT, GET_INTERFACE_IP, SET_PI_ACTION } from './../store/types/actions'
 export default {
   name: 'Home',
   data() {
@@ -130,35 +132,39 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('pi' ,["raspberry_pi_gateway", "raspberry_pi_wifi", "raspberry_pi_interface"]),
+    ...mapGetters('pi', {
+      RASPBERRY_PI_GATEWAY,
+      RASPBERRY_PI_WIFI,
+      RASPBERRY_PI_INTERFACE
+    }),
   },
   created() {
   },
   mounted() {
     let $q = [];
-    $q.push(this.getGatewayIP());
-    $q.push(this.getWifiAccount());
-    $q.push(this.getInterfaceIP());
+    $q.push(this.GET_GATEWAY_IP());
+    $q.push(this.GET_WIFI_ACCOUNT());
+    $q.push(this.GET_INTERFACE_IP());
     Promise.all($q).finally(() => {
       this.initData();
     });
   },
   methods: {
-    ...mapActions('pi', [
-      'getGatewayIP',
-      'getWifiAccount',
-      'getInterfaceIP',
-      'doAction'
-    ]),
+    ...mapActions('pi', {
+      GET_GATEWAY_IP,
+      GET_WIFI_ACCOUNT,
+      GET_INTERFACE_IP,
+      SET_PI_ACTION
+    }),
     initData() {
-      if (this.raspberry_pi_gateway) {
-        this.gateway = this.raspberry_pi_gateway
+      if (this.RASPBERRY_PI_GATEWAY) {
+        this.gateway = this.RASPBERRY_PI_GATEWAY
       }
-      if (this.raspberry_pi_wifi) {
-        this.wifi = this.raspberry_pi_wifi
+      if (this.RASPBERRY_PI_WIFI) {
+        this.wifi = this.RASPBERRY_PI_WIFI
       }
-      if (this.raspberry_pi_interface) {
-        this.interfaces = this.raspberry_pi_interface
+      if (this.RASPBERRY_PI_INTERFACE) {
+        this.interfaces = this.RASPBERRY_PI_INTERFACE
       }
     },
     // eslint-disable-next-line no-unused-vars
@@ -166,14 +172,14 @@ export default {
       value = e;
     },
     putGateway() {
-      this.doAction({
+      this.SET_PI_ACTION({
         action_name: ACTION.REWORK_SET_HGJ310V4_GW_IP,
         hgj310v4_gw_ip: this.gateway.hgj310v4_gw_ip,
         num: -1
       });
     },
     putWifi() {
-      this.doAction({
+      this.SET_PI_ACTION({
         action_name: ACTION.REWORK_SET_RAPS_PI_WIFI_ACCOUNT,
         ssid: this.wifi.ssid,
         password: this.wifi.password,
@@ -181,7 +187,7 @@ export default {
       });
     },
     openSSH() {
-      this.doAction({
+      this.SET_PI_ACTION({
         action_name: ACTION.REWORK_SET_OPEN_SSH_SERVER_ON_V4_MANUALLY,
         id: this.root.id,
         password: this.root.password,

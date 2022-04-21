@@ -13,6 +13,8 @@
 import { mapActions, mapGetters } from 'vuex'
 import { PROGRESS, CLOUD } from "./../../common/constants";
 import * as d3 from "d3";
+import { SET_PI_ACTION, GET_REWORK_STATE} from './../../store/types/actions';
+import { HOME_PI } from './../../store/types/getters';
 
 export default {
   name: 'D3',
@@ -51,7 +53,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('pi' ,['pi', 'nextAction']),
+    ...mapGetters('pi', [HOME_PI]),
     colors() {
         return { green: '#4DC87F', lightGreen: '#D9F0E3', white: '#FFFFFF', black: '#000000', red: '#E74C3C' };
     }
@@ -64,7 +66,7 @@ export default {
         }
         this.timer = setInterval(() => {
             if (this.isBegin) {
-                this.getReworkStates().finally(() => {
+                this.GET_REWORK_STATE().finally(() => {
                     this.initData(() => {
                         this.updateProgressBar(this.activeNum, true)
                     });
@@ -73,7 +75,7 @@ export default {
         }, 2000);
   },
   mounted() {
-    this.getReworkStates().finally(() => {
+    this.GET_REWORK_STATE().finally(() => {
         this.initData();
         this.initStep();
     })
@@ -84,7 +86,10 @@ export default {
       }
   },
   methods: {
-    ...mapActions('pi', ['getReworkStates', 'doAction']),
+    ...mapActions('pi', {
+        GET_REWORK_STATE,
+        SET_PI_ACTION
+    }),
     initData(callback) {
         if (this.pi && this.pi.pi_v4_state !== undefined) {
             this.handleData(this.pi.pi_v4_state, this.pi.pre_pi_v4_state);
@@ -716,7 +721,7 @@ export default {
                 this.activeNum = index;
                 this.currentState = 'pending';
                 this.updateProgressBar(this.activeNum);
-                this.doAction({ action_name: this.prepareData(index), num: index})
+                this.SET_PI_ACTION({ action_name: this.prepareData(index), num: index})
             }))
         }
 
