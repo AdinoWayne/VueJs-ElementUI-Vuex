@@ -72,7 +72,7 @@ export default {
                     });
                 })
             }
-        }, 20000);
+        }, 5000);
   },
   mounted() {
     this.GET_REWORK_STATE().finally(() => {
@@ -350,6 +350,176 @@ export default {
         }
         return result;
     },
+    hideError(isTransition) {
+        if (isTransition) {
+            this.progressError.transition()
+                .delay(200)
+                .attr('fill', this.colors.lightGreen)
+                .attr('width', () => {
+                    return 0;
+                });
+            this.progressFirstBackGround.transition()
+                .delay(300)
+                .attr('fill', this.colors.lightGreen)
+                .attr('height', () => {
+                    return 0;
+                });
+        } else {
+            this.progressError
+                .attr('fill', this.colors.lightGreen)
+                .attr('width', () => {
+                    return 0;
+                });
+            this.progressFirstBackGround
+                .attr('fill', this.colors.lightGreen)
+                .attr('height', () => {
+                    return 0;
+                });
+        }
+        this.arrProgress.map(el => el.attr('height', 0));
+        this.arrHighProgress.map(el => el.attr('height', 0))
+    },
+    hideErrorGreen(i) {
+        d3.select('#label_' + i).attr('fill', this.colors.black).style("display", "none");
+        d3.select('#step_' + i).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen).style("display", "none");
+        d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>').style("display", "none");
+    },
+    handleFirstPoint(step_, positionL, isMainStep) {
+        if (step_ == 0) {
+            this.progressError.attr('fill', this.colors.green)
+            this.progressFirstBackGround.attr('fill', this.colors.green)
+        }
+        console.log(step_, positionL, isMainStep);
+        for(let i = 0; i < this.stepLint.length; i++) {
+            if (positionL == -1) {
+                if (i == 0) {
+                    d3.select('#foreign_' + i).html('<i class="el-icon-check"></i>');
+                    d3.select('#step_' + i).attr('fill', this.colors.green).attr('stroke', this.colors.green);
+                    this.hideError();
+                } else if (i == 1 && this.currentState == 'pending') {
+                    d3.select('#foreign_' + i).html('<i class="el-icon-loading"></i>');
+                } else {
+                    d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>');
+                    d3.select('#step_' + i).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen)
+                }
+            } else if(isMainStep && i <= positionL && positionL < this.numStepLint) {
+                d3.select('#step_' + i).attr('fill', this.colors.green).attr('stroke', this.colors.green);
+                if (i == 0 && i != positionL) { 
+                    d3.select('#foreign_' + i).html('<i class="el-icon-refresh"></i>');
+                } else if (i == positionL && this.currentState == 'pending') {
+                    d3.select('#foreign_' + i).html('<i class="el-icon-loading"></i>');
+                } else {
+                    if (this.currentState == 'failed' && i == positionL) {
+                        d3.select('#foreign_' + i).html('<i class="el-icon-refresh"></i>');
+                        d3.select('#step_' + i).attr('fill', this.colors.red).attr('stroke', this.colors.red);
+                    } else {
+                        d3.select('#foreign_' + i).html('<i class="el-icon-check"></i>');
+                    }
+                }
+            } else if (i <= positionL - this.numStepLint + 1 || i == positionL) {
+                d3.select('#step_' + i).attr('fill', this.colors.green).attr('stroke', this.colors.green);
+                if (i == 0) {
+                    d3.select('#foreign_' + i).html('<i class="el-icon-refresh"></i>').style("display", "block");
+                } else if (i == positionL - this.numStepLint + 1) {
+                    d3.select('#step_' + i).attr('fill', this.colors.red).attr('stroke', this.colors.red).style("display", "block");
+                    d3.select('#foreign_' + i).html('<i class="el-icon-close" style="color: #fff"></i>');
+                } else if (i == positionL) {
+                    if (this.currentState == 'failed') {
+                        d3.select('#foreign_' + i).html('<i class="el-icon-refresh"></i>').style("display", "block");
+                        d3.select('#step_' + i)
+                            .attr('fill', this.colors.red)
+                            .attr('stroke', this.colors.red)
+                            .style("display", "block");
+                    } else if (this.currentState == 'pending') {
+                        d3.select('#step_' + i).style("display", "block");
+                        d3.select('#foreign_' + i).html('<i class="el-icon-loading"></i>').style("display", "block");
+                    } else {
+                        d3.select('#step_' + i).style("display", "block");
+                        d3.select('#foreign_' + i).html('<i class="el-icon-check"></i>').style("display", "block");
+                    }
+                } else {
+                    d3.select('#foreign_' + i).html('<i class="el-icon-check"></i>').style("display", "block");
+                }
+                if (i == positionL) {
+                    d3.select('#label_' + i).attr('fill', this.colors.black).style("display", "block");
+                }
+            } else {
+                if (this.currentState == 'failed' && (i == positionL || i == positionL + this.numStepLint - 1) && step_ !== 8) {
+                    d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>').style("display", "block");
+                    d3.select('#label_' + i).attr('fill', this.colors.black).style("display", "block");
+                    d3.select('#step_' + i).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen).style("display", "block");
+                } else if (i >= this.numStepLint) {
+                    this.hideErrorGreen(i)
+                }
+                if (i > positionL) {
+                    d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>');
+                }
+                d3.select('#step_' + i).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen);
+            }
+            if (step_ == 0 && i > 0 && i < this.numStepLint) {
+                d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>')
+                d3.select('#vertical_' + i).attr('height', 0);
+            }
+        }
+        if (step_ == 0 || (this.currentState == 'pending' && positionL < this.numStepLint)) {
+            this.hideError(true);
+        }
+    },
+    handleClickPont(step_, positionL) {
+        d3.select('#step_' + positionL).attr('fill', this.colors.green).attr('stroke', this.colors.green);
+        if (this.currentState == 'pending') {
+            d3.select('#foreign_' + (positionL != -1 ? positionL : 1)).html('<i class="el-icon-loading"></i>');
+            if (step_ == 0) {
+                for(let i = 1; i < this.stepLint.length; i++) {
+                    d3.select('#step_' + i).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen);
+                    if (i >= this.numStepLint) {
+                        this.hideErrorGreen(i)
+                    } else {
+                        d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>');
+                    }
+                }
+                this.hideError();
+            } else {
+                d3.select('#foreign_' + 0).html('<i class="el-icon-refresh"></i>');
+                for(let i = 1; i < this.stepLint.length; i++) {
+                    if (i < positionL && positionL < this.numStepLint) {
+                        d3.select('#foreign_' + i).html('<i class="el-icon-check"></i>');
+                    }
+                    if (positionL < this.numStepLint && i >= this.numStepLint) {
+                        this.hideErrorGreen(i)
+                    }
+                }
+                if (positionL < this.numStepLint) {
+                    this.hideError();
+                }
+            }
+        } else if (this.currentState == 'failed') {
+            d3.select('#foreign_' + positionL).html('<i class="el-icon-close" style="color: #fff"></i>')
+            if (positionL !== 0 && positionL < this.numStepLint) {
+                d3.select('#label_' + (positionL + this.numStepLint - 1)).attr('fill', this.colors.black).style("display", "block");
+                d3.select('#foreign_' + (positionL + this.numStepLint - 1)).html('<i class="el-icon-arrow-right"></i>').style("display", "block");
+                d3.select('#step_' + (positionL + this.numStepLint - 1)).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen).style("display", "block");
+                d3.select('#vertical_' + (positionL + this.numStepLint - 1)).attr('height', 128);
+                this.arrHighProgress.map(el => el.attr('height', 0))
+            }
+            d3.select('#step_' + positionL).attr('fill', this.colors.red).attr('stroke', this.colors.red).style("display", "block");
+        } else if (this.currentState == 'success') {
+            d3.select('#foreign_' + positionL).html('<i class="el-icon-check"></i>');
+            if (positionL < this.numStepLint) {
+                for(let i = this.numStepLint; i < this.stepLint.length; i++){
+                    this.hideErrorGreen(i);
+                }
+                this.progressError
+                .attr('width', () => {
+                    return 0;
+                });
+                this.progressFirstBackGround
+                .attr('height', () => {
+                    return 0;
+                });
+            }
+        }
+    },
     updateProgressBar(step_, isFirst) {
         var steps = this.steps;
         var stepWidth = this.stepWidth;
@@ -360,7 +530,12 @@ export default {
         if (step_ !== 0) {
             this.progress.transition()
                 .duration(1000)
-                .attr('fill', this.colors.green)
+                .attr('fill', () => {
+                    if (this.currentState === 'failed' && positionL == -1) {
+                        return this.colors.red;
+                    }
+                    return this.colors.green;
+                })
                 .attr('width', () => {
                     var index = this.allSteps.indexOf(step_);
                     if (index == 0) {
@@ -369,10 +544,10 @@ export default {
                     if (index < 6) {
                         return (index) * Math.floor(stepWidth / 6);
                     } else if (index < 9) {
-                        var s = this.stepLint.indexOf(step_);
+                        const s = this.stepLint.indexOf(step_);
                         return s * stepWidth;
                     } else if (index == 14 || index == 15) {
-                        var s = this.stepLint.indexOf(step_ - 8);
+                        const s = this.stepLint.indexOf(step_ - 8);
                         return s * stepWidth;
                     } else if (index < 14) {
                         return (index - 8) * Math.floor(stepWidth / 6);
@@ -396,7 +571,11 @@ export default {
             if (isMainStep) {
                 this.progressError
                 .attr('width', () => {
-                    var s = this.stepLint.indexOf(step_);
+                    let s = this.stepLint.indexOf(step_);
+                    if (step_ > 8) {
+                        s = s - 3;
+                    }
+
                     return s * stepWidth;
                 });
             }
@@ -418,167 +597,13 @@ export default {
                     .attr('height', 128);
             }
         }
+        // eslint-disable-next-line no-console
+        console.log(positionL, step_, this.currentState);
         if (isFirst) {
-            if (step_ == 0) {
-                this.progressError.attr('fill', this.colors.green)
-                this.progressFirstBackGround.attr('fill', this.colors.green)
-            }
-            for(let i = 0; i < this.stepLint.length; i++) {
-                if(isMainStep && i <= positionL && positionL < this.numStepLint) {
-                    d3.select('#step_' + i).attr('fill', this.colors.green).attr('stroke', this.colors.green);
-                    if (i == 0 && i != positionL) { 
-                        d3.select('#foreign_' + i).html('<i class="el-icon-refresh"></i>');
-                    } else if (i == positionL && this.currentState == 'pending') {
-                        d3.select('#foreign_' + i).html('<i class="el-icon-loading"></i>');
-                    } else {
-                        if (this.currentState == 'failed' && i == positionL) {
-                            d3.select('#foreign_' + i).html('<i class="el-icon-refresh"></i>');
-                            d3.select('#step_' + i).attr('fill', this.colors.red).attr('stroke', this.colors.red);
-                        } else {
-                            d3.select('#foreign_' + i).html('<i class="el-icon-check"></i>');
-                        }
-                    }
-                } else if (i <= positionL - this.numStepLint + 1 || i == positionL) {
-                    d3.select('#step_' + i).attr('fill', this.colors.green).attr('stroke', this.colors.green);
-                    if (i == 0) {
-                        d3.select('#foreign_' + i).html('<i class="el-icon-refresh"></i>').style("display", "block");
-                    } else if (i == positionL - this.numStepLint + 1) {
-                        d3.select('#step_' + i).attr('fill', this.colors.red).attr('stroke', this.colors.red).style("display", "block");
-                        d3.select('#foreign_' + i).html('<i class="el-icon-close" style="color: #fff"></i>');
-                    } else if (i == positionL) {
-                        if (this.currentState == 'failed') {
-                            d3.select('#foreign_' + i).html('<i class="el-icon-refresh"></i>').style("display", "block");
-                            d3.select('#step_' + i)
-                                .attr('fill', this.colors.red)
-                                .attr('stroke', this.colors.red)
-                                .style("display", "block");
-                        } else if (this.currentState == 'pending') {
-                            d3.select('#foreign_' + i).html('<i class="el-icon-loading"></i>').style("display", "block");
-                        } else {
-                            d3.select('#foreign_' + i).html('<i class="el-icon-check"></i>').style("display", "block");
-                        }
-                    } else {
-                        d3.select('#foreign_' + i).html('<i class="el-icon-check"></i>').style("display", "block");
-                    }
-                    if (i == positionL) {
-                        d3.select('#label_' + i).attr('fill', this.colors.black).style("display", "block");
-                    }
-                } else {
-                    if (this.currentState == 'failed' && (i == positionL || i == positionL + this.numStepLint - 1) && step_ !== 8) {
-                        d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>').style("display", "block");
-                        d3.select('#label_' + i).attr('fill', this.colors.black).style("display", "block");
-                        d3.select('#step_' + i).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen).style("display", "block");
-                    } else if (i >= this.numStepLint) {
-                        d3.select('#label_' + i).attr('fill', this.colors.black).style("display", "none");
-                        d3.select('#vertical_' + i).attr('height', 0);
-                        d3.select('#step_' + i).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen).style("display", "none");
-                        d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>').style("display", "none");
-                    }
-                    if (i > positionL) {
-                        d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>');
-                    }
-                    d3.select('#step_' + i).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen);
-                }
-            }
-            if (step_ == 0 && i > 0 && i < this.numStepLint) {
-                    d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>')
-                    d3.select('#vertical_' + i).attr('height', 0);
-            }
-            if (step_ == 0 || (this.currentState == 'pending' && positionL < this.numStepLint)) {
-                this.progressError.transition()
-                .delay(200)
-                .attr('fill', this.colors.lightGreen)
-                .attr('width', () => {
-                    return 0;
-                });
-                this.progressFirstBackGround.transition()
-                .delay(300)
-                .attr('fill', this.colors.lightGreen)
-                .attr('height', () => {
-                    return 0;
-                });
-                this.arrHighProgress.map(el => el.attr('height', 0))
-            }
+            this.handleFirstPoint(step_, positionL, isMainStep);
             return;
         }
-        d3.select('#step_' + step_).attr('fill', this.colors.green).attr('stroke', this.colors.green);
-        if (this.currentState == 'pending') {
-            d3.select('#foreign_' + step_).html('<i class="el-icon-loading"></i>');
-            if (step_ == 0) {
-                for(let i = 1; i < this.allSteps.length; i++) {
-                    d3.select('#step_' + i).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen);
-                    if (i >= steps.length) {
-                        d3.select('#label_' + i).attr('fill', this.colors.black).style("display", "none");
-                        d3.select('#vertical_' + i).attr('height', 0);
-                        d3.select('#step_' + i).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen).style("display", "none");
-                        d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>').style("display", "none");
-                    } else {
-                        d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>');
-                    }
-                }
-                this.progressError
-                .attr('width', () => {
-                    return 0;
-                });
-                this.progressFirstBackGround
-                .attr('height', () => {
-                    return 0;
-                });
-                this.arrHighProgress.map(el => el.attr('height', 0))
-            } else {
-                d3.select('#foreign_' + 0).html('<i class="el-icon-refresh"></i>');
-                for(let i = 1; i < this.allSteps.length; i++) {
-                    if (i < step_ && step_ < steps.length) {
-                        d3.select('#foreign_' + i).html('<i class="el-icon-check"></i>');
-                    }
-                    if (step_ < steps.length && i >= steps.length) {
-                        d3.select('#label_' + i).attr('fill', this.colors.black).style("display", "none");
-                        d3.select('#vertical_' + i).attr('height', 0);
-                        d3.select('#step_' + i).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen).style("display", "none");
-                        d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>').style("display", "none");
-                    }
-                }
-                if (step_ < steps.length) {
-                    this.progressError
-                    .attr('width', () => {
-                        return 0;
-                    });
-                    this.progressFirstBackGround
-                    .attr('height', () => {
-                        return 0;
-                    });
-                    this.arrHighProgress.map(el => el.attr('height', 0))
-                }
-            }
-        } else if (this.currentState == 'failed') {
-            d3.select('#foreign_' + step_).html('<i class="el-icon-close" style="color: #fff"></i>')
-            if (step_ !== 0 && step_ < steps.length) {
-                d3.select('#label_' + (step_ + steps.length - 1)).attr('fill', this.colors.black).style("display", "block");
-                d3.select('#foreign_' + (step_ + steps.length - 1)).html('<i class="el-icon-arrow-right"></i>').style("display", "block");
-                d3.select('#step_' + (step_ + steps.length - 1)).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen).style("display", "block");
-                d3.select('#vertical_' + (step_ + steps.length - 1)).attr('height', 128);
-                this.arrHighProgress.map(el => el.attr('height', 0))
-            }
-            d3.select('#step_' + step_).attr('fill', this.colors.red).attr('stroke', this.colors.red).style("display", "block");
-        } else if (this.currentState == 'success') {
-            d3.select('#foreign_' + step_).html('<i class="el-icon-check"></i>');
-            if (step_ < steps.length) {
-                for(let i = steps.length; i < this.allSteps.length; i++){
-                    d3.select('#label_' + i).attr('fill', this.colors.black).style("display", "none");
-                    d3.select('#vertical_' + i).attr('height', 0);
-                    d3.select('#step_' + i).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen).style("display", "none");
-                    d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>').style("display", "none");
-                }
-                this.progressError
-                .attr('width', () => {
-                    return 0;
-                });
-                this.progressFirstBackGround
-                .attr('height', () => {
-                    return 0;
-                });
-            }
-        }
+        this.handleClickPont(step_, positionL);
     },
     initStep() {
         // init value width height
@@ -593,12 +618,9 @@ export default {
             .classed('svg-content', true);
 
         var steps = this.steps;
-        var stepErrors = this.stepErrors;
-
         var arrText = this.arrText;
         this.stepWidth = Math.floor(((width - offset * 2) / (steps.length - 1)) * 2);
         var stepWidth = this.stepWidth;
-        var currentStep = '0';
 
         this.progressBar = this.svg.append('g')
                     .attr('transform', 'translate(' + offset + ',' + offset + ')');
@@ -731,17 +753,17 @@ export default {
                 if (this.currentState == 'pending') {
                     return;
                 }
-                if (this.currentState == 'success' && index == this.activeNum && index != 0) {
+                const positionL = this.stepLint.indexOf(this.activeNum);
+                if (this.activeNum < 6 && index > 1) {
                     return;
                 }
-                if (index !== this.activeNum && (
-                    (index < this.activeNum && index != 0) ||
-                    (index - this.activeNum > 1 && index < steps.length) ||
-                    (this.currentState == 'failed' && index > this.activeNum && index < steps.length))
-                ) {
+                if (this.currentState == 'success' && index !== 0 && index - positionL !== 1 && index < this.numStepLint) {
                     return;
                 }
-                this.activeNum = index;
+                if (this.currentState == 'failed' && index !== 0 && index !== positionL && index - positionL !== 3) {
+                    return;
+                }
+                this.activeNum = this.stepLint[index];
                 this.currentState = 'pending';
                 this.updateProgressBar(this.activeNum);
                 this.SET_PI_ACTION({ action_name: this.prepareData(index), num: index})

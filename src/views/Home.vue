@@ -158,11 +158,11 @@
           >
             <span>Progress Step</span>
           </div>
-          <div v-if="false">
-            <D3 />
+          <div v-if="currentUser && currentUser.user && currentUser.user.username === ROOT">
+            <LittleD3 />
           </div>
           <div v-else>
-            <LittleD3 />
+            <D3 />
           </div>
         </el-card>
       </el-container>
@@ -256,6 +256,12 @@ export default {
     ...mapGetters('pi', {HOME_PI}),
     MODE() {
       return MODE;
+    },
+    ROOT() {
+      return 'root';
+    },
+    currentUser() {
+      return this.$store.state.auth.user;
     }
   },
   created() {
