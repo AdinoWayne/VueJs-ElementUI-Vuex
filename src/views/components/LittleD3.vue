@@ -389,6 +389,7 @@ export default {
             this.progressError.attr('fill', this.colors.green)
             this.progressFirstBackGround.attr('fill', this.colors.green)
         }
+        // eslint-disable-next-line no-console
         console.log(step_, positionL, isMainStep);
         for(let i = 0; i < this.stepLint.length; i++) {
             if (positionL == -1) {

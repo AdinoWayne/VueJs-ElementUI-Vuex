@@ -16,9 +16,9 @@
             v-model="user.username"
             v-validate="'required'"
             type="text"
-            v-on:keyup.enter="onEnter"
             class="form-control"
             name="username"
+            @keyup.enter="onEnter"
           >
           <div
             v-if="errors.has('username')"
@@ -33,10 +33,10 @@
           <input
             v-model="user.password"
             v-validate="'required'"
-            v-on:keyup.enter="onEnter"
             type="password"
             class="form-control"
             name="password"
+            @keyup.enter="onEnter"
           >
           <div
             v-if="errors.has('password')"
@@ -47,7 +47,15 @@
           </div>
         </div>
         <div class="form-group">
-          <el-button class="form-button" @click="handleLogin" type="primary" :loading="loading" :disabled="loading">Login</el-button>
+          <el-button
+            class="form-button"
+            type="primary"
+            :loading="loading"
+            :disabled="loading"
+            @click="handleLogin"
+          >
+            Login
+          </el-button>
         </div>
         <div class="form-group">
           <div
@@ -75,16 +83,8 @@ export default {
       message: ''
     };
   },
-  computed: {
-    loggedIn() {
-      return this.$store.state.auth.status.loggedIn;
-    }
-  },
-  created() {
-    if (this.loggedIn) {
-      this.$router.push('/profile');
-    }
-  },
+  computed: {},
+  created() {},
   methods: {
     handleLogin() {
       this.loading = true;

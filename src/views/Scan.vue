@@ -1,7 +1,10 @@
 <template>
   <el-container>
     <el-main>
-      <el-row :gutter="20" class="class-row">
+      <el-row
+        :gutter="20"
+        class="class-row"
+      >
         <el-col :span="12">
           <el-card class="box-card">
             <div
@@ -9,20 +12,27 @@
               class="clearfix"
             >
               <span>Raspberry PI(set/show IP)</span>
-              <el-button type="success" size="mini" style="float: right"
-              @click="() => handleClick(1)">Update</el-button>
+              <el-button
+                type="success"
+                size="mini"
+                style="float: right"
+                @click="() => handleClick(1)"
+              >
+                Update
+              </el-button>
             </div>
             <table class="home-table">
-                <tr>
-                  <th>HGJ310v4 Gateway IP</th>
-                  <td>
-                    <el-input size="mini" 
-                    v-model="gateway.hgj310v4_gw_ip"
-                    @change="e => onChange(e, gateway.hgj310v4_gw_ip)">
-                    </el-input>
-                  </td>
-                </tr>
-              </table>
+              <tr>
+                <th>HGJ310v4 Gateway IP</th>
+                <td>
+                  <el-input
+                    v-model="gateway.hgj310v4_gw_ip" 
+                    size="mini"
+                    @change="e => onChange(e, gateway.hgj310v4_gw_ip)"
+                  />
+                </td>
+              </tr>
+            </table>
           </el-card>
         </el-col>
         <el-col :span="12">
@@ -32,31 +42,45 @@
               class="clearfix"
             >
               <span>Raspberry PI(set/show SSID / PWD)</span>
-              <el-button type="success" size="mini" style="float: right"
-              @click="() => handleClick(2)">Update</el-button>
+              <el-button
+                type="success"
+                size="mini"
+                style="float: right"
+                @click="() => handleClick(2)"
+              >
+                Update
+              </el-button>
             </div>
-              <table class="home-table">
-                <tr>
-                  <th>SSID on Raspberry PI's Wifi Interface</th>
-                  <td>
-                    <el-input size="mini" v-model="wifi.ssid"
-                    @change="e => onChange(e, wifi.ssid)">
-                    </el-input>
-                  </td>
-                </tr>
-                <tr style="border-bottom: 0">
-                  <th>PASSWORD on Raspberry PI's Wifi Interface</th>
-                  <td>
-                    <el-input size="mini" v-model="wifi.password" show-password
-                    @change="e => onChange(e, wifi.password)">
-                    </el-input>
-                  </td>
-                </tr>
-              </table>
+            <table class="home-table">
+              <tr>
+                <th>SSID on Raspberry PI's Wifi Interface</th>
+                <td>
+                  <el-input
+                    v-model="wifi.ssid"
+                    size="mini"
+                    @change="e => onChange(e, wifi.ssid)"
+                  />
+                </td>
+              </tr>
+              <tr style="border-bottom: 0">
+                <th>PASSWORD on Raspberry PI's Wifi Interface</th>
+                <td>
+                  <el-input
+                    v-model="wifi.password"
+                    size="mini"
+                    show-password
+                    @change="e => onChange(e, wifi.password)"
+                  />
+                </td>
+              </tr>
+            </table>
           </el-card>
         </el-col>
       </el-row>
-      <el-row :gutter="20" class="class-row">
+      <el-row
+        :gutter="20"
+        class="class-row"
+      >
         <el-col :span="12">
           <el-card class="box-card">
             <div
@@ -85,24 +109,35 @@
               class="clearfix"
             >
               <span>Open a SSH Server on HGJ310v4</span>
-              <el-button type="success" size="mini" style="float: right"
-              @click="() => handleClick(3)">Update</el-button>
+              <el-button
+                type="success"
+                size="mini"
+                style="float: right"
+                @click="() => handleClick(3)"
+              >
+                Update
+              </el-button>
             </div>
             <table class="home-table">
               <tr>
                 <th>ID</th>
                 <td>
-                  <el-input size="mini" v-model="root.id"
-                  @change="e => onChange(e, root.id)">
-                  </el-input>
+                  <el-input
+                    v-model="root.id"
+                    size="mini"
+                    @change="e => onChange(e, root.id)"
+                  />
                 </td>
               </tr>
               <tr style="border-bottom: 0">
                 <th>Password</th>
                 <td>
-                  <el-input size="mini" v-model="root.password" show-password
-                  @change="e => onChange(e, root.password)">
-                  </el-input>
+                  <el-input
+                    v-model="root.password"
+                    size="mini"
+                    show-password
+                    @change="e => onChange(e, root.password)"
+                  />
                 </td>
               </tr>
             </table>

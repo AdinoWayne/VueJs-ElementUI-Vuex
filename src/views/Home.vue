@@ -331,7 +331,7 @@ export default {
       }
       this.timer = setTimeout(() => {
         this.fetchData();
-      }, 20000);
+      }, 2000);
     },
     handleRestart() {
       this.isLoading = true;
