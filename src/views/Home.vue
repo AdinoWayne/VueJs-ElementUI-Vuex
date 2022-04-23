@@ -89,7 +89,7 @@
                       size="mini"
                       type="success"
                       :disabled="isDisabledVersion(data.version)"
-                      v-bind:class = "(isDisabledVersion(data.version))?'btn-disable':'btn-update'"
+                      :class="(isDisabledVersion(data.version))?'btn-disable':'btn-update'"
                       @click="centerDialogVisible = true"
                     >
                       <span v-if="!isDisabledVersion(data.version)">Update to {{ data.version.pi_rework_latest_ver }}</span>
@@ -159,7 +159,7 @@
           >
             <span>Progress Step</span>
           </div>
-          <div v-if="currentUser && currentUser.user && currentUser.user.username === ROOT">
+          <div v-if="currentUser && currentUser.user && currentUser.user.username === ADMIN">
             <LittleD3 />
           </div>
           <div v-else>
@@ -218,7 +218,7 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="dialogSkip = false">Cancel</el-button>
+        <el-button @click="dialogSkip = false">OK</el-button>
       </span>
     </el-dialog>
   </el-container>
@@ -287,6 +287,9 @@ export default {
     this.fetchData();
   },
   mounted() {},
+  destroyed() {
+    clearTimeout(this.timer);
+  },
   methods: {
     ...mapActions('pi',{
       GET_INFO_CLOUD,
@@ -525,9 +528,6 @@ export default {
           break;
       }
     }
-  },
-  destroyed() {
-    clearTimeout(this.timer);
   }
 };
 </script>

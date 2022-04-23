@@ -121,6 +121,7 @@
                 type="success"
                 size="mini"
                 style="float: right"
+                :loading="isLoading"
                 @click="() => handleClick(3)"
               >
                 Open SSH Server
@@ -164,17 +165,21 @@
       </el-row>
     </el-main>
     <el-dialog
-      title="Warning"
-      :visible.sync="dialog"
+      :title="dialog.title"
+      :visible.sync="dialog.isOpen"
       class="scan-dialog"
       center
     >
-      <span class="dialog-message">{{ dialogMsg }}</span>
+      <span class="dialog-message">{{ dialog.msg }}</span>
       <span
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="dialog = false" type="primary">Ok</el-button>
+        <el-button
+          type="primary"
+          :loading="dialog.isLoading"
+          @click="dialog.isOpen = false"
+        >OK</el-button>
       </span>
     </el-dialog>
   </el-container>
@@ -190,14 +195,18 @@ export default {
   data() {
     return {
       root: {
-        id: 'root',
-        password: 'hmxosync',
+        id: 'admin',
+        password: 'admin',
         port: '2222'
       },
       wifi: {},
       gateway: {},
-      dialogMsg: "",
-      dialog: false,
+      dialog: {
+        title: "",
+        msg: "",
+        isOpen: false,
+      },
+      isLoading: false,
       interfaces: {},
     };
   },
@@ -250,8 +259,11 @@ export default {
     },
     putWifi() {
       if (!this.wifi.ssid || !this.wifi.password) {
-        this.dialog = true;
-        this.dialogMsg = "SSID and Password can not be empty. Please check again."
+        this.dialog = {
+          title: "Warning",
+          isOpen: true,
+          msg: "SSID and Password can not be empty. Please check again."
+        }
         return;
       }
       this.SET_PI_ACTION({
@@ -263,15 +275,22 @@ export default {
     },
     openSSH() {
       if (!this.root.id || !this.root.password) {
-        this.dialog = true;
-        this.dialogMsg = "ID and Password can not be empty. Please check again."
+        this.dialog = {
+          title: "Warning",
+          isOpen: true,
+          msg: "ID and Password can not be empty. Please check again."
+        }
         return;
       }
       if (this.root.port < 1023) {
-        this.dialog = true;
-        this.dialogMsg = "Current port is in well known port range, Please choose another port from 1024-65535";
+        this.dialog = {
+          title: "Warning",
+          isOpen: true,
+          msg: "Current port is in well known port range, Please choose another port from 1024-65535"
+        }
         return;
       }
+      this.isLoading = true;
       this.SET_PI_ACTION({
         action_name: ACTION.REWORK_SET_OPEN_SSH_SERVER_ON_V4_MANUALLY,
         id: this.root.id,
@@ -280,14 +299,22 @@ export default {
         num: -1
       }).then((data) => {
         if (data) {
-          this.dialog = true;
-          this.dialogMsg = data.detail || "";
+          this.dialog = {
+            title: "Notice",
+            isOpen: true,
+            msg: data.detail || ""
+          }
         }
       }).catch(err => {
         if (err) {
-          this.dialog = true;
-          this.dialogMsg = err.detail || "";
+          this.dialog = {
+            title: "Notice",
+            isOpen: true,
+            msg: err.detail || ""
+          }
         }
+      }).finally(() => {
+        this.isLoading = false;
       })
     },
     handleRefresh() {
