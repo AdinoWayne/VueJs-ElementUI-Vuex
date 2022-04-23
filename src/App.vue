@@ -7,7 +7,7 @@
             href="https://www.humax-networks.com/"
             class="nav-link logo-left"
           >
-            HUMAX NETWORK
+            HUMAX NETWORKS
           </a>
         </li>
       </div>
@@ -41,10 +41,23 @@
       </div>
     </nav>
     <el-container>
-      <el-aside width="160px" style="padding: 20px" v-if="currentUser">
-        <el-tabs class="tabs-wrapper" v-model="name" :tab-position="'left'" @tab-click="switchTabs">
-          <el-tab-pane :name="item.value" :label="item.text" v-for="item in tabs" :key="item.value">
-          </el-tab-pane>
+      <el-aside
+        v-if="currentUser"
+        width="180px"
+        style="padding: 20px 20px 0 0"
+      >
+        <el-tabs
+          v-model="name"
+          class="tabs-wrapper"
+          :tab-position="'left'"
+          @tab-click="switchTabs"
+        >
+          <el-tab-pane
+            v-for="item in tabs"
+            :key="item.value"
+            :name="item.value"
+            :label="item.text"
+          />
         </el-tabs>
       </el-aside>
       <el-main class="main">
@@ -59,10 +72,10 @@ export default {
   data() {
     return {
       tabs: [{
-        text: 'Rework',
+        text: 'Main',
         value: 'status'
       },{
-        text: 'Raspberry Pi',
+        text: 'Additional Settings',
         value: 'pi'
       }],
       name: 'Rework',
@@ -79,10 +92,10 @@ export default {
   methods: {
     switchTabs(tab) {
       var switchObject = {
-        'Rework': () => {
+        'Main': () => {
           return this.$router.push("/status");
         },
-        'Raspberry Pi': () => {
+        'Additional Settings': () => {
           return this.$router.push("/pi");
         },
         'default': () => {
@@ -107,7 +120,7 @@ export default {
   min-height: 80vh;
 }
 .el-tabs--left .el-tabs__header.is-left {
-  width: 120px;
+  width: 100%;
 }
 .logo-left {
   font-size: 16px;

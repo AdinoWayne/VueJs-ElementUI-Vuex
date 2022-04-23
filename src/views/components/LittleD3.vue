@@ -610,7 +610,7 @@ export default {
         // init value width height
         var width = 960, offset = 48;
         width += offset * 2;
-        var dimensions = '' + 0 + ' ' + 0 + ' ' + width + ' ' + 240;
+        var dimensions = '' + 0 + ' ' + 0 + ' ' + 820 + ' ' + 240;
 
         this.svg = d3.select('.wrapper-ap-progress').append('svg')
             .attr('id', 'scene', true)
@@ -836,6 +836,8 @@ export default {
 }
 
 .wrapper-ap-progress {
-    margin-top: 50px;
+    margin: 50px auto;
+    margin-bottom: 0;
+    max-width: 1120px;
 }
 </style>

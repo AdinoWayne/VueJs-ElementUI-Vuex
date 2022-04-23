@@ -21,7 +21,7 @@
                 <tr>
                   <th>Current State</th><td>
                     <span
-                      v-if="true"
+                      v-if="isFocus(data.cloud.curr_state)"
                       class="test"
                     >{{ loadData(data.cloud.curr_state) }}</span><span
                       v-else
@@ -88,11 +88,12 @@
                     <el-button
                       size="mini"
                       type="success"
-                      class="btn-update"
                       :disabled="isDisabledVersion(data.version)"
+                      v-bind:class = "(isDisabledVersion(data.version))?'btn-disable':'btn-update'"
                       @click="centerDialogVisible = true"
                     >
-                      Update <span v-if="!isDisabledVersion(data.version)">to {{ data.version.pi_rework_latest_ver }}</span>
+                      <span v-if="!isDisabledVersion(data.version)">Update to {{ data.version.pi_rework_latest_ver }}</span>
+                      <span v-else>Already up to date</span>
                     </el-button>
                   </td>
                 </tr>
@@ -128,7 +129,7 @@
                       active-color="#13ce66"
                       active-text="Enable"
                       inactive-text="Disable"
-                      @change="(value) => handleSkip(1, value)"
+                      @click.native="(e) => handleSkip(2, e)"
                     />
                   </td>
                 </tr>
@@ -141,7 +142,7 @@
                       active-color="#13ce66"
                       active-text="Enable"
                       inactive-text="Disable"
-                      @change="(value) => handleSkip(2, value)"
+                      @click.native="(e) => handleSkip(2, e)"
                     />
                   </td>
                 </tr>
@@ -206,6 +207,20 @@
         >Restart</el-button>
       </span>
     </el-dialog>
+    <el-dialog
+      title="Warning"
+      :visible.sync="dialogSkip"
+      class="home-dialog"
+      center
+    >
+      <span class="dialog-message">Skip installing both Plume Certificates and Firmware are not allowed</span>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="dialogSkip = false">Cancel</el-button>
+      </span>
+    </el-dialog>
   </el-container>
 </template>
 
@@ -246,6 +261,7 @@ export default {
       skip_install_fw: false,
       centerDialogVisible: false,
       dialogRestart: false,
+      dialogSkip: false,
       isEnableMac: null,
       isLoading: false,
       timer: null,
@@ -259,6 +275,9 @@ export default {
     },
     ROOT() {
       return 'root';
+    },
+    ADMIN() {
+      return 'admin';
     },
     currentUser() {
       return this.$store.state.auth.user;
@@ -476,7 +495,18 @@ export default {
           })
       })
     },
-    handleSkip(key, value) {
+    handleSkip(key, e) {
+      const value = e.target.value;
+      if (this.skip_install_plume && this.skip_install_fw) {
+        this.dialogSkip = true;
+        if (key == 1) {
+          this.skip_install_plume = false;
+        } else if (key == 2) {
+          this.skip_install_fw = false;
+        }
+        e.preventDefault();
+        return;
+      }
       let status = value ? 'enable' : 'disable';
       switch (key) {
         case 1:
@@ -516,9 +546,80 @@ export default {
   width: 100%;
   flex: 1;
 }
+@-webkit-keyframes my2 {
+    0% {
+      box-shadow:
+        0 0 5px #b3e19d,
+        0 0 10px #b3e19d
+    } 
+    50% {
+      box-shadow: none;
+    } 
+    100% {
+      box-shadow:
+        0 0 5px #b3e19d,
+        0 0 10px #b3e19d
+    }
+ }
+ @-moz-keyframes my2 {
+    0% {
+      box-shadow:
+        0 0 5px #b3e19d,
+        0 0 10px #b3e19d,
+        0 0 20px #b3e19d
+    } 
+    50% {
+      box-shadow: none;
+    } 
+    100% {
+      box-shadow:
+        0 0 5px #b3e19d,
+        0 0 10px #b3e19d,
+        0 0 20px #b3e19d
+    }
+ }
+ @-o-keyframes my2 { 
+    0% {
+      box-shadow:
+        0 0 5px #b3e19d,
+        0 0 10px #b3e19d,
+        0 0 20px #b3e19d
+    } 
+    50% {
+      box-shadow: none;
+    } 
+    100% {
+      box-shadow:
+        0 0 5px #b3e19d,
+        0 0 10px #b3e19d,
+        0 0 20px #b3e19d
+    }
+ }
+ @keyframes my2 { 
+    0% {
+      box-shadow:
+        0 0 5px #b3e19d,
+        0 0 10px #b3e19d,
+        0 0 20px #b3e19d
+    } 
+    50% {
+      box-shadow: none;
+    } 
+    100% {
+      box-shadow:
+        0 0 5px #b3e19d,
+        0 0 10px #b3e19d,
+        0 0 20px #b3e19d
+    }
+}
+
 .btn-update {
   background-color: #13ce66 !important;
   border-color: #13ce66 !important;
+    -webkit-animation: my2 1000ms infinite;
+    -moz-animation: my2 1000ms infinite; 
+    -o-animation: my2 1000ms infinite; 
+    animation: my2 1000ms infinite;
 }
 .home-table th {
   padding: 5px;
@@ -649,7 +750,7 @@ export default {
         0 0 5px #fbb5ae,
         0 0 10px #ff8477
     }
-} 
+}
 .test {
     font-weight: bold;
     -webkit-animation: my 1000ms infinite;
@@ -673,4 +774,10 @@ export default {
   width: 30%;
   min-width: 500px;
 }
+.btn-disable {
+  background-color: #E8E9EB !important;
+  border-color: #E8E9EB !important;
+  color: #000 !important
+}
+
 </style>

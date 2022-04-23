@@ -115,7 +115,7 @@
                 style="float: right"
                 @click="() => handleClick(3)"
               >
-                Update
+                Open SSH Server
               </el-button>
             </div>
             <table class="home-table">
@@ -129,7 +129,7 @@
                   />
                 </td>
               </tr>
-              <tr style="border-bottom: 0">
+              <tr>
                 <th>Password</th>
                 <td>
                   <el-input
@@ -140,11 +140,35 @@
                   />
                 </td>
               </tr>
+              <tr>
+                <th>Port</th>
+                <td>
+                  <el-input
+                    v-model="root.port"
+                    size="mini"
+                    @change="e => onChange(e, root.port)"
+                  />
+                </td>
+              </tr>
             </table>
           </el-card>
         </el-col>
       </el-row>
     </el-main>
+    <el-dialog
+      title="Warning"
+      :visible.sync="dialog"
+      class="scan-dialog"
+      center
+    >
+      <span class="dialog-message">{{ dialogMsg }}</span>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="dialog = false" type="primary">Ok</el-button>
+      </span>
+    </el-dialog>
   </el-container>
 </template>
 
@@ -159,10 +183,13 @@ export default {
     return {
       root: {
         id: 'root',
-        password: 'hmxosync'
+        password: 'hmxosync',
+        port: '2222'
       },
       wifi: {},
       gateway: {},
+      dialogMsg: "",
+      dialog: false,
       interfaces: {},
     };
   },
@@ -222,12 +249,28 @@ export default {
       });
     },
     openSSH() {
+      if (!this.root.id || !this.root.password) {
+        this.dialog = true;
+        this.dialogMsg = "ID and Password can not be empty. Please check again."
+        return;
+      }
+      if (this.root.port < 1023) {
+        this.dialog = true;
+        this.dialogMsg = "Current port is in well known port range, Please choose another port from 1024-65535";
+        return;
+      }
       this.SET_PI_ACTION({
         action_name: ACTION.REWORK_SET_OPEN_SSH_SERVER_ON_V4_MANUALLY,
         id: this.root.id,
         password: this.root.password,
+        port: this.root.port,
         num: -1
-      });
+      }).then((data) => {
+        if (data) {
+          this.dialog = true;
+          this.dialogMsg = data.detail || "";
+        }
+      })
     },
     handleClick(type) {
       switch(type) {
@@ -281,5 +324,14 @@ export default {
 }
 .clearfix:after {
   clear: both
+}
+.dialog-message {
+    width: 100%;
+    display: block;
+    text-align: center;
+}
+.scan-dialog .el-dialog {
+  max-width: 590px;
+  width: 100%;
 }
 </style>
