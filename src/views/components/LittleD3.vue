@@ -58,6 +58,11 @@ export default {
         return { green: '#4DC87F', lightGreen: '#D9F0E3', white: '#FFFFFF', black: '#000000', red: '#E74C3C' };
     }
   },
+  watch: {
+      activeNum(newValue, oldValue) {
+          this.prevNum = oldValue;
+      }
+  },
   created() {
         this.allSteps = [...this.steps, ...this.stepErrors];
         if (this.timer) {
@@ -72,7 +77,7 @@ export default {
                     });
                 })
             }
-        }, 5000);
+        }, 2000);
   },
   mounted() {
     this.GET_REWORK_STATE().finally(() => {
@@ -80,10 +85,8 @@ export default {
         this.initStep();
     })
   },
-  watch: {
-      activeNum (newValue, oldValue) {
-          this.prevNum = oldValue;
-      }
+  destroyed() {
+    clearTimeout(this.timer);
   },
   methods: {
     ...mapActions('pi', {
@@ -803,13 +806,10 @@ export default {
         this.updateProgressBar(this.activeNum , true);
         this.isBegin = true;
     }
-  },
-  destroyed() {
-    clearTimeout(this.timer);
   }
 };
 </script>
-<style>
+<style scoped>
 .text {
   font-size: 14px;
 }

@@ -40,7 +40,7 @@
         </li>
       </div>
     </nav>
-    <el-container>
+    <el-container class="wrapper">
       <el-aside
         v-if="currentUser"
         width="180px"
@@ -129,5 +129,8 @@ export default {
 }
 .el-main.main {
   padding-left: 0;
+}
+.wrapper {
+  height: calc(100vh - 75px);
 }
 </style>

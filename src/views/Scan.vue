@@ -11,7 +11,7 @@
               slot="header"
               class="clearfix"
             >
-              <span>Raspberry PI(set/show IP)</span>
+              <span>HGJ310v4 GW IP used on Raspberry</span>
               <el-button
                 type="success"
                 size="mini"
@@ -23,7 +23,7 @@
             </div>
             <table class="home-table">
               <tr>
-                <th>HGJ310v4 Gateway IP</th>
+                <th>HGJ310v4 GW IP</th>
                 <td>
                   <el-input
                     v-model="gateway.hgj310v4_gw_ip" 
@@ -41,7 +41,7 @@
               slot="header"
               class="clearfix"
             >
-              <span>Raspberry PI(set/show SSID / PWD)</span>
+              <span>SSID and PASWORD of Rapsberry PI's WiFi Client</span>
               <el-button
                 type="success"
                 size="mini"
@@ -53,7 +53,7 @@
             </div>
             <table class="home-table">
               <tr>
-                <th>SSID on Raspberry PI's Wifi Interface</th>
+                <th>SSID</th>
                 <td>
                   <el-input
                     v-model="wifi.ssid"
@@ -63,7 +63,7 @@
                 </td>
               </tr>
               <tr style="border-bottom: 0">
-                <th>PASSWORD on Raspberry PI's Wifi Interface</th>
+                <th>PASSWORD</th>
                 <td>
                   <el-input
                     v-model="wifi.password"
@@ -87,17 +87,25 @@
               slot="header"
               class="clearfix"
             >
-              <span>Raspberry PI(Show IP of all interfaces)</span>
+              <span>IP Address of all Raspberry PI's interfaces</span>
+              <el-button
+                type="success"
+                size="mini"
+                style="float: right"
+                @click="handleRefresh"
+              >
+                Refresh
+              </el-button>
             </div>
             <table class="home-table">
               <tr>
-                <th>eth0</th><td>{{ interfaces.eth0 }}</td>
+                <th>Ethernet</th><td>{{ interfaces.eth0 }}</td>
               </tr>
               <tr>
-                <th>USB-to-Ethernet</th><td>{{ interfaces.eth0 }}</td>
+                <th>USB-to-Ethernet</th><td>{{ interfaces.usb_to_ethernet }}</td>
               </tr>
               <tr>
-                <th>Wi-Fi</th><td>{{ interfaces.eth0 }}</td>
+                <th>Wi-Fi</th><td>{{ interfaces.wifi }}</td>
               </tr>
             </table>
           </el-card>
@@ -130,7 +138,7 @@
                 </td>
               </tr>
               <tr>
-                <th>Password</th>
+                <th>PASSWORD</th>
                 <td>
                   <el-input
                     v-model="root.password"
@@ -141,7 +149,7 @@
                 </td>
               </tr>
               <tr>
-                <th>Port</th>
+                <th>PORT</th>
                 <td>
                   <el-input
                     v-model="root.port"
@@ -241,6 +249,11 @@ export default {
       });
     },
     putWifi() {
+      if (!this.wifi.ssid || !this.wifi.password) {
+        this.dialog = true;
+        this.dialogMsg = "SSID and Password can not be empty. Please check again."
+        return;
+      }
       this.SET_PI_ACTION({
         action_name: ACTION.REWORK_SET_RAPS_PI_WIFI_ACCOUNT,
         ssid: this.wifi.ssid,
@@ -270,7 +283,19 @@ export default {
           this.dialog = true;
           this.dialogMsg = data.detail || "";
         }
+      }).catch(err => {
+        if (err) {
+          this.dialog = true;
+          this.dialogMsg = err.detail || "";
+        }
       })
+    },
+    handleRefresh() {
+      let $q = [];
+      $q.push(this.GET_INTERFACE_IP());
+      Promise.all($q).finally(() => {
+        this.initData();
+      });
     },
     handleClick(type) {
       switch(type) {
@@ -310,9 +335,9 @@ export default {
 .class-row .home-table th {
   width: 50%;
 }
-.class-row .home-table th, .class-row .home-table td {
+/* .class-row .home-table th, .class-row .home-table td {
   vertical-align: top;
-}
+} */
 .item {
   margin-bottom: 18px;
 }

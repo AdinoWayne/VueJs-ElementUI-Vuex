@@ -246,10 +246,18 @@ export const pi = {
           if (_res && _res.data && _res.data.length > 0) {
             if (_res.data[0].status) {
               commit(SET_PI_ACTION_SUCCESS, data);
-              return Promise.resolve(data);
+              return Promise.resolve(_res.data[0]);
             } else {
               commit(SET_PI_ACTION_FAILED, data);
-              return Promise.reject(data);
+              return Promise.reject(_res.data[0]);
+            }
+          } else if (_res && _res.data && _res.data) {
+            if (_res.data.status) {
+              commit(SET_PI_ACTION_SUCCESS, data);
+              return Promise.resolve(_res.data);
+            } else {
+              commit(SET_PI_ACTION_FAILED, data);
+              return Promise.reject(_res.data);
             }
           }
         },
@@ -337,7 +345,7 @@ export const pi = {
     [GET_WIFI_ACCOUNT_FAILED]() {},
     [GET_INTERFACE_IP_SUCCESS](state, data) {
       state.raspberry_pi.interface = {
-        eth0: data.eth0,
+        eth0: data['Ethernet'],
         usb_to_ethernet: data['USB-to-Ethernet'],
         wifi: data['Wi-Fi']
       };

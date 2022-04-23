@@ -779,5 +779,4 @@ export default {
   border-color: #E8E9EB !important;
   color: #000 !important
 }
-
 </style>
