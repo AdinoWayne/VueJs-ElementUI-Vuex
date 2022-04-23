@@ -129,7 +129,7 @@
                       active-color="#13ce66"
                       active-text="Enable"
                       inactive-text="Disable"
-                      @click.native="(e) => handleSkip(2, e)"
+                      @click.native="(e) => handleSkip(1, e)"
                     />
                   </td>
                 </tr>
@@ -159,7 +159,7 @@
           >
             <span>Progress Step</span>
           </div>
-          <div v-if="currentUser && currentUser.user && currentUser.user.username === ADMIN">
+          <div v-if="currentUser && currentUser.user && currentUser.user.username === ROOT">
             <LittleD3 />
           </div>
           <div v-else>
@@ -353,7 +353,7 @@ export default {
       }
       this.timer = setTimeout(() => {
         this.fetchData();
-      }, 2000);
+      }, 20000);
     },
     handleRestart() {
       this.isLoading = true;
@@ -499,7 +499,6 @@ export default {
       })
     },
     handleSkip(key, e) {
-      const value = e.target.value;
       if (this.skip_install_plume && this.skip_install_fw) {
         this.dialogSkip = true;
         if (key == 1) {
@@ -510,6 +509,7 @@ export default {
         e.preventDefault();
         return;
       }
+      const value = key == 1 ? this.skip_install_plume : this.skip_install_fw;
       let status = value ? 'enable' : 'disable';
       switch (key) {
         case 1:

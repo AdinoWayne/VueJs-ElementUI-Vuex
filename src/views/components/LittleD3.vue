@@ -21,6 +21,7 @@ export default {
   data() {
     return {
       activeNum: 0,
+      activeAb: 0,
       prevNum: 0,
       svg: null,
       steps: [0, 1, 2, 3, 4, 5, 6, 7, 8],
@@ -32,7 +33,7 @@ export default {
             'Scan',
             'Install Plume CAs',
             'Install FW',
-            'Send Log to Cloud'
+            'Finish'
       ],
       arrProgress: [],
       progressBar: null,
@@ -77,7 +78,7 @@ export default {
                     });
                 })
             }
-        }, 2000);
+        }, 8000);
   },
   mounted() {
     this.GET_REWORK_STATE().finally(() => {
@@ -164,94 +165,117 @@ export default {
         const num = this.handlePrev(piV4Prev);
         switch (true) {
             case piV4State.indexOf(PROGRESS.REWORK__SCANNING) !== -1:
+                this.activeAb = 0;
                 this.activeNum = 0;
                 this.currentState = "pending";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__FAIL_SCANNING) !== -1:
+                this.activeAb = 0;
                 this.activeNum = 0;
                 this.currentState = "failed";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_SCANNING) !== -1:
+                this.activeAb = 0;
                 this.activeNum = 0;
                 this.currentState = "success";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SENDING_V4_INFO_TO_CLOUD) !== -1:
+                this.activeAb = 1;
                 this.activeNum = 1;
                 this.currentState = "pending";
                 break;
             case piV4State.indexOf(PROGRESS.REWOWK__FAIL_SENDING_V4_INFO_TO_CLOUD) !== -1:
-                this.activeNum = 1;
+                this.activeAb = 1;
+                this.activeNum = 6;
                 this.currentState = "failed";
                 break;
             case piV4State.indexOf(PROGRESS.REWOWK__SUCCESS_SENDING_V4_INFO_TO_CLOUD) !== -1:
+                this.activeAb = 1;
                 this.activeNum = 1;
                 this.currentState = "success";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__DONWLOADING_PLUME_CAS_FROM_CLOUD) !== -1:
+                this.activeAb = 2;
                 this.activeNum = 2;
                 this.currentState = "pending";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__FAIL_DONWLOADING_PLUME_CAS_FROM_CLOUD) !== -1:
-                this.activeNum = 2;
+                this.activeAb = 2;
+                this.activeNum = 6;
                 this.currentState = "failed";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_DONWLOADING_PLUME_CAS_FROM_CLOUD) !== -1:
+                this.activeAb = 2;
                 this.activeNum = 2;
                 this.currentState = "success";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__OPENNING_SSH_SERVER_ON_V4) !== -1:
+                this.activeAb = 3;
                 this.activeNum = 3;
                 this.currentState = "pending";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__FAIL_OPENNING_SSH_SERVER_ON_V4) !== -1:
-                this.activeNum = 3;
+                this.activeAb = 3;
+                this.activeNum = 6;
                 this.currentState = "failed";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_OPENNING_SSH_SERVER_ON_V4) !== -1:
+                this.activeAb = 3;
                 this.activeNum = 3;
                 this.currentState = "success";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SENDING_FW_TO_V4) !== -1:
+                this.activeAb = 4;
                 this.activeNum = 4;
                 this.currentState = "pending";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__FAIL_SENDING_FW_TO_V4) !== -1:
-                this.activeNum = 4;
+                this.activeAb = 4;
+                this.activeNum = 6;
                 this.currentState = "failed";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_SENDING_FW_TO_V4) !== -1:
+                this.activeAb = 4;
                 this.activeNum = 4;
                 this.currentState = "success";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SENDING_PLUME_CAS_TO_V4) !== -1:
+                this.activeAb = 5;
                 this.activeNum = 5;
                 this.currentState = "pending";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__FAIL_SENDING_PLUME_CAS_TO_V4) !== -1:
-                this.activeNum = 5;
+                this.activeAb = 5;
+                this.activeNum = 6;
                 this.currentState = "failed";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_SENDING_PLUME_CAS_TO_V4) !== -1:
+                this.activeAb = 5;
                 this.activeNum = 5;
                 this.currentState = "success";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__INSTALLING_PLUME_CAS_ON_V4) !== -1:
+                this.activeAb = 6;
                 this.activeNum = 6;
                 this.currentState = "pending";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__FAIL_INSTALLING_PLUME_CAS_ON_V4) !== -1:
+                this.activeAb = 6;
                 this.activeNum = 6;
                 this.currentState = "failed";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_INSTALLING_PLUME_CAS_ON_V4) !== -1:
+                this.activeAb = 6;
                 this.activeNum = 6;
                 this.currentState = "success";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__INSTALLING_FW_FOR_V4) !== -1:
+                this.activeAb = 7;
                 this.activeNum = 7;
                 this.currentState = "pending";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__FAIL_INSTALLING_FW_FOR_V4) !== -1:
+                this.activeAb = 7;
                 this.activeNum = 7;
                 this.currentState = "failed";
                 break;
@@ -262,8 +286,10 @@ export default {
             case piV4State.indexOf(PROGRESS.REWORK__SENDING_UPGRADED_LOG_TO_CLOUD) !== -1:
                 if (piV4Prev.indexOf(PROGRESS.REWORK__SUCCESS_INSTALLING_FW_FOR_V4) !== -1) {
                     this.activeNum = 8;
+                    this.activeAb = 8;
                 } else {
                     this.activeNum = num + this.steps.length -1;
+                    this.activeAb = num + this.steps.length -1;
                 }
                 this.currentState = "pending";
                 break;
@@ -273,8 +299,10 @@ export default {
                     piV4Prev.indexOf(PROGRESS.REWORK__SENDING_UPGRADED_LOG_TO_CLOUD) !== -1
                     ) {
                     this.activeNum = 8;
+                    this.activeAb = 8;
                 } else {
                     this.activeNum = num + this.steps.length -1;
+                    this.activeAb = num + this.steps.length -1;
                 }
                 this.currentState = "failed";
                 break;
@@ -284,13 +312,16 @@ export default {
                     piV4Prev.indexOf(PROGRESS.REWORK__SENDING_UPGRADED_LOG_TO_CLOUD) !== -1
                 ) {
                     this.activeNum = 8;
+                    this.activeAb = 8;
                 } else {
                     this.activeNum = num + this.steps.length -1;
+                    this.activeAb = num + this.steps.length -1;
                 }
                 this.currentState = "success";
                 break;
             default:
                 this.activeNum = 0;
+                this.activeAb = 0;
                 this.currentState = "pending";
                 break;
         }
@@ -350,6 +381,8 @@ export default {
                 result = 2;
                 break;
             default:
+                result = 1;
+                break;
         }
         return result;
     },
@@ -399,12 +432,22 @@ export default {
                 if (i == 0) {
                     d3.select('#foreign_' + i).html('<i class="el-icon-check"></i>');
                     d3.select('#step_' + i).attr('fill', this.colors.green).attr('stroke', this.colors.green);
-                    this.hideError();
-                } else if (i == 1 && this.currentState == 'pending') {
+                    if (step_ < 8) {
+                        this.hideError();
+                    }
+                } else if (i == 1 && this.currentState == 'pending' && step_ < 8) {
                     d3.select('#foreign_' + i).html('<i class="el-icon-loading"></i>');
+                } else if (i == 1 && this.currentState == 'pending' && step_ > 8 && step_ < 14) {
+                    d3.select('#step_' + i).attr('fill', this.colors.red).attr('stroke', this.colors.red);
+                    d3.select('#foreign_' + i).html('<i class="el-icon-close" style="color: #fff"></i>');
                 } else {
-                    d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>');
-                    d3.select('#step_' + i).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen)
+                    if (i == 4) {
+                        d3.select('#foreign_' + i).html('<i class="el-icon-loading"></i>').style("display", "block");
+                        d3.select('#step_' + i).attr('fill', this.colors.green).attr('stroke', this.colors.green).style("display", "block");
+                    } else {
+                        d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>');
+                        d3.select('#step_' + i).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen)
+                    }
                 }
             } else if(isMainStep && i <= positionL && positionL < this.numStepLint) {
                 d3.select('#step_' + i).attr('fill', this.colors.green).attr('stroke', this.colors.green);
@@ -465,12 +508,13 @@ export default {
                 d3.select('#vertical_' + i).attr('height', 0);
             }
         }
-        if (step_ == 0 || (this.currentState == 'pending' && positionL < this.numStepLint)) {
+        if (step_ == 0 || (this.currentState == 'pending' && step_ < 8 && positionL < this.numStepLint)) {
             this.hideError(true);
         }
     },
     handleClickPont(step_, positionL) {
-        d3.select('#step_' + positionL).attr('fill', this.colors.green).attr('stroke', this.colors.green);
+        const j = positionL == -1 ? 1 : positionL
+        d3.select('#step_' + j).attr('fill', this.colors.green).attr('stroke', this.colors.green);
         if (this.currentState == 'pending') {
             d3.select('#foreign_' + (positionL != -1 ? positionL : 1)).html('<i class="el-icon-loading"></i>');
             if (step_ == 0) {
@@ -535,9 +579,6 @@ export default {
             this.progress.transition()
                 .duration(1000)
                 .attr('fill', () => {
-                    if (this.currentState === 'failed' && positionL == -1) {
-                        return this.colors.red;
-                    }
                     return this.colors.green;
                 })
                 .attr('width', () => {
@@ -554,7 +595,7 @@ export default {
                         const s = this.stepLint.indexOf(step_ - 8);
                         return s * stepWidth;
                     } else if (index < 14) {
-                        return (index - 8) * Math.floor(stepWidth / 6);
+                        return stepWidth;
                     }
                 });
         } else {
@@ -572,22 +613,31 @@ export default {
                     return 128;
                 });
             }
-            if (isMainStep) {
-                this.progressError
-                .attr('width', () => {
-                    let s = this.stepLint.indexOf(step_);
-                    if (step_ > 8) {
-                        s = s - 3;
-                    }
+            this.progressError
+            .attr('width', () => {
+                let s = this.stepLint.indexOf(step_);
+                if (s == -1 && step_ > 8) {
+                    return stepWidth;
+                }
+                if (step_ > 8) {
+                    s = s - 3;
+                }
 
-                    return s * stepWidth;
-                });
-            }
-            if (step_ != 0 && isMainStep) {
+                return s * stepWidth;
+            });
+
+            if (step_ != 0 && this.currentState == 'failed' || (this.currentState == 'pending' && step_ > 8)) {
                 this.arrProgress[this.formatErrorPosition(step_) - 1]
                 .attr('height', () => {
                     return 128;
                 });
+                if (this.currentState == 'pending' && step_ > 8) {
+                    this.arrHighProgress[this.formatErrorPosition(step_)].transition()
+                    .delay(10)
+                    .duration(1000)
+                    .attr('fill', this.colors.green)
+                    .attr('height', 128);
+                }
             }
             if (isMainStep && (this.currentState == 'success' || this.currentState == 'pending')) {
                 d3.select('#step_' + positionI)
@@ -767,10 +817,10 @@ export default {
                 if (this.currentState == 'failed' && index !== 0 && index !== positionL && index - positionL !== 3) {
                     return;
                 }
-                this.activeNum = this.stepLint[index];
+                this.activeNum = this.stepLint[index] == 6 ? 1 : this.stepLint[index];
                 this.currentState = 'pending';
                 this.updateProgressBar(this.activeNum);
-                this.SET_PI_ACTION({ action_name: this.prepareData(index), num: index})
+                this.SET_PI_ACTION({ action_name: this.prepareData(this.activeNum), num: index})
             }))
         }
 

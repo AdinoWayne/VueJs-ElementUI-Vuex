@@ -170,7 +170,10 @@
       class="scan-dialog"
       center
     >
-      <span class="dialog-message">{{ dialog.msg }}</span>
+      <span
+        class="dialog-message"
+        v-html="dialog.msg"
+      />
       <span
         slot="footer"
         class="dialog-footer"
@@ -308,7 +311,7 @@ export default {
       }).catch(err => {
         if (err) {
           this.dialog = {
-            title: "Notice",
+            title: "Warning",
             isOpen: true,
             msg: err.detail || ""
           }
