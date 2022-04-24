@@ -448,6 +448,28 @@ export default {
         d3.select('#step_' + i).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen).style("display", "none");
         d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>').style("display", "none");
     },
+    showCircle(key, i) {
+        switch (key) {
+            case 1:
+                d3.select('#foreign_' + i).html('<i class="el-icon-loading"></i>').style("display", "block");
+                d3.select('#step_' + i).attr('fill', this.colors.green).attr('stroke', this.colors.green).style("display", "block");
+                break;
+            case 2:
+                d3.select('#foreign_' + i).html('<i class="el-icon-check"></i>').style("display", "block");
+                d3.select('#step_' + i).attr('fill', this.colors.green).attr('stroke', this.colors.green).style("display", "block");
+                break;
+            case 3:
+                d3.select('#step_' + i).attr('fill', this.colors.red).attr('stroke', this.colors.red).style("display", "block");
+                d3.select('#foreign_' + i).html('<i class="el-icon-close" style="color: #fff"></i>').style("display", "block");
+                break;
+            case 4:
+                d3.select('#step_' + i).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen).style("display", "block");
+                d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>').style("display", "block");
+                break;
+            default:
+                break;
+        }
+    },
     handleFirstPoint(step_, positionL, isMainStep) {
         if (step_ == 0) {
             this.progressError.attr('fill', this.colors.green)
@@ -458,7 +480,11 @@ export default {
         for(let i = 0; i < this.stepLint.length; i++) {
             if (positionL == -1) {
                 if (i == 0) {
-                    d3.select('#foreign_' + i).html('<i class="el-icon-check"></i>');
+                    if (this.currentState == 'pending') {
+                        d3.select('#foreign_' + i).html('<i class="el-icon-check"></i>');
+                    } else {
+                        d3.select('#foreign_' + i).html('<i class="el-icon-refresh"></i>');
+                    }
                     d3.select('#step_' + i).attr('fill', this.colors.green).attr('stroke', this.colors.green);
                     if (step_ < 8) {
                         this.hideError();
@@ -469,12 +495,18 @@ export default {
                     d3.select('#step_' + i).attr('fill', this.colors.red).attr('stroke', this.colors.red);
                     d3.select('#foreign_' + i).html('<i class="el-icon-close" style="color: #fff"></i>');
                 } else {
-                    if (i == 4 && this.currentState == 'pending') {
-                        d3.select('#foreign_' + i).html('<i class="el-icon-loading"></i>').style("display", "block");
-                        d3.select('#step_' + i).attr('fill', this.colors.green).attr('stroke', this.colors.green).style("display", "block");
-                    } else if (i == 4 && this.currentState == 'success') {
-                        d3.select('#foreign_' + i).html('<i class="el-icon-check"></i>').style("display", "block");
-                        d3.select('#step_' + i).attr('fill', this.colors.green).attr('stroke', this.colors.green).style("display", "block");
+                    if (i == 4 && this.currentState == 'pending' && step_ < 15) {
+                        this.showCircle(1, i);
+                    } else if (i == 4 && this.currentState == 'success' && step_ < 15) {
+                        this.showCircle(2, i);
+                    } else if (i == 4 && this.currentState == 'failed' && step_ < 15) {
+                        this.showCircle(3, i);
+                    } else if (i == 5 && this.currentState == 'pending' && step_ == 15) {
+                        this.showCircle(1, i); 
+                    } else if (i == 5 && this.currentState == 'success' && step_ == 15) {
+                        this.showCircle(2, i);
+                    } else if (i == 5 && this.currentState == 'failed' && step_ == 15) {
+                        this.showCircle(3, i);
                     } else {
                         d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>');
                         d3.select('#step_' + i).attr('fill', this.colors.lightGreen).attr('stroke', this.colors.lightGreen)
@@ -658,6 +690,7 @@ export default {
             });
 
             if (step_ != 0 && this.currentState == 'failed' || step_ > 8) {
+                this.arrProgress.map(el => el.attr('height', 0))
                 this.arrProgress[this.formatErrorPosition(step_) - 1]
                 .attr('height', () => {
                     return 128;
@@ -829,13 +862,14 @@ export default {
             })
             .html(html)
             .on('click', () => {
-                if (this.pi && this.pi.cloud && this.pi.cloud.cloud_connected !== 'True') {
+                if (this.HOME_PI && this.HOME_PI.cloud && this.HOME_PI.cloud.cloud_connected !== 'True') {
                     if (this.$props && this.$props.openProgressDialog) {
                         this.$props.openProgressDialog();
                     }
                     return;
                 }
-                if (this.pi && this.pi.cloud && this.pi.cloud.curr_state.indexOf(CLOUD.REWORK__SUCCESS_DOWNLOAD_FW_FROM_CLOUD.VALUE) === -1) {
+                console.log(this.HOME_PI.cloud.curr_state);
+                if (this.HOME_PI && this.HOME_PI.cloud && this.HOME_PI.cloud.curr_state.indexOf(CLOUD.REWORK__SUCCESS_DOWNLOAD_FW_FROM_CLOUD.VALUE) === -1) {
                     if (this.$props && this.$props.openProgressDialog) {
                         this.$props.openProgressDialog();
                     }
@@ -852,6 +886,9 @@ export default {
                     return;
                 }
                 if (this.currentState == 'failed' && index !== 0 && index !== positionL && index - positionL !== 3) {
+                    return;
+                }
+                if (this.currentState == 'success' && (index == 4 || index == 5)) {
                     return;
                 }
                 this.activeNum = this.stepLint[index] == 6 ? 1 : this.stepLint[index];

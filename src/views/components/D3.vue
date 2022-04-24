@@ -55,7 +55,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('pi', [HOME_PI]),
+    ...mapGetters('pi', {HOME_PI}),
     colors() {
         return { green: '#4DC87F', lightGreen: '#D9F0E3', white: '#FFFFFF', black: '#000000', red: '#E74C3C' };
     }
@@ -99,8 +99,8 @@ export default {
         SET_PI_ACTION
     }),
     initData(callback) {
-        if (this.pi && this.pi.pi_v4_state !== undefined) {
-            this.handleData(this.pi.pi_v4_state, this.pi.pre_pi_v4_state);
+        if (this.HOME_PI && this.HOME_PI.pi_v4_state !== undefined) {
+            this.handleData(this.HOME_PI.pi_v4_state, this.HOME_PI.pre_pi_v4_state);
         }
         if (callback) {
             callback();
@@ -707,13 +707,13 @@ export default {
             })
             .html(html)
             .on('click', () => {
-                if (this.pi && this.pi.cloud && this.pi.cloud.cloud_connected !== 'True') {
+                if (this.HOME_PI && this.HOME_PI.cloud && this.HOME_PI.cloud.cloud_connected !== 'True') {
                     if (this.$props && this.$props.openProgressDialog) {
                         this.$props.openProgressDialog();
                     }
                     return;
                 }
-                if (this.pi && this.pi.cloud && this.pi.cloud.curr_state.indexOf(CLOUD.REWORK__SUCCESS_DOWNLOAD_FW_FROM_CLOUD.VALUE) === -1) {
+                if (this.HOME_PI && this.HOME_PI.cloud && this.HOME_PI.cloud.curr_state.indexOf(CLOUD.REWORK__SUCCESS_DOWNLOAD_FW_FROM_CLOUD.VALUE) === -1) {
                     if (this.$props && this.$props.openProgressDialog) {
                         this.$props.openProgressDialog();
                     }

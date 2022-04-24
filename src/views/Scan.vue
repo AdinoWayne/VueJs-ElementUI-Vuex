@@ -278,6 +278,14 @@ export default {
         }
         return;
       }
+      if (this.wifi.password.length < 8 || this.wifi.password.length > 63) {
+        this.dialog = {
+          title: "Warning",
+          isOpen: true,
+          msg: "PASSWORD must be 8-63 characters. Please check again!"
+        }
+        return;
+      }
       this.isLoading3 = true;
       this.SET_PI_ACTION({
         action_name: ACTION.REWORK_SET_RAPS_PI_WIFI_ACCOUNT,
@@ -301,7 +309,7 @@ export default {
         this.dialog = {
           title: "Warning",
           isOpen: true,
-          msg: "Current port is in well known port range, Please choose another port from 1024-65535"
+          msg: "Current PORT is in well known port range, Please choose another port from 1024-65535"
         }
         return;
       }
