@@ -228,7 +228,7 @@
       center
     >
       <span class="dialog-message">
-        Requested action is disallowed because No Connection to or Checking Firmware with HMX Cloud
+        Requested Action is disallowed because No connection to or in checking Firmware with HMX Cloud. Please wait for seconds ...
       </span>
       <span
         slot="footer"
@@ -391,7 +391,7 @@ export default {
       }
       this.timer = setTimeout(() => {
         this.fetchData();
-      }, 20000);
+      }, 2000);
     },
     handleRestart() {
       this.isLoading = true;
@@ -826,7 +826,9 @@ export default {
 .dialog-message {
     width: 100%;
     display: block;
+    font-size: 14px;
     text-align: center;
+    word-break: break-work;
 }
 .child-main, .child-main .card-content:last-child, .child-main .card-content:first-child {
   padding: 0 !important;

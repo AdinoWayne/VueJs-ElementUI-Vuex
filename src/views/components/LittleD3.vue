@@ -121,7 +121,7 @@ export default {
         if (!this.HOME_PI) {
             return;
         }
-        const index = this.STATE_HIDE.indexOf(this.HOME_PI.pi_v4_state) !== -1;
+        const index = this.STATE_HIDE.findIndex(el => this.HOME_PI.pi_v4_state.indexOf(el));
         if (
             this.HOME_PI &&
             this.HOME_PI.pi_rework_mode.indexOf(MODE.REWORK__ALL_AUTO) !== -1 &&
