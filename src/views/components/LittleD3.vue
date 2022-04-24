@@ -121,10 +121,10 @@ export default {
         if (!this.HOME_PI) {
             return;
         }
-        const index = this.STATE_HIDE.findIndex(el => this.HOME_PI.pi_v4_state.indexOf(el));
+        const index = this.STATE_HIDE.findIndex(el => this.HOME_PI.pi_v4_state.indexOf(el) !== -1);
         if (
             this.HOME_PI &&
-            this.HOME_PI.pi_rework_mode.indexOf(MODE.REWORK__ALL_AUTO) !== -1 &&
+            this.HOME_PI.pi_rework_mode.indexOf(MODE.REWORK__ALL_AUTO) == -1 &&
             index !== -1
         ) {
             this.SET_PI_ACTION({ action_name: this.prepareData(index + 2), num: index})
