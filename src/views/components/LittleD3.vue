@@ -18,6 +18,8 @@ import { HOME_PI } from './../../store/types/getters';
 
 export default {
   name: 'D3',
+  // eslint-disable-next-line vue/require-prop-types
+  props: ['openProgressDialog', 'setStepHome'],
   data() {
     return {
       activeNum: 0,
@@ -71,6 +73,9 @@ export default {
   watch: {
       activeNum(newValue, oldValue) {
           this.prevNum = oldValue;
+            if (this.$props && this.$props.setStepHome) {
+            this.$props.setStepHome(this.activeAb);
+          }
       }
   },
   created() {
@@ -460,12 +465,15 @@ export default {
                     }
                 } else if (i == 1 && this.currentState == 'pending' && step_ < 8) {
                     d3.select('#foreign_' + i).html('<i class="el-icon-loading"></i>');
-                } else if (i == 1 && this.currentState == 'pending' && step_ > 8 && step_ < 14) {
+                } else if (i == 1 && step_ > 8 && step_ < 14) {
                     d3.select('#step_' + i).attr('fill', this.colors.red).attr('stroke', this.colors.red);
                     d3.select('#foreign_' + i).html('<i class="el-icon-close" style="color: #fff"></i>');
                 } else {
-                    if (i == 4) {
+                    if (i == 4 && this.currentState == 'pending') {
                         d3.select('#foreign_' + i).html('<i class="el-icon-loading"></i>').style("display", "block");
+                        d3.select('#step_' + i).attr('fill', this.colors.green).attr('stroke', this.colors.green).style("display", "block");
+                    } else if (i == 4 && this.currentState == 'success') {
+                        d3.select('#foreign_' + i).html('<i class="el-icon-check"></i>').style("display", "block");
                         d3.select('#step_' + i).attr('fill', this.colors.green).attr('stroke', this.colors.green).style("display", "block");
                     } else {
                         d3.select('#foreign_' + i).html('<i class="el-icon-arrow-right"></i>');
@@ -649,12 +657,12 @@ export default {
                 return s * stepWidth;
             });
 
-            if (step_ != 0 && this.currentState == 'failed' || (this.currentState == 'pending' && step_ > 8)) {
+            if (step_ != 0 && this.currentState == 'failed' || step_ > 8) {
                 this.arrProgress[this.formatErrorPosition(step_) - 1]
                 .attr('height', () => {
                     return 128;
                 });
-                if (this.currentState == 'pending' && step_ > 8) {
+                if (this.currentState != 'failed' && step_ > 8) {
                     this.arrHighProgress[this.formatErrorPosition(step_)].transition()
                     .delay(10)
                     .duration(1000)
@@ -822,9 +830,15 @@ export default {
             .html(html)
             .on('click', () => {
                 if (this.pi && this.pi.cloud && this.pi.cloud.cloud_connected !== 'True') {
+                    if (this.$props && this.$props.openProgressDialog) {
+                        this.$props.openProgressDialog();
+                    }
                     return;
                 }
                 if (this.pi && this.pi.cloud && this.pi.cloud.curr_state.indexOf(CLOUD.REWORK__SUCCESS_DOWNLOAD_FW_FROM_CLOUD.VALUE) === -1) {
+                    if (this.$props && this.$props.openProgressDialog) {
+                        this.$props.openProgressDialog();
+                    }
                     return;
                 }
                 if (this.currentState == 'pending') {

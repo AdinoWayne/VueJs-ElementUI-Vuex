@@ -18,6 +18,8 @@ import { HOME_PI } from './../../store/types/getters';
 
 export default {
   name: 'D3',
+  // eslint-disable-next-line vue/require-prop-types
+  props: ['openProgressDialog', 'setStepHome'],
   data() {
     return {
       activeNum: 0,
@@ -58,6 +60,14 @@ export default {
         return { green: '#4DC87F', lightGreen: '#D9F0E3', white: '#FFFFFF', black: '#000000', red: '#E74C3C' };
     }
   },
+  watch: {
+      activeNum(newValue, oldValue) {
+          this.prevNum = oldValue;
+          if (this.$props && this.$props.setStepHome) {
+            this.$props.setStepHome(newValue);
+          }
+      }
+  },
   created() {
         this.allSteps = [...this.steps, ...this.stepErrors];
         if (this.timer) {
@@ -80,10 +90,8 @@ export default {
         this.initStep();
     })
   },
-  watch: {
-      activeNum (newValue, oldValue) {
-          this.prevNum = oldValue;
-      }
+  destroyed() {
+    clearTimeout(this.timer);
   },
   methods: {
     ...mapActions('pi', {
@@ -700,9 +708,15 @@ export default {
             .html(html)
             .on('click', () => {
                 if (this.pi && this.pi.cloud && this.pi.cloud.cloud_connected !== 'True') {
+                    if (this.$props && this.$props.openProgressDialog) {
+                        this.$props.openProgressDialog();
+                    }
                     return;
                 }
                 if (this.pi && this.pi.cloud && this.pi.cloud.curr_state.indexOf(CLOUD.REWORK__SUCCESS_DOWNLOAD_FW_FROM_CLOUD.VALUE) === -1) {
+                    if (this.$props && this.$props.openProgressDialog) {
+                        this.$props.openProgressDialog();
+                    }
                     return;
                 }
                 if (this.currentState == 'pending') {
@@ -757,9 +771,6 @@ export default {
         this.updateProgressBar(this.activeNum , true);
         this.isBegin = true;
     }
-  },
-  destroyed() {
-    clearTimeout(this.timer);
   }
 };
 </script>

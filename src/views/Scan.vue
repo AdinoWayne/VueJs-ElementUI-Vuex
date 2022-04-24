@@ -16,6 +16,7 @@
                 type="success"
                 size="mini"
                 style="float: right"
+                :loading="isLoading2"
                 @click="() => handleClick(1)"
               >
                 Update
@@ -46,6 +47,7 @@
                 type="success"
                 size="mini"
                 style="float: right"
+                :loading="isLoading3"
                 @click="() => handleClick(2)"
               >
                 Update
@@ -92,6 +94,7 @@
                 type="success"
                 size="mini"
                 style="float: right"
+                :loading="isLoading4"
                 @click="handleRefresh"
               >
                 Refresh
@@ -210,6 +213,9 @@ export default {
         isOpen: false,
       },
       isLoading: false,
+      isLoading2: false,
+      isLoading3: false,
+      isLoading4: false,
       interfaces: {},
     };
   },
@@ -254,11 +260,14 @@ export default {
       value = e;
     },
     putGateway() {
+      this.isLoading2 = true;
       this.SET_PI_ACTION({
         action_name: ACTION.REWORK_SET_HGJ310V4_GW_IP,
         hgj310v4_gw_ip: this.gateway.hgj310v4_gw_ip,
         num: -1
-      });
+      }).finally(() => {
+        this.isLoading2  = false;
+      })
     },
     putWifi() {
       if (!this.wifi.ssid || !this.wifi.password) {
@@ -269,12 +278,15 @@ export default {
         }
         return;
       }
+      this.isLoading3 = true;
       this.SET_PI_ACTION({
         action_name: ACTION.REWORK_SET_RAPS_PI_WIFI_ACCOUNT,
         ssid: this.wifi.ssid,
         password: this.wifi.password,
         num: -1
-      });
+      }).finally(() => {
+        this.isLoading3  = false;
+      })
     },
     openSSH() {
       if (!this.root.id || !this.root.password) {
@@ -323,9 +335,12 @@ export default {
     handleRefresh() {
       let $q = [];
       $q.push(this.GET_INTERFACE_IP());
+      this.isLoading4  = true;
       Promise.all($q).finally(() => {
         this.initData();
-      });
+      }).finally(() => {
+        this.isLoading4  = false;
+      })
     },
     handleClick(type) {
       switch(type) {

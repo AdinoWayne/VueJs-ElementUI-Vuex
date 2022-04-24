@@ -159,11 +159,11 @@
           >
             <span>Progress Step</span>
           </div>
-          <div v-if="currentUser && currentUser.user && currentUser.user.username === ADMIN">
-            <LittleD3 />
+          <div v-if="currentUser && currentUser.user && currentUser.user.username === ROOT">
+            <LittleD3 :openProgressDialog="openProgressDialog" :setStepHome="handleSetStep"/>
           </div>
           <div v-else>
-            <D3 />
+            <D3 :openProgressDialog="openProgressDialog" :setStepHome="handleSetStep"/>
           </div>
         </el-card>
       </el-container>
@@ -221,6 +221,38 @@
         <el-button @click="dialogSkip = false">OK</el-button>
       </span>
     </el-dialog>
+    <el-dialog
+      title="Warning"
+      :visible.sync="dialogProgress"
+      class="home-dialog"
+      center
+    >
+      <span class="dialog-message">
+        Requested action is disallowed because No Connection to or Checking Firmware with HMX Cloud
+      </span>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="dialogProgress = false">OK</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog
+      title="Warning"
+      :visible.sync="dialogProgressSkip"
+      class="home-dialog"
+      center
+    >
+      <span class="dialog-message">
+        Can not change the State, Because Rework is in progress. Back to Scan to change State
+      </span>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="dialogProgressSkip = false">OK</el-button>
+      </span>
+    </el-dialog>
   </el-container>
 </template>
 
@@ -262,6 +294,9 @@ export default {
       centerDialogVisible: false,
       dialogRestart: false,
       dialogSkip: false,
+      dialogProgress: false,
+      dialogProgressSkip: false,
+      stepAb: 0,
       isEnableMac: null,
       isLoading: false,
       timer: null,
@@ -317,6 +352,9 @@ export default {
       Promise.all($q).finally(() => {
         this.initData();
       });
+    },
+    openProgressDialog() {
+      this.dialogProgress = true;
     },
     handleMode(value) {
       var param = "";
@@ -498,6 +536,28 @@ export default {
           })
       })
     },
+    handleSetStep(value) {
+      this.stepAb = value;
+    },
+    handleStep(key, e, value) {
+      if (key == 1) {
+        if (value) {
+          return false;
+        } else {
+          if (this.stepAb > 6 || this.stepAb == 0) {
+            return false;
+          } else {
+            return true;
+          }
+        }
+      } else {
+        if (this.stepAb == 7) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    },
     handleSkip(key, e) {
       if (this.skip_install_plume && this.skip_install_fw) {
         this.dialogSkip = true;
@@ -511,6 +571,11 @@ export default {
       }
       const value = key == 1 ? this.skip_install_plume : this.skip_install_fw;
       let status = value ? 'enable' : 'disable';
+      const isReturn = this.handleStep(key, e, value)
+      if (isReturn) {
+        this.dialogProgressSkip = true;
+        return;
+      }
       switch (key) {
         case 1:
           this.SET_PI_ACTION({
@@ -772,7 +837,7 @@ export default {
 }
 .home-dialog .el-dialog {
   width: 30%;
-  min-width: 500px;
+  min-width: 546px;
 }
 .btn-disable {
   background-color: #E8E9EB !important;
