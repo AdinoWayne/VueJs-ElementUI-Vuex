@@ -159,7 +159,7 @@
           >
             <span>Progress Step</span>
           </div>
-          <div v-if="currentUser && currentUser.user && currentUser.user.username === ROOT">
+          <div v-if="currentUser && currentUser.user && currentUser.user.username === ADMIN">
             <LittleD3 />
           </div>
           <div v-else>
@@ -341,10 +341,10 @@ export default {
           this.pi_rework_mode = this.HOME_PI.pi_rework_mode.indexOf(MODE.REWORK__ALL_AUTO) !== -1 ? true : false;
         }
         if (this.HOME_PI.skip_installing_plume_cas) {
-          this.skip_installing_plume_cas = this.HOME_PI.skip_installing_plume_cas == 'enable' ? true : false;
+          this.skip_install_plume = this.HOME_PI.skip_installing_plume_cas == 'enable' ? true : false;
         }
         if (this.HOME_PI.skip_installing_fw) {
-          this.skip_installing_fw = this.HOME_PI.skip_installing_fw == 'enable' ? true : false;
+          this.skip_install_fw = this.HOME_PI.skip_installing_fw == 'enable' ? true : false;
         }
       }
       if (this.timer) {

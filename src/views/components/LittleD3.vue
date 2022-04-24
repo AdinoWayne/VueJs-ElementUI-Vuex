@@ -11,7 +11,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import { PROGRESS, CLOUD } from "./../../common/constants";
+import { PROGRESS, CLOUD, MODE } from "./../../common/constants";
 import * as d3 from "d3";
 import { SET_PI_ACTION, GET_REWORK_STATE} from './../../store/types/actions';
 import { HOME_PI } from './../../store/types/getters';
@@ -51,12 +51,21 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('pi', [HOME_PI]),
+    ...mapGetters('pi', {HOME_PI}),
     maxStep() {
         return 10;
     },
     colors() {
         return { green: '#4DC87F', lightGreen: '#D9F0E3', white: '#FFFFFF', black: '#000000', red: '#E74C3C' };
+    },
+    STATE_HIDE() {
+        return [
+            PROGRESS.REWOWK__SUCCESS_SENDING_V4_INFO_TO_CLOUD,
+            PROGRESS.REWORK__SUCCESS_DONWLOADING_PLUME_CAS_FROM_CLOUD,
+            PROGRESS.REWORK__SUCCESS_OPENNING_SSH_SERVER_ON_V4,
+            PROGRESS.REWORK__SUCCESS_SENDING_FW_TO_V4,
+            PROGRESS.REWORK__SUCCESS_SENDING_PLUME_CAS_TO_V4
+        ];
     }
   },
   watch: {
@@ -75,6 +84,7 @@ export default {
                 this.GET_REWORK_STATE().finally(() => {
                     this.initData(() => {
                         this.updateProgressBar(this.activeNum, true)
+                        this.handleManualMode();
                     });
                 })
             }
@@ -95,11 +105,24 @@ export default {
         SET_PI_ACTION
     }),
     initData(callback) {
-        if (this.pi && this.pi.pi_v4_state !== undefined) {
-            this.handleData(this.pi.pi_v4_state, this.pi.pre_pi_v4_state);
+        if (this.HOME_PI && this.HOME_PI.pi_v4_state !== undefined) {
+            this.handleData(this.HOME_PI.pi_v4_state, this.HOME_PI.pre_pi_v4_state);
         }
         if (callback) {
             callback();
+        }
+    },
+    handleManualMode() {
+        if (!this.HOME_PI) {
+            return;
+        }
+        const index = this.STATE_HIDE.indexOf(this.HOME_PI.pi_v4_state) !== -1;
+        if (
+            this.HOME_PI &&
+            this.HOME_PI.pi_rework_mode.indexOf(MODE.REWORK__ALL_AUTO) !== -1 &&
+            index !== -1
+        ) {
+            this.SET_PI_ACTION({ action_name: this.prepareData(index + 2), num: index})
         }
     },
     handlePrev(data) {
@@ -181,7 +204,7 @@ export default {
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SENDING_V4_INFO_TO_CLOUD) !== -1:
                 this.activeAb = 1;
-                this.activeNum = 1;
+                this.activeNum = 6;
                 this.currentState = "pending";
                 break;
             case piV4State.indexOf(PROGRESS.REWOWK__FAIL_SENDING_V4_INFO_TO_CLOUD) !== -1:
@@ -191,12 +214,12 @@ export default {
                 break;
             case piV4State.indexOf(PROGRESS.REWOWK__SUCCESS_SENDING_V4_INFO_TO_CLOUD) !== -1:
                 this.activeAb = 1;
-                this.activeNum = 1;
-                this.currentState = "success";
+                this.activeNum = 6;
+                this.currentState = "pending";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__DONWLOADING_PLUME_CAS_FROM_CLOUD) !== -1:
                 this.activeAb = 2;
-                this.activeNum = 2;
+                this.activeNum = 6;
                 this.currentState = "pending";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__FAIL_DONWLOADING_PLUME_CAS_FROM_CLOUD) !== -1:
@@ -206,12 +229,12 @@ export default {
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_DONWLOADING_PLUME_CAS_FROM_CLOUD) !== -1:
                 this.activeAb = 2;
-                this.activeNum = 2;
-                this.currentState = "success";
+                this.activeNum = 6;
+                this.currentState = "pending";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__OPENNING_SSH_SERVER_ON_V4) !== -1:
                 this.activeAb = 3;
-                this.activeNum = 3;
+                this.activeNum = 6;
                 this.currentState = "pending";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__FAIL_OPENNING_SSH_SERVER_ON_V4) !== -1:
@@ -221,12 +244,12 @@ export default {
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_OPENNING_SSH_SERVER_ON_V4) !== -1:
                 this.activeAb = 3;
-                this.activeNum = 3;
-                this.currentState = "success";
+                this.activeNum = 6;
+                this.currentState = "pending";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SENDING_FW_TO_V4) !== -1:
                 this.activeAb = 4;
-                this.activeNum = 4;
+                this.activeNum = 6;
                 this.currentState = "pending";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__FAIL_SENDING_FW_TO_V4) !== -1:
@@ -236,12 +259,12 @@ export default {
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_SENDING_FW_TO_V4) !== -1:
                 this.activeAb = 4;
-                this.activeNum = 4;
-                this.currentState = "success";
+                this.activeNum = 6;
+                this.currentState = "pending";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SENDING_PLUME_CAS_TO_V4) !== -1:
                 this.activeAb = 5;
-                this.activeNum = 5;
+                this.activeNum = 6;
                 this.currentState = "pending";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__FAIL_SENDING_PLUME_CAS_TO_V4) !== -1:
@@ -251,8 +274,8 @@ export default {
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__SUCCESS_SENDING_PLUME_CAS_TO_V4) !== -1:
                 this.activeAb = 5;
-                this.activeNum = 5;
-                this.currentState = "success";
+                this.activeNum = 6;
+                this.currentState = "pending";
                 break;
             case piV4State.indexOf(PROGRESS.REWORK__INSTALLING_PLUME_CAS_ON_V4) !== -1:
                 this.activeAb = 6;
@@ -587,7 +610,7 @@ export default {
                         return 0
                     }
                     if (index < 6) {
-                        return (index) * Math.floor(stepWidth / 6);
+                        return stepWidth;
                     } else if (index < 9) {
                         const s = this.stepLint.indexOf(step_);
                         return s * stepWidth;
