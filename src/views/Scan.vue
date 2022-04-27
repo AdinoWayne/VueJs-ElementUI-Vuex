@@ -5,7 +5,11 @@
         :gutter="20"
         class="class-row"
       >
-        <el-col :span="12">
+        <el-col
+          v-if="currentUser && currentUser.user && currentUser.user.username !== ADMIN"
+          class="pb-10"
+          :span="12"
+        >
           <el-card class="box-card">
             <div
               slot="header"
@@ -36,7 +40,10 @@
             </table>
           </el-card>
         </el-col>
-        <el-col :span="12">
+        <el-col
+          class="pb-10"
+          :span="12"
+        >
           <el-card class="box-card">
             <div
               slot="header"
@@ -78,12 +85,10 @@
             </table>
           </el-card>
         </el-col>
-      </el-row>
-      <el-row
-        :gutter="20"
-        class="class-row"
-      >
-        <el-col :span="12">
+        <el-col
+          class="pb-10"
+          :span="12"
+        >
           <el-card class="box-card">
             <div
               slot="header"
@@ -113,7 +118,11 @@
             </table>
           </el-card>
         </el-col>
-        <el-col :span="12">
+        <el-col
+          v-if="currentUser && currentUser.user && currentUser.user.username !== ADMIN"
+          class="pb-10"
+          :span="12"
+        >
           <el-card class="box-card">
             <div
               slot="header"
@@ -225,6 +234,15 @@ export default {
       RASPBERRY_PI_WIFI,
       RASPBERRY_PI_INTERFACE
     }),
+    ROOT() {
+      return 'root';
+    },
+    ADMIN() {
+      return 'admin';
+    },
+    currentUser() {
+      return this.$store.state.auth.user;
+    }
   },
   created() {
   },
@@ -411,5 +429,8 @@ export default {
 .scan-dialog .el-dialog {
   max-width: 590px;
   width: 100%;
+}
+.pb-10 {
+  padding-bottom: 10px;
 }
 </style>

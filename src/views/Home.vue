@@ -109,7 +109,7 @@
                     />
                   </td>
                 </tr>
-                <tr>
+                <tr v-if="currentUser && currentUser.user && currentUser.user.username !== ADMIN">
                   <th>Verifying CM MAC when installing Plume Certificates</th><td>
                     <el-switch
                       v-model="isEnableMac"
@@ -120,7 +120,7 @@
                     />
                   </td>
                 </tr>
-                <tr>
+                <tr v-if="currentUser && currentUser.user && currentUser.user.username !== ADMIN">
                   <th>Skip Installing Plume CAs</th><td>
                     <el-switch
                       key="key"
@@ -133,7 +133,7 @@
                     />
                   </td>
                 </tr>
-                <tr>
+                <tr v-if="currentUser && currentUser.user && currentUser.user.username !== ADMIN">
                   <th>Skip Installing Firmware</th><td>
                     <el-switch
                       key="key"
@@ -159,11 +159,17 @@
           >
             <span>Progress Step</span>
           </div>
-          <div v-if="currentUser && currentUser.user && currentUser.user.username === ROOT">
-            <LittleD3 :openProgressDialog="openProgressDialog" :setStepHome="handleSetStep"/>
+          <div v-if="currentUser && currentUser.user && currentUser.user.username === ADMIN">
+            <LittleD3
+              :open-progress-dialog="openProgressDialog"
+              :set-step-home="handleSetStep"
+            />
           </div>
           <div v-else>
-            <D3 :openProgressDialog="openProgressDialog" :setStepHome="handleSetStep"/>
+            <D3
+              :open-progress-dialog="openProgressDialog"
+              :set-step-home="handleSetStep"
+            />
           </div>
         </el-card>
       </el-container>
