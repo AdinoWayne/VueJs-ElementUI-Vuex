@@ -234,7 +234,7 @@
       center
     >
       <span class="dialog-message">
-        Requested Action is disallowed because No connection to or in checking Firmware with HMX Cloud. Please wait for seconds ...
+        Requested Action is disallowed because No Connection to or in Checking Firmware with HMX Cloud. Please wait for seconds ...
       </span>
       <span
         slot="footer"
@@ -244,19 +244,19 @@
       </span>
     </el-dialog>
     <el-dialog
-      title="Warning"
-      :visible.sync="dialogProgressSkip"
+      :title="objDialog.title"
+      :visible.sync="objDialog.open"
       class="home-dialog"
       center
     >
       <span class="dialog-message">
-        Can not change the State, Because Rework is in progress. Back to Scan to change State
+        {{ objDialog.msg }}
       </span>
       <span
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="dialogProgressSkip = false">OK</el-button>
+        <el-button @click="objDialog.open = false">OK</el-button>
       </span>
     </el-dialog>
   </el-container>
@@ -301,7 +301,11 @@ export default {
       dialogRestart: false,
       dialogSkip: false,
       dialogProgress: false,
-      dialogProgressSkip: false,
+      objDialog: {
+        msg: '',
+        open: false,
+        title: ''
+      },
       stepAb: 0,
       isEnableMac: null,
       isLoading: false,
@@ -413,6 +417,14 @@ export default {
           this.isLoading = false;
           this.centerDialogVisible = false;
           this.dialogRestart = true;
+      }).catch(() => {
+        this.isLoading = false;
+        this.centerDialogVisible = false;
+        this.objDialog = {
+          open: true,
+          title: 'Warning',
+          msg: 'Update failed'
+        }
       })
     },
     handleConfirm() {
@@ -579,7 +591,11 @@ export default {
       let status = value ? 'enable' : 'disable';
       const isReturn = this.handleStep(key, e, value)
       if (isReturn) {
-        this.dialogProgressSkip = true;
+        this.objDialog = {
+          open: true,
+          title: 'Warning',
+          msg: 'Can not change the State, Because Rework is in progress. Back to Scan to change State'
+        }
         return;
       }
       switch (key) {
