@@ -174,6 +174,28 @@
             </table>
           </el-card>
         </el-col>
+        <el-col
+          v-if="currentUser && currentUser.user && currentUser.user.username !== ADMIN"
+          class="pb-10"
+          :span="12"
+        >
+          <div class="el-card__header box-shadow">
+            <div
+              class="clearfix"
+            >
+              <span>Do factory reset HGJ310v4 without reboot</span>
+              <el-button
+                type="success"
+                size="mini"
+                style="float: right"
+                :loading="isLoading5"
+                @click="() => handleClick(4)"
+              >
+                Set
+              </el-button>
+            </div>
+          </div>
+        </el-col>
       </el-row>
     </el-main>
     <el-dialog
@@ -225,6 +247,7 @@ export default {
       isLoading2: false,
       isLoading3: false,
       isLoading4: false,
+      isLoading5: false,
       interfaces: {},
     };
   },
@@ -358,6 +381,31 @@ export default {
         this.isLoading = false;
       })
     },
+    postFactory() {
+      this.isLoading5 = true;
+      this.SET_PI_ACTION({
+        action_name: ACTION.REWORK__DO_FACTORY_V4_WITHOUT_REBOOT,
+        num: -1
+      }).then((data) => {
+        if (data) {
+          this.dialog = {
+            title: "Notice",
+            isOpen: true,
+            msg: data.detail || ""
+          }
+        }
+      }).catch(err => {
+        if (err) {
+          this.dialog = {
+            title: "Warning",
+            isOpen: true,
+            msg: err.detail || ""
+          }
+        }
+      }).finally(() => {
+        this.isLoading5 = false;
+      })
+    },
     handleRefresh() {
       let $q = [];
       $q.push(this.GET_INTERFACE_IP());
@@ -379,6 +427,9 @@ export default {
         case 3:
           this.openSSH();
           break;
+        case 4:
+          this.postFactory();
+          break;
         default:
           break;
       }
@@ -389,6 +440,10 @@ export default {
 <style>
 .text {
   font-size: 14px;
+}
+
+.box-shadow {
+  box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
 }
 
 .el-button {

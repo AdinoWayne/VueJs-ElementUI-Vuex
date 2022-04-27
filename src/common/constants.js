@@ -49,32 +49,33 @@ export const ACTION = {
     REWORK_SET_OPEN_SSH_SERVER_ON_V4_MANUALLY: "REWORK_SET_OPEN_SSH_SERVER_ON_V4_MANUALLY",
     REWORK_SET_SKIP_INSTALLING_PLUME_CAS: "REWORK_SET_SKIP_INSTALLING_PLUME_CAS",
     REWORK_SET_SKIP_INSTALLING_FW: "REWORK_SET_SKIP_INSTALLING_FW",
+    REWORK__DO_FACTORY_V4_WITHOUT_REBOOT: "REWORK__DO_FACTORY_V4_WITHOUT_REBOOT"
 }
 
 export const CLOUD = {
     REWORK__CHECKING_FW_VER_WITH_CLOUD: {
-        TEXT: "In progress of checking firmware version with Hmx Cloud",
+        TEXT: "Checking newest HGJ310v4 Firmware with Hmx Cloud",
         VALUE: "REWORK__CHECKING_FW_VER_WITH_CLOUD"
     },
     REWORK__FAIL_CHECKING_FW_VER_WITH_CLOUD:  {
-        TEXT: "Checking FW version with cloud is failed",
+        TEXT: "Check newest Firmware with Hmx Cloud is Failed",
         VALUE: "REWORK__FAIL_CHECKING_FW_VER_WITH_CLOUD"
     },
     REWORK__SUCCESS_CHECKING_FW_VER_WITH_CLOUD:   {
-        TEXT: "Checking FW version with cloud is success",
+        TEXT: "Check newest Firware with Hmx Cloud is success",
         VALUE: "REWORK__SUCCESS_CHECKING_FW_VER_WITH_CLOUD"
     },
 
     REWORK__DOWNLOAD_FW_FROM_CLOUD:   {
-        TEXT: "In progress of downloading firmware form HMX Cloud",
+        TEXT: "Downloading HGJ310v4 Firmware from HMX Cloud",
         VALUE: "REWORK__DOWNLOAD_FW_FROM_CLOUD"
     },
     REWORK__FAIL_DOWNLOAD_FW_FROM_CLOUD:   {
-        TEXT: "Downloading FW version with HMX cloud is failed",
+        TEXT: "Download FW version with HMX cloud is Failed",
         VALUE: "REWORK__FAIL_DOWNLOAD_FW_FROM_CLOUD"
     },
     REWORK__SUCCESS_DOWNLOAD_FW_FROM_CLOUD:   {
-        TEXT: "Downloading FW version with HMX cloud is succeed",
+        TEXT: "HGJ310v4 Firmware on Raspberry PI is up to date",
         VALUE: "REWORK__SUCCESS_DOWNLOAD_FW_FROM_CLOUD"
     },
 
