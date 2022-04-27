@@ -18,12 +18,18 @@ export const setLocalStorage = (name, value) => {
 }
 
 export const getLocalStorage = (name) => {
-    const cipherText = localStorage.getItem(name);
-    if (!cipherText) {
-        return null;
+    try {
+        const cipherText = localStorage.getItem(name);
+        if (!cipherText) {
+            return null;
+        }
+        const strText = decryptWithAES(cipherText);
+        return JSON.parse(strText);
+    } catch (error) {
+        localStorage.removeItem('user');
+        window.location.href = '/login';
     }
-    const strText = decryptWithAES(cipherText);
-    return JSON.parse(strText);
+
 }
 
 function isPositiveInteger(x) {
