@@ -35,59 +35,11 @@
         i {
           cursor: pointer;
         }
-        .clay-icon-delete {
-          padding-left: 20px;
-          display: inline-block;
-          overflow: hidden;
-          background-repeat: no-repeat;
-          width: 22px;
-          height: 22px;
-          background-image: url("../../products/base/assets/images/btn_delete.png");
-          background-position: center;
-          background-repeat: no-repeat;
-          &.disable:hover {
-            cursor: not-allowed;
-          }
-        }
-        .clay-icon-edit {
-          display: inline-block;
-          overflow: hidden;
-          background-repeat: no-repeat;
-          width: 22px;
-          height: 22px;
-          background-image: url("../../products/base/assets/images/btn_edit.png");
-          background-position: center;
-          background-repeat: no-repeat;
-        }
       }
     }
     .table-inactive {
       i {
         cursor: not-allowed;
-      }
-      .clay-icon-delete {
-        padding-left: 20px;
-        display: inline-block;
-        overflow: hidden;
-        background-repeat: no-repeat;
-        width: 22px;
-        height: 22px;
-        background-image: url("../../products/base/assets/images/btn_delete_disable.png");
-        background-position: center;
-        background-repeat: no-repeat;
-        &.disable:hover {
-          cursor: not-allowed;
-        }
-      }
-      .clay-icon-edit {
-        display: inline-block;
-        overflow: hidden;
-        background-repeat: no-repeat;
-        width: 22px;
-        height: 22px;
-        background-image: url("../../products/base/assets/images/btn_edit_disable.png");
-        background-position: center;
-        background-repeat: no-repeat;
       }
     }
     .el-table__expand-icon {

@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Router from "vue-router";
-import Routes from "./routes";
+import Routes from "./router";
 import { getLocalStorage } from "@/common/utils";
 import { STORAGE_ACCESS_TOKEN, STORAGE_STATUS_POLICY } from "@/common/constants";
 
@@ -29,10 +29,26 @@ const checkLogin = (to, from, next) => {
   } else {
     if (to.path === "/") {
       localStorage.removeItem(STORAGE_ACCESS_TOKEN);
+      next('/login');
     }
     next();
   }
 };
+
+// router.beforeEach((to, from, next) => {
+//   const publicPages = ['/login', '/register'];
+//   const authRequired = !publicPages.includes(to.path);
+//   const user = getLocalStorage('user');
+
+//   if (authRequired && (!user || !user.token)) {
+//     next('/login');
+//   } else {
+//     if (to.path === "/" || to.path == "/pi") {
+//       next('/status');
+//     }
+//     next();
+//   }
+// });
 
 export default new Router({
   mode: "history",

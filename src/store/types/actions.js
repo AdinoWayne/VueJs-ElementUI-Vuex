@@ -11,3 +11,8 @@ export const GET_SKIP_PLUME_CAS = "getSkipPlumeCas";
 export const GET_SKIP_INSTALL_FW = "getSkipInstallFW";
 export const SET_REWORK_MAC = "postReworkMAC";
 export const SET_PI_ACTION = "doAction";
+
+export const SHOW_LOADING = "showLoading";
+export const HIDE_LOADING = "hideLoading";
+export const SHOW_ERROR = "showError";
+export const HIDE_ERROR = "hideError";

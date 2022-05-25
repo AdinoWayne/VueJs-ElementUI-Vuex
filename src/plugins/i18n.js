@@ -13,18 +13,11 @@ import viLocale from "element-ui/lib/locale/lang/vi";
 Vue.use(VueI18n);
 
 let loadLocaleMessages = () => {
-  let languages = null;
-  process.env.VUE_APP_MODEL !== "" && process.env.VUE_APP_MODEL
-    ? (languages = require.context(
-        "@/products/" + process.env.VUE_APP_MODEL + "/languages",
-        true,
-        /[A-Za-z0-9-_,\s]+\.json$/i
-      ))
-    : (languages = require.context(
-        "@/products/base/languages",
-        true,
-        /[A-Za-z0-9-_,\s]+\.json$/i
-      ));
+  let languages = require.context(
+    "@/languages",
+    true,
+    /[A-Za-z0-9-_,\s]+\.json$/i
+  );
   const messages = {};
   const elMessage = {
     ar: {

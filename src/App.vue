@@ -68,7 +68,9 @@ export default {
     }
   },
   mounted() {
-    this.name = this.$route.name;
+    if (this.$router) {
+      this.name = this.$router.name;
+    }
   },
   methods: {
     switchTabs(tab) {
@@ -92,7 +94,8 @@ export default {
   }
 };
 </script>
-<style>
+<style lang="scss">
+@import "@/assets/styles/styles.scss";
 .container {
 	margin-top: 20px;
 }

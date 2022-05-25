@@ -9,13 +9,10 @@ import {
   HIDE_LOADING,
   SHOW_ERROR,
   LOGOUT
-} from "@/store/types/actions.type";
+} from "@/store/types/actions";
 
 import { getLocalStorage } from '@/common/utils';
 import { STORAGE_ACCESS_TOKEN, STATUS_CODE } from "@/common/constants";
-
-// Full config:  https://github.com/axios/axios#request-config
-// axios.defaults.baseURL = process.env.baseURL || process.env.apiUrl || '';
 
 axios.defaults.headers.common["Content-Encoding"] = "gzip";
 

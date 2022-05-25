@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import App from './App.vue';
-import { router } from './router';
+import Router from './router';
 import store from './store';
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -43,7 +43,7 @@ if (vLanguage === null || vLanguage === undefined) {
 I18n.locale = vLanguage;
 
 new Vue({
-  router,
+  router: Router,
   store,
   i18n: I18n, // the vue-i18n plugin instance
   i18nRootKey: "validations", // the nested key under which the validation messages will be located
