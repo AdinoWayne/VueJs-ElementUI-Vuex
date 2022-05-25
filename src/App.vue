@@ -41,25 +41,6 @@
       </div>
     </nav>
     <el-container class="wrapper">
-      <el-aside
-        v-if="currentUser"
-        width="180px"
-        style="padding: 20px 20px 0 0"
-      >
-        <el-tabs
-          v-model="name"
-          class="tabs-wrapper"
-          :tab-position="'left'"
-          @tab-click="switchTabs"
-        >
-          <el-tab-pane
-            v-for="item in tabs"
-            :key="item.value"
-            :name="item.value"
-            :label="item.text"
-          />
-        </el-tabs>
-      </el-aside>
       <el-main class="main">
         <router-view />
       </el-main>

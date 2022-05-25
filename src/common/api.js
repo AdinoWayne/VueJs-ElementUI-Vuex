@@ -1,5 +1,5 @@
 import axios from 'axios';
-const TOKEN_INVALID = "Token is invalid";
+const TOKEN_INVALID = "Token expired.";
 axios.interceptors.response.use((response) => {
   return response
 }, (error) => {

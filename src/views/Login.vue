@@ -97,7 +97,7 @@ export default {
         if (this.user.username && this.user.password) {
           this.$store.dispatch('auth/login', this.user).then(
             () => {
-              this.$router.push('/status');
+              this.$router.push('/pi');
             },
             error => {
               this.loading = false;

@@ -3,7 +3,7 @@ import Router from 'vue-router';
 import Home from './views/Home.vue';
 import Scan from './views/Scan.vue';
 import Login from './views/Login.vue';
-import { getLocalStorage } from './common/utils';
+import { getLocalStorage } from '../common/utils';
 Vue.use(Router);
 
 export const router = new Router({
@@ -12,11 +12,6 @@ export const router = new Router({
     {
       path: '/status',
       name: 'status',
-      component: Home
-    },
-    {
-      path: '/pi',
-      name: 'pi',
       component: Scan
     },
     {
@@ -34,7 +29,7 @@ router.beforeEach((to, from, next) => {
   if (authRequired && (!user || !user.token)) {
     next('/login');
   } else {
-    if (to.path === "/") {
+    if (to.path === "/" || to.path == "/pi") {
       next('/status');
     }
     next();

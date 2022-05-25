@@ -1,0 +1,127 @@
+button.el-button {
+  width: fit-content;
+  min-width: 104px;
+  height: 36px;
+  border-radius: 3px;
+  padding: none;
+  line-height: 0;
+  border: solid 1px #147eff;
+  background-color: #ffffff;
+
+  span {
+    font-size: 15px;
+    font-weight: $font-bold;
+    font-style: normal;
+    font-stretch: normal;
+    letter-spacing: normal;
+    text-align: center;
+    color: #147eff;
+  }
+  &:hover {
+    border: solid 1px #147eff;
+    background-color: #d5e3f6;
+  }
+
+  &:focus {
+    border: solid 1px #147eff;
+    background-color: #d5e3f6;
+  }
+
+  &.confirm-family {
+    border: solid 1px #ffffff;
+    background-color: #147eff;
+
+    &:hover:not([disabled]) {
+      border: solid 1px #147eff;
+      box-shadow: 0 3px 8px 0 rgba(20, 126, 255, 0.5);
+      background-color: #147eff;
+    }
+
+    span {
+      font-size: 15px;
+      font-weight: $font-bold;
+      font-style: normal;
+      font-stretch: normal;
+      letter-spacing: normal;
+      text-align: center;
+      color: #ffffff;
+    }
+  }
+  &.apply {
+    background-color: #147eff;
+    span {
+      color: #ffffff;
+    }
+    &:hover {
+      box-shadow: 0 3px 8px 0 rgba(20, 126, 255, 0.5);
+    }
+    &:focus {
+      box-shadow: 0 3px 8px 0 rgba(20, 126, 255, 0.5);
+    }
+  }
+  &.default-custome {
+    border: solid 2px #147eff;
+    background-color: #ffffff;
+    &:hover:not([disabled]) {
+      border: solid 2px #147eff;
+      background-color: #d5e3f6;
+    }
+    &.is-disabled {
+      //temp
+      cursor: not-allowed;
+      border: solid 2px #b1d0f7;
+      border-color: #b1d0f7 !important;
+      span {
+        color: #b1d0f7 !important;
+      }
+
+      background-color: #ffffff;
+    }
+  }
+}
+
+button.el-button.is-disabled {
+  //temp
+  cursor: not-allowed;
+
+  span {
+    color: $color-disabled-text;
+  }
+
+  background-color: $disabled-background-color;
+  border-color: $color-border-normal;
+}
+
+.el-switch__core {
+  width: 46px !important;
+  height: 26px !important;
+  border-radius: 50px !important;
+  &:after {
+    width: 22px !important;
+    height: 22px !important;
+  }
+}
+
+.el-switch.is-checked .el-switch__core::after {
+  margin-left: -23px !important;
+}
+
+button.el-button.button-full-size {
+  width: 100%;
+  height: 100%;
+  min-width: auto;
+}
+
+.rotate {
+  transform: scale(1);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

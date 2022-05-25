@@ -219,6 +219,29 @@
         >OK</el-button>
       </span>
     </el-dialog>
+    <el-dialog
+      :title="msgSSH.title"
+      :visible.sync="msgSSH.isOpen"
+      class="scan-dialog"
+      center
+    >
+      <span
+        class="dialog-message"
+        v-html="msgSSH.msg"
+      />
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          type="primary"
+          @click="msgSSH.cb"
+        >Yes</el-button>
+        <el-button
+          @click="msgSSH.isOpen = false"
+        >No</el-button>
+      </span>
+    </el-dialog>
   </el-container>
 </template>
 
@@ -242,6 +265,12 @@ export default {
         title: "",
         msg: "",
         isOpen: false,
+      },
+      msgSSH: {
+        title: "",
+        msg: "",
+        isOpen: false,
+        cb: () => {}
       },
       isLoading: false,
       isLoading2: false,
@@ -354,6 +383,14 @@ export default {
         }
         return;
       }
+      this.msgSSH = {
+        isOpen: true,
+        msg: "Open SSH server may effect to current Rework's operation, do you want to continuous?",
+        title: 'Warning',
+        cb: () => this.postSSH()
+      }
+    },
+    postSSH() {
       this.isLoading = true;
       this.SET_PI_ACTION({
         action_name: ACTION.REWORK_SET_OPEN_SSH_SERVER_ON_V4_MANUALLY,
@@ -362,6 +399,7 @@ export default {
         port: this.root.port,
         num: -1
       }).then((data) => {
+        this.msgSSH.isOpen = false;
         if (data) {
           this.dialog = {
             title: "Notice",
@@ -370,6 +408,7 @@ export default {
           }
         }
       }).catch(err => {
+        this.msgSSH.isOpen = false;
         if (err) {
           this.dialog = {
             title: "Warning",

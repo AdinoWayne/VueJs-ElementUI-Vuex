@@ -1,0 +1,65 @@
+$font-full: "Roboto", "Noto Sans JP", "ヒラギノ角ゴ Pro W3",
+  "Hiragino Kaku Gothic Pro", Osaka, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
+$font-light: 300;
+$font-regular: 400;
+$font-medium: 500;
+$font-bold: 700;
+
+$font-url: "/font2/";
+
+/*Backgound color*/
+$app-background-color: #f1f2f5;
+$sidebar-background-color: #f1f2f5;
+$selected-item-background-color: #f1f2f5;
+$disabled-background-color: #ffffff;
+$disabled-background-input-color: #f5f7fa;
+/*Color*/
+$active-toggle-color: #51cf66;
+$app-text-color: #2c3e50;
+$color-text-error: #f56c6c;
+$color-border-input-error: #f56c6c;
+$common-active: #51cf66;
+$common-inactive: #adb5bd;
+$color-placeholder: #c0c4cc;
+$color-border-error: #f56c6c;
+$common-active-disabled: #b8edc1;
+$common-inactive-disabled: #e4e7ed;
+$color-border-focus: #409eff;
+$color-border-normal: #c9cbcd;
+$color-disabled-text: #c9cbcd;
+$color-link-text: #147eff;
+$color-nav-menu-background-active: #d5e3f6;
+$color-text-focus: #409eff;
+$color-save-change-icon: #147eff;
+$color-common-checkbox-background: #147eff;
+$color-text-navbar-focus: #147eff;
+/* Width */
+$nav-bar-width: 320px;
+$side-bar-width: 320px;
+$help-width: 30%;
+$help-width-m: 360px;
+$min-width: 360px;
+$wizard-max-width: 1000px;
+/* Height*/
+
+$header-height: 60px;
+$footer-height: 60px;
+$menu-item-height: 56px;
+
+/* font */
+$font-size-input: 15px;
+$font-size-text: 16px;
+$font-size-error-text: 13px;
+/* Z-index */
+$z-index-dialog: 2019;
+$z-index-navbar: 1999;
+$z-index-navbar-m: 2020;
+$z-index-help-m: 2020;
+$z-index-side-bar: 2011;
+$z-index-action-bar: 2002;
+$z-index-background: 2010;
+$z-index-select: 2020;
+$z-index-error-dialog: 2023;
+$z-index-loading: 9999;
+/* url-asset-path */
+$app-assets-path: "../../../products/base/assets";
